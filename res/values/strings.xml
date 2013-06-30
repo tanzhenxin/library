@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Library</string>
+    <string name="action_settings">Settings</string>
+    <string name="user_borrowing">Borrowing</string>
+    <string name="user_borrowed">Borrowed</string>
+    <string name="user_wanted">Wanted</string>
+	<string name="user_donated">Donated</string>
+	
+	<string name="user_center">User Center</string>
+	<string name="book_library">Book Library</string>
+	
+	<string name="library_technical">Technical</string>
+	<string name="library_self">Self Entertainment</string>
+	<string name="library_english">English</string>
+	<string name="library_misc">Misc</string>
+	
+	<string name="action_search">Search</string>
+</resources>

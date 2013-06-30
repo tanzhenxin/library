@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+   	<string name="app_name">图书馆</string>
+    <string name="action_settings">设置</string>
+    <string name="user_borrowing">在借的</string>
+    <string name="user_borrowed">借过的</string>
+    <string name="user_wanted">想借的</string>
+	<string name="user_donated">捐献的</string>
+	
+	<string name="user_center">个人中心</string>
+	<string name="book_library">图书馆</string>
+	
+	<string name="library_technical">技术</string>
+	<string name="library_self">个人成长</string>
+	<string name="library_english">英语学习</string>
+	<string name="library_misc">其他</string>
+	
+	<string name="action_search">搜索</string>
+</resources>
