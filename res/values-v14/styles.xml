@@ -3,7 +3,7 @@
     <!--
         Base application theme for API 14+. This theme completely replaces
         AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
+        res/values-v11/styles.xml on API 14+ devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 14 theme customizations can go here. -->
@@ -23,8 +23,8 @@
 
     <style name="ActionBar.Solid.Library" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
         <item name="android:background">@drawable/ab_solid_library</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_library</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_library</item>
+        <item name="android:backgroundStacked">@drawable/ab_background_textured_library</item>
+        <item name="android:backgroundSplit">@drawable/ab_background_textured_library</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Library</item>
     </style>
 
