@@ -43,8 +43,18 @@ public final class LibraryContract {
 		public static final String DEFAULT_SORT_ORDER = 
 				"user_name NOCASE DESC";
 		
-		public static final Uri buildUserId(String userId) {
+		public static final Uri buildUserUri(String userId) {
 			return CONTENT_URI.buildUpon().appendPath(userId).build();
+		}
+		
+		public static final Uri buildUserBooksUri(String userId, String relation) {
+			return CONTENT_URI.buildUpon().appendPath(userId).
+					appendPath(PATH_BOOKS).appendPath(relation).build();
+		}
+		
+		public static final Uri buildUserBookUri(String userId, String bookId, String relation) {
+			return CONTENT_URI.buildUpon().appendPath(userId).
+					appendPath(PATH_BOOKS).appendPath(relation).appendPath(bookId).build();
 		}
 		
 		public static final String getUserId(Uri uri) {
@@ -68,7 +78,7 @@ public final class LibraryContract {
 		public static final String CATEGORY_ENGLISH = "english";
 		public static final String CATEGORY_MISC = "misc";
 		
-		public static final Uri buildBookId(String bookId) {
+		public static final Uri buildBookUri(String bookId) {
 			return CONTENT_URI.buildUpon().appendPath(bookId).build();
 		}
 		

@@ -31,10 +31,10 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 		String BOOK_ID = "book_id";
 		String USE_TYPE = "use_type";
 		
-		String TYPE_BORROWING = "1";
-		String TYPE_BORROWED = "2";
-		String TYPE_WANTED = "3";
-		String TYPE_DONATED = "4";
+		String TYPE_READING = "reading";
+		String TYPE_READ = "read";
+		String TYPE_WISH = "wish";
+		String TYPE_DONATE = "donate";
 	}
 
 	public LibraryDatabase(Context context) {

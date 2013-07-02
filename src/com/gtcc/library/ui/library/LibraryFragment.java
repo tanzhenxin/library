@@ -1,6 +1,9 @@
 package com.gtcc.library.ui.library;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +20,8 @@ import com.gtcc.library.R;
  * A dummy fragment representing a section of the app, but that simply
  * displays dummy text.
  */
-public class LibraryFragment extends SherlockFragment {
+public class LibraryFragment extends SherlockFragment
+	implements LoaderManager.LoaderCallbacks<Cursor> {
 	/**
 	 * The fragment argument representing the section number for this
 	 * fragment.
@@ -33,7 +37,7 @@ public class LibraryFragment extends SherlockFragment {
 		
 		setHasOptionsMenu(true);
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -56,5 +60,23 @@ public class LibraryFragment extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

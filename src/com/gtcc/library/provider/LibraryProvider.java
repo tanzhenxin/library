@@ -27,10 +27,10 @@ public class LibraryProvider extends ContentProvider {
 	public static final int USERS = 100;
 	public static final int USERS_ID = 101;
 	public static final int USERS_ID_BOOKS = 102;
-	public static final int USERS_ID_BOOKS_BORROWING = 103;
-	public static final int USERS_ID_BOOKS_BORROWED = 104;
-	public static final int USERS_ID_BOOKS_WANTED = 105;
-	public static final int USERS_ID_BOOKS_DONATED = 106;
+	public static final int USERS_ID_BOOKS_READING = 103;
+	public static final int USERS_ID_BOOKS_READ = 104;
+	public static final int USERS_ID_BOOKS_WISH = 105;
+	public static final int USERS_ID_BOOKS_DONATE = 106;
 	
 	public static final int BOOKS = 200;
 	public static final int BOOKS_ID = 201;
@@ -46,10 +46,10 @@ public class LibraryProvider extends ContentProvider {
 		sUriMatcher.addURI(authority, "users", USERS);
 		sUriMatcher.addURI(authority, "users/*", USERS_ID);
 		sUriMatcher.addURI(authority, "users/*/books", USERS_ID_BOOKS);
-		sUriMatcher.addURI(authority, "users/*/books/borrowing", USERS_ID_BOOKS_BORROWING);
-		sUriMatcher.addURI(authority, "users/*/books/borrowed", USERS_ID_BOOKS_BORROWED);
-		sUriMatcher.addURI(authority, "users/*/books/wanted", USERS_ID_BOOKS_WANTED);
-		sUriMatcher.addURI(authority, "users/*/books/donated", USERS_ID_BOOKS_DONATED);
+		sUriMatcher.addURI(authority, "users/*/books/reading", USERS_ID_BOOKS_READING);
+		sUriMatcher.addURI(authority, "users/*/books/read", USERS_ID_BOOKS_READ);
+		sUriMatcher.addURI(authority, "users/*/books/wish", USERS_ID_BOOKS_WISH);
+		sUriMatcher.addURI(authority, "users/*/books/donate", USERS_ID_BOOKS_DONATE);
 		
 		sUriMatcher.addURI(authority, "books", BOOKS);
 		sUriMatcher.addURI(authority, "books/*", BOOKS_ID);
@@ -77,13 +77,13 @@ public class LibraryProvider extends ContentProvider {
 			return Users.CONTENT_ITEM_TYPE;
 		case USERS_ID_BOOKS:
 			return Books.CONTENT_TYPE;
-		case USERS_ID_BOOKS_BORROWING:
+		case USERS_ID_BOOKS_READING:
 			return Books.CONTENT_TYPE;
-		case USERS_ID_BOOKS_BORROWED:
+		case USERS_ID_BOOKS_READ:
 			return Books.CONTENT_TYPE;
-		case USERS_ID_BOOKS_WANTED:
+		case USERS_ID_BOOKS_WISH:
 			return Books.CONTENT_TYPE;
-		case USERS_ID_BOOKS_DONATED:
+		case USERS_ID_BOOKS_DONATE:
 			return Books.CONTENT_TYPE;
 			
 		case BOOKS:
@@ -127,37 +127,37 @@ public class LibraryProvider extends ContentProvider {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder.table(Tables.USER_BOOKS).where(UserBooks.USER_ID + "=?", userId);
 		}
-		case USERS_ID_BOOKS_BORROWING: {
+		case USERS_ID_BOOKS_READING: {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
-					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_BORROWING);
+					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_READING);
 		}
-		case USERS_ID_BOOKS_BORROWED: {
+		case USERS_ID_BOOKS_READ: {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
-					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_BORROWED);
+					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_READ);
 		}
-		case USERS_ID_BOOKS_WANTED: {
+		case USERS_ID_BOOKS_WISH: {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
-					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_WANTED);
+					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_WISH);
 		}
-		case USERS_ID_BOOKS_DONATED: {
+		case USERS_ID_BOOKS_DONATE: {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
-					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_DONATED);
+					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_DONATE);
 		}
 			
 		case BOOKS: {
@@ -194,8 +194,43 @@ public class LibraryProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		// TODO Auto-generated method stub
-		return null;
+        LogUtils.LOGV(TAG, "insert(uri=" + uri + ", values=" + values.toString() + ")");
+        final SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        Boolean syncToNetwork = true;
+        switch (match) {
+        case USERS:
+        	db.insertOrThrow(Tables.USERS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Users.buildUserUri(values.getAsString(Users.USER_ID));
+        case BOOKS:
+        	db.insertOrThrow(Tables.BOOKS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Books.buildBookUri(values.getAsString(Books.BOOK_ID));
+        	
+        case USERS_ID_BOOKS_READING:
+        	db.insertOrThrow(Tables.USER_BOOKS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Users.buildUserBookUri(values.getAsString(Users.USER_ID), 
+        			values.getAsString(Books.BOOK_ID), UserBooks.TYPE_READING);
+        case USERS_ID_BOOKS_READ:
+        	db.insertOrThrow(Tables.USER_BOOKS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Users.buildUserBookUri(values.getAsString(Users.USER_ID), 
+        			values.getAsString(Books.BOOK_ID), UserBooks.TYPE_READ);
+        case USERS_ID_BOOKS_WISH:
+        	db.insertOrThrow(Tables.USER_BOOKS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Users.buildUserBookUri(values.getAsString(Users.USER_ID), 
+        			values.getAsString(Books.BOOK_ID), UserBooks.TYPE_WISH);
+        case USERS_ID_BOOKS_DONATE:
+        	db.insertOrThrow(Tables.USER_BOOKS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Users.buildUserBookUri(values.getAsString(Users.USER_ID), 
+        			values.getAsString(Books.BOOK_ID), UserBooks.TYPE_DONATE);     
+        default:
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
 	}
 
 	@Override
