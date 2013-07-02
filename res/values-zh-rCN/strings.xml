@@ -3,9 +3,9 @@
     
    	<string name="app_name">图书馆</string>
     <string name="action_settings">设置</string>
-    <string name="user_borrowing">在借的</string>
-    <string name="user_borrowed">借过的</string>
-    <string name="user_wanted">想借的</string>
+    <string name="user_borrowing">在看的</string>
+    <string name="user_borrowed">看过的</string>
+    <string name="user_wanted">想看的</string>
 	<string name="user_donated">捐献的</string>
 	
 	<string name="user_center">个人中心</string>
@@ -17,4 +17,7 @@
 	<string name="library_misc">其他</string>
 	
 	<string name="action_search">搜索</string>
+	
+	<string name="book_info">书籍</string>
+	<string name="load_failed">加载数据失败</string>
 </resources>

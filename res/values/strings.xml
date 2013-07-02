@@ -17,4 +17,6 @@
 	<string name="library_misc">Misc</string>
 	
 	<string name="action_search">Search</string>
+	<string name="book_info">Book</string>
+	<string name="load_failed">Load failed!</string>
 </resources>

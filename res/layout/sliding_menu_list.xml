@@ -3,5 +3,5 @@
     android:id="@android:id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/list_padding"
-    android:paddingRight="@dimen/list_padding" />
+    style="@style/navigation_menu_style"
+    android:background="@drawable/navigatin_menu_bg" />

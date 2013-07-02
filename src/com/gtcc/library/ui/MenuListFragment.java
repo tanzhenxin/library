@@ -15,16 +15,16 @@ import android.widget.TextView;
 
 public class MenuListFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.list, null);
+		return inflater.inflate(R.layout.sliding_menu_list, null);
 	}
 
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		SampleAdapter adapter = new SampleAdapter(getActivity());
 		
-		adapter.add(new SampleItem(getString(R.string.user_center), android.R.drawable.ic_menu_search));
-		adapter.add(new SampleItem(getString(R.string.book_library), android.R.drawable.ic_menu_search));
-		adapter.add(new SampleItem(getString(R.string.action_settings), android.R.drawable.ic_menu_search));
+		adapter.add(new SampleItem(getString(R.string.user_center), R.drawable.ic_user_center));
+		adapter.add(new SampleItem(getString(R.string.book_library), R.drawable.ic_collections));
+		adapter.add(new SampleItem(getString(R.string.action_settings), R.drawable.ic_settings));
 		setListAdapter(adapter);
 	}
 	
@@ -54,7 +54,7 @@ public class MenuListFragment extends ListFragment {
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
-				convertView = LayoutInflater.from(getContext()).inflate(R.layout.row, null);
+				convertView = LayoutInflater.from(getContext()).inflate(R.layout.sliding_menu_item, null);
 			}
 			ImageView icon = (ImageView) convertView.findViewById(R.id.row_icon);
 			icon.setImageResource(getItem(position).iconRes);

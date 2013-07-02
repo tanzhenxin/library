@@ -1,22 +1,18 @@
 package com.gtcc.library.ui;
 
-import java.util.Locale;
-
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
 import com.gtcc.library.R;
 import com.gtcc.library.ui.library.LibraryPagerAdapter;
+import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -26,6 +22,11 @@ public class MainActivity extends BaseActivity implements
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
 	public static final int PAGE_SETTINGS = 2;
+	
+	public static final String SHPREF_KEY_ACCESS_TOKEN = "Access_Token";
+	private String accessToken;
+	
+	private int REQUEST_LOGIN = 1;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -100,11 +101,34 @@ public class MainActivity extends BaseActivity implements
 			android.support.v4.app.FragmentTransaction ft) {
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == REQUEST_LOGIN) {
+			switch (resultCode) {
+			case Activity.RESULT_OK:
+				accessToken = data.getExtras().getString(
+						SHPREF_KEY_ACCESS_TOKEN);
+
+				Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+				editor.putString(SHPREF_KEY_ACCESS_TOKEN, accessToken);
+				editor.commit();
+
+				showUserHome();
+				break;
+			}
+		}
+	}
+	
 	public void showPage(int position) {
 		if (position != mCurrentPage) {
 			switch (position) {
 			case PAGE_USER:
-				showUserCenter();
+				if (!hasAccessToken())
+					requestAccessToken();
+				else 
+					showUserHome();
 				break;
 			case PAGE_LIBRARY:
 				showLibrary();
@@ -118,7 +142,25 @@ public class MainActivity extends BaseActivity implements
 		showContent();
 	}
 	
-	private void showUserCenter() {
+	public String getAccessToken() {
+		if (!hasAccessToken())
+			requestAccessToken();
+		
+		return accessToken;
+	}
+	
+	private Boolean hasAccessToken() {
+		accessToken = getPreferences(Context.MODE_PRIVATE).getString(
+				SHPREF_KEY_ACCESS_TOKEN, null);
+		return accessToken != null;
+	}
+	
+	private void requestAccessToken() {
+		Intent intent = new Intent(this, UserLoginActivity.class);
+		startActivityForResult(intent, REQUEST_LOGIN);
+	}
+	
+	private void showUserHome() {
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		UserPagerAdapter mSectionsPagerAdapter = new UserPagerAdapter(this);
@@ -133,7 +175,7 @@ public class MainActivity extends BaseActivity implements
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
+			 actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}

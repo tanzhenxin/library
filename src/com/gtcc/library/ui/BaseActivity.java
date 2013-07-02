@@ -1,5 +1,6 @@
 package com.gtcc.library.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -23,6 +24,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 		mTitleRes = titleRes;
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,7 +33,7 @@ public class BaseActivity extends SlidingFragmentActivity {
 		mTitle = mMenuTitle = getTitle();
 
 		// set the Behind View
-		setBehindContentView(R.layout.menu_frame);
+		setBehindContentView(R.layout.sliding_menu_frame);
 		if (savedInstanceState == null) {
 			FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
 			mFrag = new MenuListFragment();
