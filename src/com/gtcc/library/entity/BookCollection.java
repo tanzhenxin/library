@@ -52,7 +52,7 @@ public class BookCollection {
 				JSONObject bookObj = oneObject.getJSONObject("book");
 				book.setUrl(bookObj.getString("url"));
 				book.setTitle(bookObj.getString("title"));
-				book.setDescription(bookObj.getString("author"));
+				book.SetAuthor(bookObj.getString("author"));
 				book.setSummary(bookObj.getString("summary"));
 				book.setRating((float) bookObj.getJSONObject("rating").getDouble("average"));
 				book.setImgUrl(bookObj.getString("image").replace("mpic", "lpic"));

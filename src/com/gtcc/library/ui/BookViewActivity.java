@@ -38,7 +38,7 @@ public class BookViewActivity extends Activity {
 		txtTitle.setText(book.getTitle());
 		
 		txtDescription = (TextView) findViewById(R.id.book_description);
-		txtDescription.setText(book.getDescription());
+		txtDescription.setText(book.getAuthor());
 		
 		txtSummary = (TextView) findViewById(R.id.book_summary);
 		txtSummary.setText(book.getSummary());

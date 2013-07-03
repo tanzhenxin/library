@@ -25,7 +25,6 @@
 	        android:gravity="top"
 	        android:layout_marginLeft="12dp"
 	        android:layout_toRightOf="@+id/book_img"
-	        android:textStyle="bold"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	    <TextView

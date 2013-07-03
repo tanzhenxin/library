@@ -47,6 +47,7 @@ public class Book implements Serializable, Comparable<Book> {
 		this.myTags = myTags;
 	}
 
+	private String author;
 	private String authorIntro;
 	private boolean collection;
 	private String collectionUrl;
@@ -100,6 +101,17 @@ public class Book implements Serializable, Comparable<Book> {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public String getAuthor() {
+		return author;
+	}
+	
+	public void SetAuthor(String author) {
+		author = author.replace("\"", "");
+		if (author.startsWith("["))
+			author = author.substring(1, author.length() - 1);
+		this.author = author;
 	}
 
 	public String getDescription() {

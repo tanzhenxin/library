@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 	public static final String SHPREF_KEY_ACCESS_TOKEN = "Access_Token";
 	public static final String SHPREF_KEY_USER_ID = "User_Id";
 	private String accessToken;
-	private UserInfo userInfo;
+	private String currentUserId;
 
 	private int REQUEST_LOGIN = 1;
 
@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 				editor.putString(SHPREF_KEY_ACCESS_TOKEN, accessToken);
 				editor.commit();
 				
-				userInfo = (UserInfo) data.getExtras().getSerializable(SHPREF_KEY_USER_ID);
+				UserInfo userInfo = (UserInfo) data.getExtras().getSerializable(SHPREF_KEY_USER_ID);
 				storeUserInfo(userInfo);
 
 				new LoadBooksAsyncTask().execute();
@@ -187,7 +187,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 	}
 
 	public String getCurrentUserId() {
-		String currentUserId = userInfo.getUserId();
 		if (currentUserId == null) {
 			currentUserId = getPreferences(Context.MODE_PRIVATE).getString(
 					SHPREF_KEY_USER_ID, null);
@@ -263,8 +262,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 			try {
 				HttpManager httpManager = new HttpManager(getAccessToken());
 
-				String uid = userInfo.getUserId();
-				
+				String uid = getCurrentUserId();
 				BookCollection bookCollection = new BookCollection();
 				while (bookCollection.hasMoreBooks()) {
 					List<Book> books = bookCollection.getBooks(httpManager,	uid);
@@ -283,7 +281,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 				ContentValues values = new ContentValues();
 				values.put(Books.BOOK_ID, book.getId());
 				values.put(Books.BOOK_TITLE, book.getTitle());
-				values.put(Books.BOOK_AUTHOR, book.getDescription());
+				values.put(Books.BOOK_AUTHOR, book.getAuthor());
 				values.put(Books.BOOK_SUMMARY, book.getSummary());
 				values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
 
