@@ -3,6 +3,7 @@ package com.gtcc.library.util;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.StrictMode;
+import android.support.v4.app.FragmentActivity;
 
 /**
  * Class containing some static utility methods.
@@ -30,5 +31,12 @@ public class Utils {
 
     public static boolean hasJellyBean() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
+    
+    public static ImageFetcher getImageFetcher(final FragmentActivity activity) {
+        // The ImageFetcher takes care of loading remote images into our ImageView
+        ImageFetcher fetcher = new ImageFetcher(activity);
+        fetcher.addImageCache(activity);
+        return fetcher;
     }
 }

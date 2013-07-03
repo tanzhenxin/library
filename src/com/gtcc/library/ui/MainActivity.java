@@ -2,7 +2,6 @@ package com.gtcc.library.ui;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -26,12 +26,14 @@ import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.ui.library.LibraryPagerAdapter;
+import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.gtcc.library.util.HttpManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class MainActivity extends BaseActivity implements ActionBar.TabListener {
+public class MainActivity extends BaseActivity implements 
+	ActionBar.TabListener, UserBookListFragment.Callbacks {
 
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
@@ -309,5 +311,14 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 						Toast.LENGTH_SHORT).show();
 			}
 		}
+	}
+
+	@Override
+	public boolean OnBookSelected(String bookId) {
+		Intent detailIntent = new Intent(this, BookViewActivity.class);
+		detailIntent.putExtra("bookId", bookId);
+		startActivity(detailIntent);
+		
+		return true;
 	}
 }

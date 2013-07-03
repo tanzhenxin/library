@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
@@ -30,11 +29,10 @@ import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.ui.BookViewActivity;
 import com.gtcc.library.ui.MainActivity;
-import com.gtcc.library.util.AsyncImageLoader.ImageCallback;
 import com.gtcc.library.util.ImageCache.ImageCacheParams;
-import com.gtcc.library.util.AsyncImageLoader;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.ImageWorker;
+import com.gtcc.library.util.Utils;
 
 /**
  * A dummy fragment representing a section of the app, but that simply
@@ -48,10 +46,23 @@ public class UserBookListFragment extends ListFragment implements
 	private int section;
 
 	private UserBookListAdapter mAdapter;
-	private ImageWorker mImageFetcher;
+	private ImageFetcher mImageFetcher;
 	
 	private int mImageWidth;
 	private int mImageHeight;
+	
+    public interface Callbacks {
+        public boolean OnBookSelected(String bookId);
+    }
+
+    private static Callbacks sDummyCallbacks = new Callbacks() {
+        @Override
+        public boolean OnBookSelected(String bookId) {
+            return true;
+        }
+    };
+
+    private Callbacks mCallbacks = sDummyCallbacks;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +80,6 @@ public class UserBookListFragment extends ListFragment implements
 		
         // The ImageFetcher takes care of loading images into our ImageView children asynchronously
         mImageFetcher = new ImageFetcher(getActivity(), mImageWidth, mImageHeight);
-        mImageFetcher.setLoadingImage(R.drawable.book);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
 	}
 
@@ -109,15 +119,9 @@ public class UserBookListFragment extends ListFragment implements
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-
 		final Cursor cursor = (Cursor) mAdapter.getItem(position);
 		String bookId = cursor.getString(BookQuery.BOOK_ID);
-		Uri uri = Books.buildBookUri(bookId);
-		
-		Intent detailIntent = new Intent(getActivity(), BookViewActivity.class);
-		detailIntent.putExtra("uri", bookId);
-		startActivity(detailIntent);
+		mCallbacks.OnBookSelected(bookId);
 	}
 	
     @Override
@@ -144,6 +148,11 @@ public class UserBookListFragment extends ListFragment implements
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        if (!(activity instanceof Callbacks)) {
+            throw new ClassCastException("Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) activity;
         getActivity().getContentResolver().registerContentObserver(
                 Users.CONTENT_URI, true, mObserver);
     }
@@ -151,6 +160,7 @@ public class UserBookListFragment extends ListFragment implements
     @Override
     public void onDetach() {
         super.onDetach();
+        mCallbacks = sDummyCallbacks;
         getActivity().getContentResolver().unregisterContentObserver(mObserver);
     }
 	
@@ -232,6 +242,7 @@ public class UserBookListFragment extends ListFragment implements
 
 			String imgUrl = cursor.getString(UserBookListFragment.BookQuery.BOOK_IMAGE_URL);
 			mImageFetcher.loadImage(imgUrl, viewHolder.image);
+//			mImageFetcher.loadImage(imgUrl, viewHolder.image, R.drawable.book);
 		}
 
 		@Override
