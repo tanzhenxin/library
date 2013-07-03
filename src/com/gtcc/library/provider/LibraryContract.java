@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
 
 public final class LibraryContract {
 	public final static String CONTENT_AUTHORITY = "com.gtcc.library";
-	private final static Uri BASE_CONTENT_URI = Uri.parse("Content://" + CONTENT_AUTHORITY);
+	private final static Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 	
 	private LibraryContract() {
 		
@@ -20,8 +20,9 @@ public final class LibraryContract {
 	
 	interface BookColumns {
 		String BOOK_ID = "book_id";
-		String BOOK_NAME = "book_name";
+		String BOOK_TITLE = "book_title";
 		String BOOK_AUTHOR = "book_author";
+		String BOOK_SUMMARY = "book_summary";
 		String BOOK_IMAGE_URL = "book_image_url";
 		String BOOK_CATEGORY = "book_category";
 		String BOOK_OWNER = "book_owner";
@@ -41,7 +42,7 @@ public final class LibraryContract {
 		public static final String CONTENT_ITEM_TYPE = 
 				"vnd.android.cursor.item/vnd.library.user";
 		public static final String DEFAULT_SORT_ORDER = 
-				"user_name NOCASE DESC";
+				"users.user_id asc";
 		
 		public static final Uri buildUserUri(String userId) {
 			return CONTENT_URI.buildUpon().appendPath(userId).build();
@@ -71,7 +72,7 @@ public final class LibraryContract {
 		public static final String CONTENT_ITEM_TYPE =
 				"vnd.android.cursor.item/vnd.library.book";
 		public static final String DEFAULT_SORT_ORDER = 
-				" book_name NOCASE DESC";
+				" books.book_id asc";
 		
 		public static final String CATEGORY_TECHNICAL = "technical";
 		public static final String CATEGORY_SELF = "self";

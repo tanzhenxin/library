@@ -15,6 +15,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.provider.BaseColumns;
 
 public class LibraryProvider extends ContentProvider {
 	
@@ -131,6 +132,7 @@ public class LibraryProvider extends ContentProvider {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
+					.mapToTable(BaseColumns._ID, Tables.USER_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
 					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_READING);
@@ -139,6 +141,7 @@ public class LibraryProvider extends ContentProvider {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
+					.mapToTable(BaseColumns._ID, Tables.USER_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
 					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_READ);
@@ -147,6 +150,7 @@ public class LibraryProvider extends ContentProvider {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
+					.mapToTable(BaseColumns._ID, Tables.USER_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
 					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_WISH);
@@ -155,6 +159,7 @@ public class LibraryProvider extends ContentProvider {
 			final String userId = Users.getUserId(uri);
 			return queryBuilder
 					.table(Tables.USER_BOOKS_JOIN_BOOKS)
+					.mapToTable(BaseColumns._ID, Tables.USER_BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.USER_BOOKS)
 					.where(UserBooks.USER_ID + "=?", userId)
 					.where(UserBooks.USE_TYPE + "=?", UserBooks.TYPE_DONATE);

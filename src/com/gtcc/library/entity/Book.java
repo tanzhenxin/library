@@ -8,46 +8,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 public class Book implements Serializable, Comparable<Book> {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static final String BOOK = "book";
 	public static final String MOVIE = "movie";
 	public static final String MUSIC = "music";
 	
-	public static List<Book> getSubjects(String json) {
-		List<Book> books = new ArrayList<Book>();
-		JSONObject jObj;
-		try {
-			jObj = new JSONObject(json);
-			
-			JSONArray jArray = jObj.getJSONArray("collections");
-			for (int i = 0; i < jArray.length(); ++i) {
-				Book subject = new Book();
-				
-				JSONObject oneObject = jArray.getJSONObject(i);
-				subject.status = oneObject.getString("status");
-				
-				JSONObject bookObj = oneObject.getJSONObject("book");
-				subject.title = bookObj.getString("title");
-				subject.description = bookObj.getString("author");
-				subject.summary = bookObj.getString("summary");
-				subject.rating = (float) bookObj.getJSONObject("rating").getDouble("average");
-				subject.imgUrl = bookObj.getString("image").replace("mpic", "lpic");
-				
-				books.add(subject);
-			}
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return books;
-	}
-
 	public String getCollectionUrl() {
 		return collectionUrl;
 	}

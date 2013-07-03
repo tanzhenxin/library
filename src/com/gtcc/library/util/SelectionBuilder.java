@@ -3,6 +3,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,7 +128,7 @@ public class SelectionBuilder {
             String having, String orderBy, String limit) {
         assertTable();
         if (columns != null) mapColumns(columns);
-        LogUtils.LOGV(TAG, "query(columns=" + Arrays.toString(columns) + ") " + this);
+        Log.v(TAG, "query(columns=" + Arrays.toString(columns) + ") " + this);
         return db.query(mTable, columns, getSelection(), getSelectionArgs(), groupBy, having,
                 orderBy, limit);
     }

@@ -13,7 +13,7 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 	
 	private final static String DATABASE_NAME = "library.db";
 	
-	private final static int DATABASE_VERSION = 1;
+	private final static int DATABASE_VERSION = 4;
 
 	private static final String TAG = "LibraryProvider";
 	
@@ -43,6 +43,7 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.w(TAG, "Creating Users table");
         db.execSQL("CREATE TABLE " + Tables.USERS + " ("
                 + Users._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + Users.USER_ID + " TEXT,"
@@ -50,24 +51,28 @@ public class LibraryDatabase extends SQLiteOpenHelper {
                 + Users.USER_IMAGE_URL + " TEXT,"
                 + "UNIQUE (" + Users.USER_ID + ") ON CONFLICT REPLACE)");
         
+        Log.w(TAG, "Creating Books table");
         db.execSQL("CREATE TABLE " + Tables.BOOKS + " ("
                 + Books._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + Books.BOOK_ID + " TEXT NOT NULL,"
-                + Books.BOOK_NAME + " TEXT NOT NULL,"
+                + Books.BOOK_TITLE + " TEXT NOT NULL,"
                 + Books.BOOK_AUTHOR + " TEXT NOT NULL,"
-                + Books.BOOK_CATEGORY + " TEXT NOT NULL,"
+                + Books.BOOK_SUMMARY + " TEXT NOT NULL,"
+                + Books.BOOK_CATEGORY + " TEXT,"
                 + Books.BOOK_IMAGE_URL + " TEXT,"
                 + Books.BOOK_OWNER + " TEXT,"
                 + Books.BOOK_USER + " TEXT,"
-                + Books.DUE_DATE + " INTEGER NOT NULL,"
+                + Books.DUE_DATE + " INTEGER,"
                 + "UNIQUE (" + Books.BOOK_ID + ") ON CONFLICT REPLACE)");
         
+        Log.w(TAG, "Creating UserBooks table");
         db.execSQL("CREATE TABLE " + Tables.USER_BOOKS + " ("
         		+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
         		+ UserBooks.USER_ID + " TEXT NOT NULL,"
         		+ UserBooks.BOOK_ID + " TEXT NOT NULL,"
         		+ UserBooks.USE_TYPE + " TEXT NOT NULL,"
-        		+ ")");
+        		+ "UNIQUE (" + UserBooks.USER_ID + "," + UserBooks.BOOK_ID + ") ON CONFLICT REPLACE)");
+        Log.w(TAG, "Finish creating tables");
 	}
 
 	@Override
