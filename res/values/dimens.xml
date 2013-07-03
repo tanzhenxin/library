@@ -9,4 +9,7 @@
     <dimen name="shadow_width">15dp</dimen>
 
     <integer name="num_cols">1</integer>
+    
+    <dimen name="image_width">60dp</dimen>
+    <dimen name="image_height">80dp</dimen>
 </resources>
