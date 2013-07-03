@@ -1,5 +1,7 @@
 package com.gtcc.library.ui.user;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -8,13 +10,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.gtcc.library.R;
+import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.oauth2.DefaultConfigs;
 import com.gtcc.library.oauth2.DoubanException;
 import com.gtcc.library.oauth2.OAuth2DoubanProvider;
 import com.gtcc.library.oauth2.RequestGrantScope;
 import com.gtcc.library.ui.MainActivity;
+import com.gtcc.library.util.HttpManager;
+import com.gtcc.library.util.LogUtils;
 
 public class UserLoginActivity extends Activity {
+	private static final String TAG = LogUtils.makeLogTag(UserLoginActivity.class);
 	
 	private WebView webview;
 	
@@ -22,6 +28,7 @@ public class UserLoginActivity extends Activity {
 	private OAuth2DoubanProvider provider;
 	
 	private String accessToken;
+	private UserInfo userInfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +82,14 @@ public class UserLoginActivity extends Activity {
 			String accessToken = null;
 			try {
 				accessToken = provider.tradeAccessTokenWithCode(params[0]);
+				
+				HttpManager httpManager = new HttpManager(accessToken);
+				userInfo = httpManager.getUserInfo();
+				
 			} catch (DoubanException e1) {
-				e1.printStackTrace();
+				LogUtils.LOGE(TAG, "OAuth2 login failed.");
+			} catch (IOException e2) {
+				LogUtils.LOGE(TAG, "OAuth2 login failed.");
 			}
 			
 			return accessToken;
@@ -88,6 +101,7 @@ public class UserLoginActivity extends Activity {
 			
 			Intent intent = new Intent();
 			intent.putExtra(MainActivity.SHPREF_KEY_ACCESS_TOKEN, result);
+			intent.putExtra(MainActivity.SHPREF_KEY_USER_ID, userInfo);
 			setResult(Activity.RESULT_OK, intent);
 			finish();
 		}

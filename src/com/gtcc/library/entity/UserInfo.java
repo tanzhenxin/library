@@ -1,9 +1,11 @@
 package com.gtcc.library.entity;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserInfo {
+public class UserInfo implements Serializable {
 
 	private String uid;
 	private String userName;

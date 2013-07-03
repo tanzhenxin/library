@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 	public static final String SHPREF_KEY_ACCESS_TOKEN = "Access_Token";
 	public static final String SHPREF_KEY_USER_ID = "User_Id";
 	private String accessToken;
-	private String currentUserId;
+	private UserInfo userInfo;
 
 	private int REQUEST_LOGIN = 1;
 
@@ -132,6 +132,9 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 				Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
 				editor.putString(SHPREF_KEY_ACCESS_TOKEN, accessToken);
 				editor.commit();
+				
+				userInfo = (UserInfo) data.getExtras().getSerializable(SHPREF_KEY_USER_ID);
+				storeUserInfo(userInfo);
 
 				new LoadBooksAsyncTask().execute();
 
@@ -139,6 +142,20 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 				break;
 			}
 		}
+	}
+	
+	private void storeUserInfo(UserInfo userInfo) {
+		String currentUserId = userInfo.getUserId();
+
+		Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+		editor.putString(SHPREF_KEY_USER_ID, currentUserId);
+		editor.commit();
+
+		ContentValues values = new ContentValues();
+		values.put(Users.USER_ID, userInfo.getUserId());
+		values.put(Users.USER_NAME, userInfo.getUserName());
+		values.put(Users.USER_IMAGE_URL, userInfo.getUserImageUrl());
+		getContentResolver().insert(Users.CONTENT_URI, values);
 	}
 
 	public void showPage(int position) {
@@ -170,11 +187,12 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 	}
 
 	public String getCurrentUserId() {
+		String currentUserId = userInfo.getUserId();
 		if (currentUserId == null) {
 			currentUserId = getPreferences(Context.MODE_PRIVATE).getString(
 					SHPREF_KEY_USER_ID, null);
 		}
-		return currentUserId == null ? "" : currentUserId;
+		return currentUserId == null ? "0" : currentUserId;
 	}
 
 	private Boolean hasAccessToken() {
@@ -245,14 +263,8 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 			try {
 				HttpManager httpManager = new HttpManager(getAccessToken());
 
-				String uid = getCurrentUserId();
-				if (uid == null || uid.isEmpty()) {
-					UserInfo userInfo = httpManager.getUserInfo();
-					storeUserInfo(userInfo);
-					
-					uid = getCurrentUserId();
-				}
-
+				String uid = userInfo.getUserId();
+				
 				BookCollection bookCollection = new BookCollection();
 				while (bookCollection.hasMoreBooks()) {
 					List<Book> books = bookCollection.getBooks(httpManager,	uid);
@@ -264,20 +276,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 				return false;
 			}
 			return true;
-		}
-
-		private void storeUserInfo(UserInfo userInfo) {
-			currentUserId = userInfo.getUserId();
-
-			Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-			editor.putString(SHPREF_KEY_USER_ID, currentUserId);
-			editor.commit();
-
-			ContentValues values = new ContentValues();
-			values.put(Users.USER_ID, userInfo.getUserId());
-			values.put(Users.USER_NAME, userInfo.getUserName());
-			values.put(Users.USER_IMAGE_URL, userInfo.getUserImageUrl());
-			getContentResolver().insert(Users.CONTENT_URI, values);
 		}
 
 		private void storeBooks(String uid, List<Book> books) {

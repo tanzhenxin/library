@@ -1,5 +1,7 @@
 package com.gtcc.library.ui.user;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -138,11 +140,26 @@ public class UserBookListFragment extends ListFragment implements
         super.onDestroy();
         mImageFetcher.closeCache();
     }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        getActivity().getContentResolver().registerContentObserver(
+                Users.CONTENT_URI, true, mObserver);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().getContentResolver().unregisterContentObserver(mObserver);
+    }
 	
+	@SuppressLint("NewApi")
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
 		MainActivity activity = (MainActivity) getActivity();
-		Uri uri = Users.buildUserBooksUri(activity.getCurrentUserId(), getStatus());
+		String userId = activity.getCurrentUserId();
+		Uri uri = Users.buildUserBooksUri(userId, getStatus());
 		return new CursorLoader(
 				getActivity(), 
 				uri, 
@@ -177,19 +194,19 @@ public class UserBookListFragment extends ListFragment implements
 		}
 	}
 	
-//    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
-//        @Override
-//        public void onChange(boolean selfChange) {
-//            if (getActivity() == null) {
-//                return;
-//            }
-//
-//            Loader<Cursor> loader = getLoaderManager().getLoader(mSessionQueryToken);
-//            if (loader != null) {
-//                loader.forceLoad();
-//            }
-//        }
-//    };
+    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            if (getActivity() == null) {
+                return;
+            }
+
+            Loader<Cursor> loader = getLoaderManager().getLoader(0);
+            if (loader != null) {
+                loader.forceLoad();
+            }
+        }
+    };
 	
 	public class UserBookListAdapter extends CursorAdapter {
 		private LayoutInflater mInflater;
