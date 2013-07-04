@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/plus_one_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:gravity="center"
+    android:text="@string/plus_one"
+    android:drawableLeft="@drawable/ic_menu_rating_good"
+    android:background="@drawable/btn_action_bar_bg"
+    android:clickable="true" />

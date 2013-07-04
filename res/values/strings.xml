@@ -21,4 +21,6 @@
 	<string name="book_detail">Book detail</string>
 	<string name="load_failed">Load failed!</string>
 	<string name="no_network_connection_toast">No network connection</string>
+	
+	<string name="plus_one">+1</string>
 </resources>
