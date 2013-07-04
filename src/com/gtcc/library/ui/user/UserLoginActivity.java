@@ -15,7 +15,7 @@ import com.gtcc.library.oauth2.DefaultConfigs;
 import com.gtcc.library.oauth2.DoubanException;
 import com.gtcc.library.oauth2.OAuth2DoubanProvider;
 import com.gtcc.library.oauth2.RequestGrantScope;
-import com.gtcc.library.ui.MainActivity;
+import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
 
@@ -100,8 +100,8 @@ public class UserLoginActivity extends Activity {
 			super.onPostExecute(result);
 			
 			Intent intent = new Intent();
-			intent.putExtra(MainActivity.SHPREF_KEY_ACCESS_TOKEN, result);
-			intent.putExtra(MainActivity.SHPREF_KEY_USER_ID, userInfo);
+			intent.putExtra(HomeActivity.SHPREF_KEY_ACCESS_TOKEN, result);
+			intent.putExtra(HomeActivity.SHPREF_KEY_USER_ID, userInfo);
 			setResult(Activity.RESULT_OK, intent);
 			finish();
 		}

@@ -32,7 +32,7 @@ import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.gtcc.library.util.HttpManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class MainActivity extends BaseActivity implements 
+public class HomeActivity extends BaseActivity implements 
 	ActionBar.TabListener, UserBookListFragment.Callbacks {
 
 	public static final int PAGE_USER = 0;
@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity implements
 
 	private int mCurrentPage = -1;
 
-	public MainActivity() {
+	public HomeActivity() {
 		super(R.string.app_name);
 	}
 
@@ -307,7 +307,7 @@ public class MainActivity extends BaseActivity implements
 				return;
 
 			if (!result) {
-				Toast.makeText(MainActivity.this, R.string.load_failed,
+				Toast.makeText(HomeActivity.this, R.string.load_failed,
 						Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -315,8 +315,8 @@ public class MainActivity extends BaseActivity implements
 
 	@Override
 	public boolean OnBookSelected(String bookId) {
-		Intent detailIntent = new Intent(this, BookViewActivity.class);
-		detailIntent.putExtra("bookId", bookId);
+        Uri sessionUri = Books.buildBookUri(bookId);
+        Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
 		startActivity(detailIntent);
 		
 		return true;

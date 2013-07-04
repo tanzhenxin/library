@@ -27,8 +27,8 @@ import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
-import com.gtcc.library.ui.BookViewActivity;
-import com.gtcc.library.ui.MainActivity;
+import com.gtcc.library.ui.BookDetailFragment;
+import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.ImageCache.ImageCacheParams;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.ImageWorker;
@@ -167,7 +167,7 @@ public class UserBookListFragment extends ListFragment implements
 	@SuppressLint("NewApi")
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-		MainActivity activity = (MainActivity) getActivity();
+		HomeActivity activity = (HomeActivity) getActivity();
 		String userId = activity.getCurrentUserId();
 		Uri uri = Users.buildUserBooksUri(userId, getStatus());
 		return new CursorLoader(

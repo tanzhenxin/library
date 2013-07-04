@@ -19,6 +19,7 @@
 	<string name="action_search">搜索</string>
 	
 	<string name="book_info">书籍</string>
+	<string name="book_detail">图书详情</string>
 	<string name="load_failed">加载数据失败</string>
 	<string name="no_network_connection_toast">没有网络连接</string>
 </resources>

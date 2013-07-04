@@ -41,13 +41,14 @@ public class LibraryFragment extends SherlockFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_main_dummy,
-				container, false);
-		TextView dummyTextView = (TextView) rootView
-				.findViewById(R.id.section_label);
-		dummyTextView.setText(Integer.toString(getArguments().getInt(
-				ARG_SECTION_NUMBER)));
-		return rootView;
+//		View rootView = inflater.inflate(R.layout.fragment_main_dummy,
+//				container, false);
+//		TextView dummyTextView = (TextView) rootView
+//				.findViewById(R.id.section_label);
+//		dummyTextView.setText(Integer.toString(getArguments().getInt(
+//				ARG_SECTION_NUMBER)));
+//		return rootView;
+		return null;
 	}
 
 	@Override

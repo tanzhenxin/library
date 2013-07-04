@@ -1,31 +1,30 @@
 package com.gtcc.library.ui;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.ui.user.UserBookListFragment;
-import com.gtcc.library.util.AsyncImageLoader;
-import com.gtcc.library.util.AsyncImageLoader.ImageCallback;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.Utils;
 
-public class BookViewActivity extends FragmentActivity implements
+public class BookDetailFragment extends SherlockFragment implements
 	LoaderManager.LoaderCallbacks<Cursor> {
+	private ViewGroup mRootView;
 	private TextView mTitleView;
 	private TextView mAuthorView;
 	private TextView mSummaryView;
@@ -34,7 +33,7 @@ public class BookViewActivity extends FragmentActivity implements
 	private ProgressDialog mDialog;
 	private TextView mBookStatus;
 	
-	private String mBookId;
+	private Uri mBookUri;
 	
 	private ImageFetcher mImageFetcher;
 
@@ -42,62 +41,52 @@ public class BookViewActivity extends FragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.book_detail);
-		Bundle extras = getIntent().getExtras();
-		mBookId = extras != null ? extras.getString("bookId")
-				: null;
-		if (mBookId == null) 
+        final Intent intent = BaseActivity.fragmentArgumentsToIntent(getArguments());
+        mBookUri = intent.getData();
+        
+		if (mBookUri == null) 
 			return;
 		
-        LoaderManager manager = getSupportLoaderManager();
-
-        mImageFetcher = Utils.getImageFetcher(this);
+        mImageFetcher = Utils.getImageFetcher(getActivity());
         mImageFetcher.setImageFadeIn(true);
         
-        getSupportLoaderManager().initLoader(0, null, this);
-
-		mTitleView = (TextView) findViewById(R.id.book_title);
-		mAuthorView = (TextView) findViewById(R.id.book_description);
-		mSummaryView = (TextView) findViewById(R.id.book_summary);
-		mImageView = (ImageView) findViewById(R.id.book_img);
-		mRatingBar = (RatingBar) findViewById(R.id.ratingbar);
-		mBookStatus = (TextView) findViewById(R.id.book_status);
+        setHasOptionsMenu(true);
+        
+        getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-		if (mDialog != null) {
-			mDialog.dismiss();
-		}
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		mRootView = (ViewGroup) inflater.inflate(R.layout.fragment_book_detail, null);
+		
+		mTitleView = (TextView) mRootView.findViewById(R.id.book_title);
+		mAuthorView = (TextView) mRootView.findViewById(R.id.book_description);
+		mSummaryView = (TextView) mRootView.findViewById(R.id.book_summary);
+		mImageView = (ImageView) mRootView.findViewById(R.id.book_img);
+		mRatingBar = (RatingBar) mRootView.findViewById(R.id.ratingbar);
+		mBookStatus = (TextView) mRootView.findViewById(R.id.book_status);
+		
+		return mRootView;
 	}
+	
+    @Override
+    public void onPause() {
+        super.onPause();
+        mImageFetcher.flushCache();
+    }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 1 && resultCode == 1) {
-			Bundle extras = data.getExtras();
-			String status = extras != null ? (String) extras
-					.getSerializable("status") : null;
-			String statusDesc = extras != null ? (String) extras
-					.getSerializable("statusDesc") : null;
-			Float rating = extras != null ? (Float) extras
-					.getSerializable("rating") : null;
-
-			String tags = extras != null ? (String) extras
-					.getSerializable("tags") : null;
-
-			mBookStatus.setText(statusDesc);
-			mRatingBar.setRating(rating);
-		}
-	}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mImageFetcher.closeCache();
+    }
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		Uri uri = Books.buildBookUri(mBookId);
 		return new CursorLoader(
-				this, 
-				uri, 
+				getActivity(), 
+				mBookUri, 
 				BookQuery.PROJECTION, 
 				null, 
 				null, 

@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.gtcc.library.R;
-import com.gtcc.library.ui.MainActivity;
+import com.gtcc.library.ui.HomeActivity;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -18,7 +18,7 @@ public class LibraryPagerAdapter extends FragmentPagerAdapter {
 	
 	private final Resources resources;
 
-	public LibraryPagerAdapter(final MainActivity activity) {
+	public LibraryPagerAdapter(final HomeActivity activity) {
 		super(activity.getSupportFragmentManager());
 		
 		resources = activity.getResources();

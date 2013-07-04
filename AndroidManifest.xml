@@ -17,7 +17,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Library" >
-
         <provider
             android:name="com.gtcc.library.provider.LibraryProvider"
             android:authorities="com.gtcc.library"
@@ -26,7 +25,7 @@
         </provider>
 
         <activity
-            android:name="com.gtcc.library.ui.MainActivity"
+            android:name="com.gtcc.library.ui.HomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,8 +45,15 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.gtcc.library.ui.BookViewActivity"
-            android:label="@string/app_name" >
+            android:name="com.gtcc.library.ui.BookDetailActivity"
+            android:label="@string/book_detail" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.library.book" />
+            </intent-filter>
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
         </activity>
     </application>
 

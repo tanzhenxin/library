@@ -33,7 +33,7 @@ public class MenuListFragment extends ListFragment {
 		if (getActivity() == null)
 			return;
 		
-		MainActivity activity = (MainActivity) getActivity();
+		HomeActivity activity = (HomeActivity) getActivity();
 		activity.showPage(position);
 	}
 
