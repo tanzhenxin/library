@@ -73,38 +73,38 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.book_detail_menu, menu);
-
-		final MenuItem item = menu.findItem(R.id.menu_book_rating);
-		item.getActionView().setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onOptionsItemSelected(item);
-			}
-		});
+//		inflater.inflate(R.menu.book_detail_menu, menu);
+//
+//		final MenuItem item = menu.findItem(R.id.menu_book_rating);
+//		item.getActionView().setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				onOptionsItemSelected(item);
+//			}
+//		});
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
-		if (item.getItemId() == R.id.menu_book_rating) {
-			View view = item.getActionView();
-			
-			final TextView plusOne = (TextView) view.findViewById(R.id.plus_one_text);
-			plusOne.startAnimation(mApplaudAnimation);
-			
-			new Handler().postDelayed(new Runnable() {
-				public void run() {
-//					Drawable icon = item.getIcon();
-//					ColorFilter filter = new LightingColorFilter( Color.RED, Color.RED ); 
-//					icon.setColorFilter(filter);
-					
-					plusOne.setText("1");
-				}
-			}, 1000);
-			return true;
-		}
+//		if (item.getItemId() == R.id.menu_book_rating) {
+//			View view = item.getActionView();
+//			
+//			final TextView plusOne = (TextView) view.findViewById(R.id.plus_one_text);
+//			plusOne.startAnimation(mApplaudAnimation);
+//			
+//			new Handler().postDelayed(new Runnable() {
+//				public void run() {
+////					Drawable icon = item.getIcon();
+////					ColorFilter filter = new LightingColorFilter( Color.RED, Color.RED ); 
+////					icon.setColorFilter(filter);
+//					
+//					plusOne.setText("1");
+//				}
+//			}, 1000);
+//			return true;
+//		}
 		return super.onOptionsItemSelected(item);
 	}
 

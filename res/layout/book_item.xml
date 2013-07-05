@@ -1,58 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" >
 
-    <RelativeLayout 
+   <RelativeLayout
+        style="@style/SimpleListItem"
         android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:paddingLeft="10.0dip" 
-	    android:paddingTop="12.0dip" 
-	    android:paddingRight="10.0dip" 
-	    android:paddingBottom="12.0dip"
-	    >
+        android:layout_height="wrap_content" >
+
         <ImageView
-	        android:id="@+id/book_img"
-	        android:layout_width="60dp"
-	        android:layout_height="80dp"
-	        android:layout_alignParentTop="true"
-	        android:scaleType="fitXY" />
+            android:id="@+id/book_img"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_height"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY" />
 
-	    <TextView
-	        android:id="@+id/book_title"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="top"
-	        android:layout_marginLeft="12dp"
-	        android:layout_toRightOf="@+id/book_img"
-	        android:textAppearance="?android:attr/textAppearanceMedium" />
-	
-	    <TextView
-	        android:id="@+id/book_author"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignLeft="@+id/book_title"
-	        android:layout_below="@+id/book_title"
-	        android:layout_marginTop="4dp"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
-	    
-	 	<LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_alignLeft="@id/book_title"
-	        android:layout_alignBottom="@id/book_img"
-	        android:gravity="center_vertical"
-	        android:orientation="horizontal" >
-	
-	        <TextView
-	            android:id="@+id/book_category"
-	            android:layout_width="0dp"
-	            android:layout_weight="1"
-	            android:layout_height="wrap_content"
-	            android:gravity="bottom"
-	            android:textAppearance="?android:attr/textAppearanceSmall" />
-	        
+        <TextView
+            android:id="@+id/book_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/book_img"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@id/book_img"
+            android:gravity="top"
+            style="@style/ListItemTitle" />
 
-	    </LinearLayout>
+        <TextView
+            android:id="@+id/book_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/book_title"
+            android:layout_below="@id/book_title"
+            style="@style/ListItemSubtitle" />
+
+        <LinearLayout
+            android:id="@+id/book_item_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/book_title"
+            android:layout_below="@id/book_img"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/book_item_from"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@string/book_from"
+                style="@style/TextFootNote" />
+
+            <ImageView
+                android:id="@+id/book_like"
+                android:layout_width="@dimen/image_small"
+                android:layout_height="@dimen/image_small"
+                android:src="@drawable/ic_unlike" />
+
+            <TextView
+                android:id="@+id/book_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/plus_one"
+                style="@style/TextFootNote" />
+        </LinearLayout>
     </RelativeLayout>
-</RelativeLayout>
+
+</FrameLayout>

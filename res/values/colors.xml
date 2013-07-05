@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="book_list_item_title_color">#ff2b2a28</color>
     <color name="book_list_item_author_color">#ff555351</color>
     <color name="book_list_even_item_normal_bg_color">#0d000000</color>
     <color name="book_list_odd_item_normal_bg_color">#00000000</color>
-    <color name="book_list_item_select_bg_color">#26000000</color>    
+    <color name="book_list_item_select_bg_color">#26000000</color>
     <color name="transparent">#00000000</color>
-    
     <color name="black">#000</color>
     <color name="white">#fff</color>
+    <color name="pressed_library">#CC33B5E5</color>
     
-     <color name="pressed_library">#CC33B5E5</color>
+    <color name="body_text_1">#ff000000</color>
+    <color name="body_text_2">#99000000</color>
+    <color name="body_text_disabled">#66000000</color>
+    <color name="body_text_1_inverse">#ffffffff</color>
+    <color name="body_text_2_inverse">#99ffffff</color>
+    <color name="body_text_1_positive">#ff669900</color>
+    <color name="body_text_1_negative">#ffff4444</color>
+    
+    <color name="accent_1">#ff4683ec</color>
+    
+    <color name="text_count_color_pressed">#ff3b3b3b</color>
+    <color name="text_count_color_normal">#ff696969</color>
+
 </resources>

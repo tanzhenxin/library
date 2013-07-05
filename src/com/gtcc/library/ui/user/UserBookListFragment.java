@@ -16,6 +16,9 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -47,6 +50,7 @@ public class UserBookListFragment extends ListFragment implements
 
 	private UserBookListAdapter mAdapter;
 	private ImageFetcher mImageFetcher;
+	private Animation mApplaudAnimation;
 	
 	private int mImageWidth;
 	private int mImageHeight;
@@ -109,6 +113,8 @@ public class UserBookListFragment extends ListFragment implements
 		
 		section = getArguments().getInt(ARG_SECTION_NUMBER);
 		getLoaderManager().initLoader(0, getArguments(), this);
+		mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
+				R.anim.dismiss_ani);
 		return rootView;
 	}
 
@@ -220,6 +226,7 @@ public class UserBookListFragment extends ListFragment implements
 	
 	public class UserBookListAdapter extends CursorAdapter {
 		private LayoutInflater mInflater;
+		
 
 		public UserBookListAdapter(Context context) {
 			super(context, null, false);
@@ -236,38 +243,41 @@ public class UserBookListFragment extends ListFragment implements
 			String author = cursor.getString(UserBookListFragment.BookQuery.BOOK_AUTHOR);
 			viewHolder.author.setText(author);
 			
-			viewHolder.category.setText("Technical");
-			// viewHolder.stars.setText("10");
-			// viewHolder.comments.setText("3");
-
 			String imgUrl = cursor.getString(UserBookListFragment.BookQuery.BOOK_IMAGE_URL);
 			mImageFetcher.loadImage(imgUrl, viewHolder.image);
-//			mImageFetcher.loadImage(imgUrl, viewHolder.image, R.drawable.book);
 		}
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
 			View view = mInflater.inflate(R.layout.book_item, null);
 			
-			ViewHolder viewHolder = new ViewHolder();
+			final ViewHolder viewHolder = new ViewHolder();
 			viewHolder.title = (TextView) view.findViewById(R.id.book_title);
 			viewHolder.author = (TextView) view.findViewById(R.id.book_author);
 			viewHolder.image = (ImageView) view.findViewById(R.id.book_img);
-			viewHolder.category = (TextView) view.findViewById(R.id.book_category);
-			// viewHolder.stars = (TextView) view.findViewById(R.id.book_stars);
-			// viewHolder.comments = (TextView)
-			// view.findViewById(R.id.book_comments);
-
-			// TypefaceUtils.setOcticons((TextView) view
-			// .findViewById(R.id.icon_star));
-			// TypefaceUtils.setOcticons((TextView) view
-			// .findViewById(R.id.icon_comment));
-
-			// FangzTypefaceUtils.setTypeface(viewHolder.title);
-			// FangzTypefaceUtils.setTypeface(viewHolder.author);
-			// FangzTypefaceUtils.setTypeface(viewHolder.category);
+			viewHolder.like = (ImageView) view.findViewById(R.id.book_like);
+			viewHolder.likeCount = (TextView) view.findViewById(R.id.book_like_count);
 
 			view.setTag(viewHolder);
+			
+			OnClickListener onclickListener = new OnClickListener() {
+				private boolean clicked = false;
+			    public void onClick(View v) {
+			    	if (!clicked) {
+				    	viewHolder.likeCount.setText(" 1");
+				    	viewHolder.like.setImageResource(R.drawable.ic_like);
+			    	}
+			    	else {
+				    	viewHolder.likeCount.setText("+1");
+				    	viewHolder.like.setImageResource(R.drawable.ic_unlike);
+			    	}
+			    	
+			    	viewHolder.like.startAnimation(mApplaudAnimation);
+			    	clicked = !clicked;
+			    }
+			};
+			viewHolder.like.setOnClickListener(onclickListener);
+			viewHolder.likeCount.setOnClickListener(onclickListener);
 
 			if (cursor.getPosition() % 2 != 0)
 				view.setBackgroundResource(R.drawable.book_list_item_odd_bg);
@@ -282,9 +292,8 @@ public class UserBookListFragment extends ListFragment implements
 			TextView author;
 			ImageView image;
 
-			TextView category;
-			TextView stars;
-			TextView comments;
+			ImageView like;
+			TextView likeCount;
 		}
 	}
 	

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:id="@+id/layout_books"
-	android:orientation="vertical">
+    android:id="@+id/layout_books"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-		<ListView android:scrollbarStyle="outsideInset" 
-		    android:id="@+id/android:list"
-		    android:paddingTop="5dp"
-			android:layout_width="fill_parent" 
-			android:layout_height="0dp"
-			android:cacheColorHint="#00000000" 
-			android:listSelector="@color/transparent" 
-			android:divider="#19000000" 
-			android:dividerHeight="1.0dip"
-			android:layout_weight="1.0">
-		</ListView>
+    <ListView
+        android:id="@+id/android:list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:cacheColorHint="#00000000"
+        android:divider="#19000000"
+        android:dividerHeight="1.0dip"
+        android:listSelector="@color/transparent"
+        android:paddingTop="5dp"
+        android:scrollbarStyle="outsideInset" >
+    </ListView>
 
 </LinearLayout>
