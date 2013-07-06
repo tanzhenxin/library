@@ -284,6 +284,7 @@ public class HomeActivity extends BaseActivity implements
 				values.put(Books.BOOK_ID, book.getId());
 				values.put(Books.BOOK_TITLE, book.getTitle());
 				values.put(Books.BOOK_AUTHOR, book.getAuthor());
+				values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
 				values.put(Books.BOOK_SUMMARY, book.getSummary());
 				values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
 

@@ -1,14 +1,14 @@
 package com.gtcc.library.util;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Helper for building selection clauses for {@link SQLiteDatabase}. Each
@@ -19,9 +19,9 @@ public class SelectionBuilder {
     private static final String TAG = LogUtils.makeLogTag(SelectionBuilder.class);
 
     private String mTable = null;
-    private Map<String, String> mProjectionMap = Maps.newHashMap();
+    private Map<String, String> mProjectionMap = new HashMap<String, String>();
     private StringBuilder mSelection = new StringBuilder();
-    private ArrayList<String> mSelectionArgs = Lists.newArrayList();
+    private ArrayList<String> mSelectionArgs = new ArrayList<String>();
 
     /**
      * Reset any internal state, allowing this builder to be recycled.

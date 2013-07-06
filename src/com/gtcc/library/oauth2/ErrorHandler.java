@@ -1,8 +1,7 @@
-package com.gtcc.library.util;
+package com.gtcc.library.oauth2;
 
 import org.apache.http.client.HttpResponseException;
 
-import com.gtcc.library.oauth2.DoubanException;
 
 public class ErrorHandler {
 	  

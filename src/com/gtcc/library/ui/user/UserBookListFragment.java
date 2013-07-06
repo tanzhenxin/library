@@ -76,8 +76,8 @@ public class UserBookListFragment extends ListFragment implements
 		mAdapter = new UserBookListAdapter(getActivity());
 		setListAdapter(mAdapter);
 		
-		mImageWidth = getResources().getDimensionPixelSize(R.dimen.image_width);
-		mImageHeight = getResources().getDimensionPixelSize(R.dimen.image_height);
+		mImageWidth = getResources().getDimensionPixelSize(R.dimen.list_image_width);
+		mImageHeight = getResources().getDimensionPixelSize(R.dimen.list_image_height);
 		
         ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
@@ -90,7 +90,7 @@ public class UserBookListFragment extends ListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.book_list, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_books_list, container, false);
 		
 		ListView listView = (ListView) rootView.findViewById(android.R.id.list);
 		listView.setOnScrollListener(new OnScrollListener() {
@@ -249,7 +249,7 @@ public class UserBookListFragment extends ListFragment implements
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
-			View view = mInflater.inflate(R.layout.book_item, null);
+			View view = mInflater.inflate(R.layout.list_item_book, null);
 			
 			final ViewHolder viewHolder = new ViewHolder();
 			viewHolder.title = (TextView) view.findViewById(R.id.book_title);

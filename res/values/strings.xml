@@ -6,22 +6,26 @@
     <string name="user_borrowing">Borrowing</string>
     <string name="user_borrowed">Borrowed</string>
     <string name="user_wanted">Wanted</string>
-	<string name="user_donated">Donated</string>
-	
-	<string name="user_center">User Center</string>
-	<string name="book_library">Book Library</string>
-	
-	<string name="library_technical">Technical</string>
-	<string name="library_self">Self Entertainment</string>
-	<string name="library_english">English</string>
-	<string name="library_misc">Misc</string>
-	
-	<string name="action_search">Search</string>
-	<string name="book_info">Book</string>
-	<string name="book_detail">Book detail</string>
-	<string name="load_failed">Load failed!</string>
-	<string name="no_network_connection_toast">No network connection</string>
-	
-	<string name="plus_one">+1</string>
-	<string name="book_from">From: </string>
+    <string name="user_donated">Donated</string>
+    <string name="book_reading">reading</string>
+    <string name="book_read">read</string>
+    <string name="book_wish">wish</string>
+    
+    <string name="user_center">User Center</string>
+    <string name="book_library">Book Library</string>
+    <string name="library_technical">Technical</string>
+    <string name="library_self">Self Entertainment</string>
+    <string name="library_english">English</string>
+    <string name="library_misc">Misc</string>
+    <string name="action_search">Search</string>
+    <string name="book_info">Book</string>
+    <string name="book_detail">Book Detail</string>
+    <string name="book_summary">Book Summary</string>
+    <string name="author_intro">Author Intro</string>
+    <string name="book_reviews">Book Reviews</string>
+    <string name="load_failed">Load failed!</string>
+    <string name="no_network_connection_toast">No network connection</string>
+    <string name="plus_one">+1</string>
+    <string name="book_from">From: </string>
+
 </resources>

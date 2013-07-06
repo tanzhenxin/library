@@ -15,6 +15,7 @@ import java.util.Map;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.oauth2.AccessToken;
+import com.gtcc.library.oauth2.Converters;
 import com.gtcc.library.oauth2.DefaultConfigs;
 import com.gtcc.library.oauth2.DoubanException;
 import com.gtcc.library.provider.LibraryProvider;

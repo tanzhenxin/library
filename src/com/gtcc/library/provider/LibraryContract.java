@@ -22,6 +22,7 @@ public final class LibraryContract {
 		String BOOK_ID = "book_id";
 		String BOOK_TITLE = "book_title";
 		String BOOK_AUTHOR = "book_author";
+		String BOOK_AUTHRO_INTRO = "author_intro";
 		String BOOK_SUMMARY = "book_summary";
 		String BOOK_IMAGE_URL = "book_image_url";
 		String BOOK_CATEGORY = "book_category";

@@ -13,7 +13,7 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 	
 	private final static String DATABASE_NAME = "library.db";
 	
-	private final static int DATABASE_VERSION = 4;
+	private final static int DATABASE_VERSION = 5;
 
 	private static final String TAG = "LibraryProvider";
 	
@@ -57,6 +57,7 @@ public class LibraryDatabase extends SQLiteOpenHelper {
                 + Books.BOOK_ID + " TEXT NOT NULL,"
                 + Books.BOOK_TITLE + " TEXT NOT NULL,"
                 + Books.BOOK_AUTHOR + " TEXT NOT NULL,"
+                + Books.BOOK_AUTHRO_INTRO + " TEXT NOT NULL,"
                 + Books.BOOK_SUMMARY + " TEXT NOT NULL,"
                 + Books.BOOK_CATEGORY + " TEXT,"
                 + Books.BOOK_IMAGE_URL + " TEXT,"

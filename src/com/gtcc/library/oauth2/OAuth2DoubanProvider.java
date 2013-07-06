@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
-import com.gtcc.library.util.ErrorHandler;
 import com.gtcc.library.util.HttpManager;
 
 public class OAuth2DoubanProvider {

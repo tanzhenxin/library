@@ -10,8 +10,11 @@
 
     <integer name="num_cols">1</integer>
     
-    <dimen name="image_width">60dp</dimen>
-    <dimen name="image_height">80dp</dimen>
+    <dimen name="list_image_width">60dp</dimen>
+    <dimen name="list_image_height">80dp</dimen>
+    
+    <dimen name="detail_image_width">80dp</dimen>
+    <dimen name="detail_image_height">120dp</dimen>
     
     <!-- body content -->
     <dimen name="element_spacing_normal">8dp</dimen>

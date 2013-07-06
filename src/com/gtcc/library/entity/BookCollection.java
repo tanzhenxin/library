@@ -53,7 +53,8 @@ public class BookCollection {
 				book.setUrl(bookObj.getString("url"));
 				book.setTitle(bookObj.getString("title"));
 				book.SetAuthor(bookObj.getString("author"));
-				book.setSummary(bookObj.getString("summary"));
+				book.setAuthorIntro(bookObj.getString("author_intro").replace("\n", "\n\n"));
+				book.setSummary(bookObj.getString("summary").replace("\n", "\n\n"));
 				book.setRating((float) bookObj.getJSONObject("rating").getDouble("average"));
 				book.setImgUrl(bookObj.getString("image").replace("mpic", "lpic"));
 				

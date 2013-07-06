@@ -8,6 +8,10 @@
     <string name="user_wanted">想看的</string>
 	<string name="user_donated">捐献的</string>
 	
+	<string name="book_reading">在看</string>
+	<string name="book_read">看过</string>
+	<string name="book_wish">想看</string>
+	
 	<string name="user_center">个人中心</string>
 	<string name="book_library">图书馆</string>
 	
@@ -20,6 +24,9 @@
 	
 	<string name="book_info">书籍</string>
 	<string name="book_detail">图书详情</string>
+	<string name="book_summary">摘要</string>
+	<string name="author_intro">作者</string>
+	<string name="book_reviews">评论</string>
 	<string name="load_failed">加载数据失败</string>
 	<string name="no_network_connection_toast">没有网络连接</string>
 	
