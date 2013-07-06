@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
@@ -36,8 +37,11 @@ public class BookDetailActivity extends SherlockFragmentActivity {
 					"single_pane");
 		}
 		
-		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setHomeButtonEnabled(true);
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 	}
 	
     @Override

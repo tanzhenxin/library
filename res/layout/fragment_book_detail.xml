@@ -53,7 +53,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/book_status_block"
+            android:id="@+id/book_status_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/element_spacing_normal"
@@ -70,18 +70,38 @@
                 android:text="@string/book_reading" />
 
             <Button
-                android:id="@+id/book_status_read"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/book_read" />
-
-            <Button
                 android:id="@+id/book_status_wish"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/book_wish" />
+
+            <Button
+                android:id="@+id/book_status_read"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/book_read" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/book_status_block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/element_spacing_normal"
+            android:layout_marginLeft="@dimen/content_padding_normal"
+            android:layout_marginRight="@dimen/content_padding_normal"
+            android:layout_marginTop="@dimen/element_spacing_normal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/book_status_now"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/book_reading" />
+
         </LinearLayout>
 
         <LinearLayout

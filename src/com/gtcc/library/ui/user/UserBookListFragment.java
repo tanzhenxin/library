@@ -200,11 +200,9 @@ public class UserBookListFragment extends ListFragment implements
 		case 1:
 			return UserBooks.TYPE_READING;
 		case 2:
-			return UserBooks.TYPE_READ;
-		case 3:
 			return UserBooks.TYPE_WISH;
-		case 4:
-			return UserBooks.TYPE_DONATE;
+		case 3:
+			return UserBooks.TYPE_READ;
 		default:
 			return "";
 		}

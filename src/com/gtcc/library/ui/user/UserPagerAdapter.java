@@ -38,8 +38,7 @@ public class UserPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// Show 3 total pages.
-		return 4;
+		return 3;
 	}
 
 	@Override
@@ -48,12 +47,10 @@ public class UserPagerAdapter extends FragmentPagerAdapter {
 		switch (position) {
 		case 0:
 			return resources.getString(R.string.user_borrowing).toUpperCase(l);
-		case 1:
-			return resources.getString(R.string.user_borrowed).toUpperCase(l);
 		case 2:
 			return resources.getString(R.string.user_wanted).toUpperCase(l);
-		case 3:
-			return resources.getString(R.string.user_donated).toUpperCase(l);
+		case 1:
+			return resources.getString(R.string.user_borrowed).toUpperCase(l);
 		}
 		return null;
 	}

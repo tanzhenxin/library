@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,14 +31,19 @@ import com.gtcc.library.util.Utils;
 public class BookDetailFragment extends SherlockFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	private ViewGroup mRootView;
+	private ViewGroup mSummaryBlock;
+	private ViewGroup mAuthorIntroBlock;
+	private ViewGroup mStatusActionBlock;
+	private ViewGroup mStatusNowBlock;
 
 	private TextView mTitleView;
 	private TextView mAuthorView;
 	private TextView mSummaryView;
 	private TextView mAuthorIntroView;
 	private ImageView mImageView;
-	private ViewGroup mSummaryBlock;
-	private ViewGroup mAuthorIntroBlock;
+	private Button mStatusReading;
+	private Button mStatusRead;
+	private Button mStatusWish;
 
 	private Uri mBookUri;
 
@@ -108,14 +118,61 @@ public class BookDetailFragment extends SherlockFragment implements
 		mSummaryView = (TextView) mRootView.findViewById(R.id.book_summary);
 		mImageView = (ImageView) mRootView.findViewById(R.id.book_img);
 		mAuthorIntroView = (TextView) mRootView.findViewById(R.id.author_intro);
-		mSummaryBlock = (ViewGroup) mRootView.findViewById(R.id.book_summary_block);
-		mAuthorIntroBlock = (ViewGroup) mRootView.findViewById(R.id.author_intro_block);
-		
-//		TypefaceUtils.setTypeface(mSummaryView);
-//		TypefaceUtils.setTypeface(mAuthorIntroView);
+		mSummaryBlock = (ViewGroup) mRootView
+				.findViewById(R.id.book_summary_block);
+		mAuthorIntroBlock = (ViewGroup) mRootView
+				.findViewById(R.id.author_intro_block);
+		mStatusActionBlock = (ViewGroup) mRootView
+				.findViewById(R.id.book_status_action);
+		mStatusNowBlock = (ViewGroup) mRootView
+				.findViewById(R.id.book_status_block);
+		mStatusReading = (Button) mRootView
+				.findViewById(R.id.book_status_reading);
+		mStatusWish = (Button) mRootView.findViewById(R.id.book_status_wish);
+		mStatusRead = (Button) mRootView.findViewById(R.id.book_status_read);
 
-//		mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
-//				R.anim.dismiss_ani);
+		// TypefaceUtils.setTypeface(mSummaryView);
+		// TypefaceUtils.setTypeface(mAuthorIntroView);
+
+		// mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
+		// R.anim.dismiss_ani);
+
+		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
+				getActivity(), R.anim.fade_out);
+		
+		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
+				getActivity(), R.anim.fade_in_slowly);
+		
+		fadeOutAnimation.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mStatusActionBlock.setVisibility(View.GONE);
+				mStatusNowBlock.setVisibility(View.VISIBLE);
+				mStatusNowBlock.startAnimation(fadeInAnimation);
+			}
+		});
+
+		OnClickListener onclickListener = new OnClickListener() {
+			public void onClick(View v) {
+				mStatusActionBlock.startAnimation(fadeOutAnimation);
+			}
+		};
+
+		mStatusReading.setOnClickListener(onclickListener);
+		mStatusWish.setOnClickListener(onclickListener);
+		mStatusRead.setOnClickListener(onclickListener);
+		
 
 		return mRootView;
 	}
@@ -151,9 +208,9 @@ public class BookDetailFragment extends SherlockFragment implements
 		mAuthorView.setText(author);
 
 		String summary = cursor.getString(BookQuery.BOOK_SUMMARY);
-		if (summary != null && !summary.isEmpty()) 
+		if (summary != null && !summary.isEmpty())
 			mSummaryView.setText(summary);
-		else 
+		else
 			mSummaryBlock.setVisibility(View.GONE);
 
 		String authorIntro = cursor.getString(BookQuery.AUTHOR_INTRO);
@@ -162,8 +219,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		else
 			mAuthorIntroBlock.setVisibility(View.GONE);
 
-		String imgUrl = cursor
-				.getString(BookQuery.BOOK_IMAGE_URL);
+		String imgUrl = cursor.getString(BookQuery.BOOK_IMAGE_URL);
 		mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
 	}
 
@@ -174,13 +230,9 @@ public class BookDetailFragment extends SherlockFragment implements
 	public interface BookQuery {
 		int _TOKEN = 0;
 
-		public final String[] PROJECTION = new String[] { 
-				Books._ID,
-				Books.BOOK_ID, 
-				Books.BOOK_TITLE, 
-				Books.BOOK_AUTHOR,
-				Books.BOOK_SUMMARY, 
-				Books.BOOK_AUTHRO_INTRO,
+		public final String[] PROJECTION = new String[] { Books._ID,
+				Books.BOOK_ID, Books.BOOK_TITLE, Books.BOOK_AUTHOR,
+				Books.BOOK_SUMMARY, Books.BOOK_AUTHRO_INTRO,
 				Books.BOOK_IMAGE_URL, };
 
 		public int _ID = 0;
