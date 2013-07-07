@@ -18,6 +18,10 @@
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_library</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Library</item>
     </style>
+    
+    <style name="Theme.library.White" parent="@style/Theme.Library">
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
 
     <style name="ActionBar.Solid.Library" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
         <item name="background">@drawable/actionbar_background</item>

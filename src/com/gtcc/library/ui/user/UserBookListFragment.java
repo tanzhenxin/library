@@ -56,12 +56,12 @@ public class UserBookListFragment extends ListFragment implements
 	private int mImageHeight;
 	
     public interface Callbacks {
-        public boolean OnBookSelected(String bookId);
+        public boolean OnBookSelected(String bookId, int section);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public boolean OnBookSelected(String bookId) {
+        public boolean OnBookSelected(String bookId, int section) {
             return true;
         }
     };
@@ -127,7 +127,7 @@ public class UserBookListFragment extends ListFragment implements
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		final Cursor cursor = (Cursor) mAdapter.getItem(position);
 		String bookId = cursor.getString(BookQuery.BOOK_ID);
-		mCallbacks.OnBookSelected(bookId);
+		mCallbacks.OnBookSelected(bookId, section);
 	}
 	
     @Override

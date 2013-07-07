@@ -12,6 +12,10 @@
 	<string name="book_read">看过</string>
 	<string name="book_wish">想看</string>
 	
+	<string name="book_reading_full">我在读这本书</string>
+    <string name="book_read_full">我读过这本书</string>
+    <string name="book_wish_full">我想读这本书</string>
+	
 	<string name="user_center">个人中心</string>
 	<string name="book_library">图书馆</string>
 	

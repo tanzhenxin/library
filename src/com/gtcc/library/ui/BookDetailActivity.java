@@ -11,6 +11,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 
 public class BookDetailActivity extends SherlockFragmentActivity {
+	
 	private Fragment mFragment;
 
 	@Override
@@ -40,8 +41,6 @@ public class BookDetailActivity extends SherlockFragmentActivity {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 	}
 	
     @Override
@@ -49,6 +48,9 @@ public class BookDetailActivity extends SherlockFragmentActivity {
         if (item.getItemId() == android.R.id.home) {
             Intent parentIntent = new Intent(this, HomeActivity.class);
             NavUtils.navigateUpTo(this, parentIntent);
+            
+            this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            
             return true;
         }
 

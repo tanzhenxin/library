@@ -14,7 +14,6 @@
         android:divider="#19000000"
         android:dividerHeight="1.0dip"
         android:listSelector="@color/transparent"
-        android:paddingTop="5dp"
         android:scrollbarStyle="outsideInset" >
     </ListView>
 

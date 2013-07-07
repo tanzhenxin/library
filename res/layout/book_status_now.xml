@@ -17,6 +17,7 @@
 
     <TextView
         android:id="@+id/book_status_text"
+        style="@style/TextBody"
         android:layout_width="0.0dip"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4.0dip"
@@ -26,7 +27,6 @@
         android:layout_weight="1.0"
         android:duplicateParentState="true"
         android:gravity="center"
-        android:text="@string/book_reading"
-        style="@style/TextBody"/>
+        android:text="@string/book_reading" />
 
 </LinearLayout>

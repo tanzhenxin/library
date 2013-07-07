@@ -10,6 +10,9 @@
     <string name="book_reading">reading</string>
     <string name="book_read">read</string>
     <string name="book_wish">wish</string>
+    <string name="book_reading_full">I\'m reading this book.</string>
+    <string name="book_read_full">I\'ve read this book.</string>
+    <string name="book_wish_full">I want to read this book.</string>
     
     <string name="user_center">User Center</string>
     <string name="book_library">Book Library</string>

@@ -62,19 +62,15 @@
             <include
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/add_to_schedule_button_height"
-                android:layout_marginBottom="@dimen/element_spacing_normal"
-                android:layout_marginLeft="-4.0dip"
-                android:layout_marginRight="-4.0dip"
-                android:layout_marginTop="@dimen/element_spacing_normal"
+                android:layout_marginLeft="-4dip"
+                android:layout_marginRight="-4dip"
                 layout="@layout/book_status_action" />
 
             <include
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/add_to_schedule_button_height"
-                android:layout_marginBottom="@dimen/element_spacing_normal"
-                android:layout_marginLeft="-4.0dip"
-                android:layout_marginRight="-4.0dip"
-                android:layout_marginTop="@dimen/element_spacing_normal"
+                android:layout_marginLeft="-4dip"
+                android:layout_marginRight="-4dip"
                 layout="@layout/book_status_now" />
 
             <LinearLayout

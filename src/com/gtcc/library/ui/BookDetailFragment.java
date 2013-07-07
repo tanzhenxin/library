@@ -25,6 +25,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.Utils;
 
@@ -44,8 +45,10 @@ public class BookDetailFragment extends SherlockFragment implements
 	private Button mStatusReading;
 	private Button mStatusRead;
 	private Button mStatusWish;
+	private TextView mBookStatusText;
 
 	private Uri mBookUri;
+	private int mSection;
 
 	private ImageFetcher mImageFetcher;
 
@@ -59,6 +62,10 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		if (mBookUri == null)
 			return;
+		
+		Bundle bundle = intent.getExtras();
+		if (bundle != null) 
+			mSection = bundle.getInt(UserBookListFragment.ARG_SECTION_NUMBER);
 
 		mImageFetcher = Utils.getImageFetcher(getActivity());
 		mImageFetcher.setImageFadeIn(true);
@@ -130,52 +137,17 @@ public class BookDetailFragment extends SherlockFragment implements
 				.findViewById(R.id.book_status_reading);
 		mStatusWish = (Button) mRootView.findViewById(R.id.book_status_wish);
 		mStatusRead = (Button) mRootView.findViewById(R.id.book_status_read);
+		mBookStatusText = (TextView) mRootView.findViewById(R.id.book_status_text);
 		
-		
+		setChangeStatusAnimation();
+		setClearStatusAnimation();
 
 		// TypefaceUtils.setTypeface(mSummaryView);
 		// TypefaceUtils.setTypeface(mAuthorIntroView);
 
 		// mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
 		// R.anim.dismiss_ani);
-
-		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_out);
 		
-		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_in_slowly);
-		
-		fadeOutAnimation.setAnimationListener(new AnimationListener() {
-			
-			@Override
-			public void onAnimationStart(Animation animation) {
-				
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-				
-			}
-			
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				mStatusActionBlock.setVisibility(View.GONE);
-				mStatusNowBlock.setVisibility(View.VISIBLE);
-				mStatusNowBlock.startAnimation(fadeInAnimation);
-			}
-		});
-
-		OnClickListener onclickListener = new OnClickListener() {
-			public void onClick(View v) {
-				mStatusActionBlock.startAnimation(fadeOutAnimation);
-			}
-		};
-
-		mStatusReading.setOnClickListener(onclickListener);
-		mStatusWish.setOnClickListener(onclickListener);
-		mStatusRead.setOnClickListener(onclickListener);
-		
-
 		return mRootView;
 	}
 
@@ -223,10 +195,108 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		String imgUrl = cursor.getString(BookQuery.BOOK_IMAGE_URL);
 		mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
+		
+		String status = getCurrentStatus();
+		if (status != null) {
+			mStatusActionBlock.setVisibility(View.GONE);
+			mStatusNowBlock.setVisibility(View.VISIBLE);
+			mBookStatusText.setText(status);
+		}
+		else {
+			mStatusActionBlock.setVisibility(View.VISIBLE);
+			mStatusNowBlock.setVisibility(View.GONE);
+		}
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
+	}
+	
+	private void setChangeStatusAnimation() {
+		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
+				getActivity(), R.anim.fade_out);
+		
+		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
+				getActivity(), R.anim.fade_in_slowly);
+		
+		fadeOutAnimation.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mStatusActionBlock.setVisibility(View.GONE);
+				mBookStatusText.setText(getCurrentStatus());
+				mStatusNowBlock.setVisibility(View.VISIBLE);
+				mStatusNowBlock.startAnimation(fadeInAnimation);
+			}
+		});
+
+		mStatusReading.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mStatusActionBlock.startAnimation(fadeOutAnimation);
+				mSection = 1;
+			}
+		});
+		mStatusWish.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mStatusActionBlock.startAnimation(fadeOutAnimation);
+				mSection = 2;
+			}
+		});
+		mStatusRead.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mStatusActionBlock.startAnimation(fadeOutAnimation);
+				mSection = 3;
+			}
+		});
+	}
+	
+	private void setClearStatusAnimation() {
+		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
+				getActivity(), R.anim.fade_out);
+		
+		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
+				getActivity(), R.anim.fade_in_slowly); 
+		
+		fadeOutAnimation.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mStatusNowBlock.setVisibility(View.GONE);
+				mStatusActionBlock.setVisibility(View.VISIBLE);
+				mStatusActionBlock.startAnimation(fadeInAnimation);
+			}
+		});
+
+		OnClickListener onclickListener = new OnClickListener() {
+			public void onClick(View v) {
+				mStatusNowBlock.startAnimation(fadeOutAnimation);
+			}
+		};
+
+		mStatusNowBlock.setOnClickListener(onclickListener);
+	}
+	
+	private String getCurrentStatus() {
+		switch (mSection) {
+		case 1:
+			return getActivity().getString(R.string.book_reading_full);
+		case 2:
+			return getActivity().getString(R.string.book_wish_full);
+		case 3:
+			return getActivity().getString(R.string.book_read_full);
+		default:
+			return null;
+		}
 	}
 
 	public interface BookQuery {

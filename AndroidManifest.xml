@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Library" >
+        android:theme="@style/Theme.library.White" >
         <provider
             android:name="com.gtcc.library.provider.LibraryProvider"
             android:authorities="com.gtcc.library"

@@ -315,9 +315,10 @@ public class HomeActivity extends BaseActivity implements
 	}
 
 	@Override
-	public boolean OnBookSelected(String bookId) {
+	public boolean OnBookSelected(String bookId, int section) {
         Uri sessionUri = Books.buildBookUri(bookId);
         Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
+        detailIntent.putExtra(UserBookListFragment.ARG_SECTION_NUMBER, section);
 		startActivity(detailIntent);
 		
 		return true;
