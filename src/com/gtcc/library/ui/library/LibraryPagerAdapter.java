@@ -26,19 +26,16 @@ public class LibraryPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
-		// getItem is called to instantiate the fragment for the given page.
-		// Return a DummySectionFragment (defined as a static inner class
-		// below) with the page number as its lone argument.
 		Fragment fragment = new LibraryFragment();
 		Bundle args = new Bundle();
-		args.putInt(LibraryFragment.ARG_SECTION_NUMBER, position + 1);
+		args.putInt(LibraryFragment.ARG_SECTION_NUMBER, position);
 		fragment.setArguments(args);
 		return fragment;
 	}
 
 	@Override
 	public int getCount() {
-		return 4;
+		return 3;
 	}
 
 	@Override
@@ -46,13 +43,11 @@ public class LibraryPagerAdapter extends FragmentPagerAdapter {
 		Locale l = Locale.getDefault();
 		switch (position) {
 		case 0:
-			return resources.getString(R.string.library_technical).toUpperCase(l);
+			return resources.getString(R.string.book_new_arrival).toUpperCase(l);
 		case 1:
-			return resources.getString(R.string.library_self).toUpperCase(l);
+			return resources.getString(R.string.book_hotest).toUpperCase(l);
 		case 2:
-			return resources.getString(R.string.library_english).toUpperCase(l);
-		case 3:
-			return resources.getString(R.string.library_misc).toUpperCase(l);
+			return resources.getString(R.string.book_category).toUpperCase(l);
 		}
 		return null;
 	}

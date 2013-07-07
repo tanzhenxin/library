@@ -8,9 +8,9 @@
     <string name="user_wanted">想看的</string>
 	<string name="user_donated">捐献的</string>
 	
-	<string name="book_reading">在看</string>
-	<string name="book_read">看过</string>
-	<string name="book_wish">想看</string>
+	<string name="book_reading">在读</string>
+	<string name="book_read">读过</string>
+	<string name="book_wish">想读</string>
 	
 	<string name="book_reading_full">我在读这本书</string>
     <string name="book_read_full">我读过这本书</string>
@@ -35,4 +35,8 @@
 	<string name="no_network_connection_toast">没有网络连接</string>
 	
 	<string name="book_from">来自: 豆瓣网</string>
+	
+	<string name="book_new_arrival">新上架</string>
+   	<string name="book_hotest">最热门</string>
+    <string name="book_category">分类浏览</string>
 </resources>

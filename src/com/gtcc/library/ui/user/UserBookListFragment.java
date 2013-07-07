@@ -30,7 +30,6 @@ import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
-import com.gtcc.library.ui.BookDetailFragment;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.ImageCache.ImageCacheParams;
 import com.gtcc.library.util.ImageFetcher;
@@ -44,7 +43,6 @@ import com.gtcc.library.util.Utils;
 public class UserBookListFragment extends ListFragment implements 
 	LoaderManager.LoaderCallbacks<Cursor> {
 	
-	public static final String ARG_SECTION_NUMBER = "section_number";
 	private static final String IMAGE_CACHE_DIR = "images";
 	private int section;
 
@@ -111,7 +109,7 @@ public class UserBookListFragment extends ListFragment implements
 			}
 		});
 		
-		section = getArguments().getInt(ARG_SECTION_NUMBER);
+		section = getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
 				R.anim.dismiss_ani);
@@ -170,7 +168,6 @@ public class UserBookListFragment extends ListFragment implements
         getActivity().getContentResolver().unregisterContentObserver(mObserver);
     }
 	
-	@SuppressLint("NewApi")
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
 		HomeActivity activity = (HomeActivity) getActivity();
@@ -197,14 +194,14 @@ public class UserBookListFragment extends ListFragment implements
 	
 	private String getStatus() {
 		switch (section) {
-		case 1:
+		case HomeActivity.USER_READING:
 			return UserBooks.TYPE_READING;
-		case 2:
+		case HomeActivity.USER_WISH:
 			return UserBooks.TYPE_WISH;
-		case 3:
+		case HomeActivity.USER_READ:
 			return UserBooks.TYPE_READ;
 		default:
-			return "";
+			throw new UnsupportedOperationException("Unknown section: " + section);
 		}
 	}
 	

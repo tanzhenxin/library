@@ -30,5 +30,9 @@
     <string name="no_network_connection_toast">No network connection</string>
     <string name="plus_one">+1</string>
     <string name="book_from">From: </string>
+    
+    <string name="book_new_arrival">New Arrival</string>
+    <string name="book_hotest">The Hotest</string>
+    <string name="book_category">Browse by category</string>
 
 </resources>

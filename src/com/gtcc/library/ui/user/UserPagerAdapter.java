@@ -31,7 +31,7 @@ public class UserPagerAdapter extends FragmentPagerAdapter {
 		// below) with the page number as its lone argument.
 		Fragment fragment = new UserBookListFragment();
 		Bundle args = new Bundle();
-		args.putInt(UserBookListFragment.ARG_SECTION_NUMBER, position + 1);
+		args.putInt(HomeActivity.ARG_SECTION_NUMBER, position);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -45,12 +45,12 @@ public class UserPagerAdapter extends FragmentPagerAdapter {
 	public CharSequence getPageTitle(int position) {
 		Locale l = Locale.getDefault();
 		switch (position) {
-		case 0:
-			return resources.getString(R.string.user_borrowing).toUpperCase(l);
-		case 2:
-			return resources.getString(R.string.user_wanted).toUpperCase(l);
-		case 1:
-			return resources.getString(R.string.user_borrowed).toUpperCase(l);
+		case HomeActivity.USER_READING:
+			return resources.getString(R.string.book_reading).toUpperCase(l);
+		case HomeActivity.USER_WISH:
+			return resources.getString(R.string.book_wish).toUpperCase(l);
+		case HomeActivity.USER_READ:
+			return resources.getString(R.string.book_read).toUpperCase(l);
 		}
 		return null;
 	}

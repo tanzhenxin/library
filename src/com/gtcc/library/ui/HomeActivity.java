@@ -38,6 +38,12 @@ public class HomeActivity extends BaseActivity implements
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
 	public static final int PAGE_SETTINGS = 2;
+	
+	public static final int USER_READING = 0;
+	public static final int USER_WISH = 1;
+	public static final int USER_READ = 2;
+	
+	public static final String ARG_SECTION_NUMBER = "section_number";
 
 	public static final String SHPREF_KEY_ACCESS_TOKEN = "Access_Token";
 	public static final String SHPREF_KEY_USER_ID = "User_Id";
@@ -318,7 +324,7 @@ public class HomeActivity extends BaseActivity implements
 	public boolean OnBookSelected(String bookId, int section) {
         Uri sessionUri = Books.buildBookUri(bookId);
         Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
-        detailIntent.putExtra(UserBookListFragment.ARG_SECTION_NUMBER, section);
+        detailIntent.putExtra(ARG_SECTION_NUMBER, section);
 		startActivity(detailIntent);
 		
 		return true;

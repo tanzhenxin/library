@@ -25,7 +25,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.Utils;
 
@@ -65,7 +64,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		
 		Bundle bundle = intent.getExtras();
 		if (bundle != null) 
-			mSection = bundle.getInt(UserBookListFragment.ARG_SECTION_NUMBER);
+			mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
 
 		mImageFetcher = Utils.getImageFetcher(getActivity());
 		mImageFetcher.setImageFadeIn(true);
@@ -238,19 +237,19 @@ public class BookDetailFragment extends SherlockFragment implements
 		mStatusReading.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = 1;
+				mSection = HomeActivity.USER_READING;
 			}
 		});
 		mStatusWish.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = 2;
+				mSection = HomeActivity.USER_WISH;
 			}
 		});
 		mStatusRead.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = 3;
+				mSection = HomeActivity.USER_READ;
 			}
 		});
 	}
@@ -288,11 +287,11 @@ public class BookDetailFragment extends SherlockFragment implements
 	
 	private String getCurrentStatus() {
 		switch (mSection) {
-		case 1:
+		case HomeActivity.USER_READING:
 			return getActivity().getString(R.string.book_reading_full);
-		case 2:
+		case HomeActivity.USER_WISH:
 			return getActivity().getString(R.string.book_wish_full);
-		case 3:
+		case HomeActivity.USER_READ:
 			return getActivity().getString(R.string.book_read_full);
 		default:
 			return null;
