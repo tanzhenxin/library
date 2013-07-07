@@ -125,11 +125,13 @@ public class BookDetailFragment extends SherlockFragment implements
 		mStatusActionBlock = (ViewGroup) mRootView
 				.findViewById(R.id.book_status_action);
 		mStatusNowBlock = (ViewGroup) mRootView
-				.findViewById(R.id.book_status_block);
+				.findViewById(R.id.book_status_now);
 		mStatusReading = (Button) mRootView
 				.findViewById(R.id.book_status_reading);
 		mStatusWish = (Button) mRootView.findViewById(R.id.book_status_wish);
 		mStatusRead = (Button) mRootView.findViewById(R.id.book_status_read);
+		
+		
 
 		// TypefaceUtils.setTypeface(mSummaryView);
 		// TypefaceUtils.setTypeface(mAuthorIntroView);

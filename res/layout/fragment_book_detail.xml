@@ -14,7 +14,7 @@
             android:id="@+id/header_book"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/book_list_even_item_normal_bg_color"
+            android:background="@drawable/transparent_background_pattern"
             android:paddingBottom="@dimen/content_padding_normal"
             android:paddingLeft="@dimen/content_padding_normal"
             android:paddingRight="@dimen/content_padding_normal"
@@ -53,120 +53,88 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/book_status_action"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
-            android:layout_marginLeft="@dimen/content_padding_normal"
-            android:layout_marginRight="@dimen/content_padding_normal"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:orientation="horizontal" >
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/content_padding_normal" >
 
-            <Button
-                android:id="@+id/book_status_reading"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/book_reading" />
-
-            <Button
-                android:id="@+id/book_status_wish"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/book_wish" />
-
-            <Button
-                android:id="@+id/book_status_read"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/book_read" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/book_status_block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
-            android:layout_marginLeft="@dimen/content_padding_normal"
-            android:layout_marginRight="@dimen/content_padding_normal"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:orientation="horizontal"
-            android:visibility="gone" >
-
-            <Button
-                android:id="@+id/book_status_now"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/book_reading" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/book_summary_block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
-            android:layout_marginLeft="@dimen/content_padding_normal"
-            android:layout_marginRight="@dimen/content_padding_normal"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:orientation="vertical" >
-
-            <TextView
-                style="@style/TextHeader2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/book_summary" />
-
-            <TextView
-                android:id="@+id/book_summary"
-                style="@style/TextBody"
+            <include
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/element_spacing_normal" />
-        </LinearLayout>
+                android:layout_height="@dimen/add_to_schedule_button_height"
+                android:layout_marginBottom="@dimen/element_spacing_normal"
+                android:layout_marginLeft="-4.0dip"
+                android:layout_marginRight="-4.0dip"
+                android:layout_marginTop="@dimen/element_spacing_normal"
+                layout="@layout/book_status_action" />
 
-        <LinearLayout
-            android:id="@+id/author_intro_block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
-            android:layout_marginLeft="@dimen/content_padding_normal"
-            android:layout_marginRight="@dimen/content_padding_normal"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:orientation="vertical" >
-
-            <TextView
-                style="@style/TextHeader2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/author_intro" />
-
-            <TextView
-                android:id="@+id/author_intro"
-                style="@style/TextBody"
+            <include
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/element_spacing_normal" />
-        </LinearLayout>
+                android:layout_height="@dimen/add_to_schedule_button_height"
+                android:layout_marginBottom="@dimen/element_spacing_normal"
+                android:layout_marginLeft="-4.0dip"
+                android:layout_marginRight="-4.0dip"
+                android:layout_marginTop="@dimen/element_spacing_normal"
+                layout="@layout/book_status_now" />
 
-        <LinearLayout
-            android:id="@+id/book_reviews_block"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
-            android:layout_marginLeft="@dimen/content_padding_normal"
-            android:layout_marginRight="@dimen/content_padding_normal"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:orientation="vertical" >
-
-            <TextView
-                style="@style/TextHeader2"
+            <LinearLayout
+                android:id="@+id/book_summary_block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/book_reviews" />
+                android:layout_marginBottom="@dimen/element_spacing_normal"
+                android:layout_marginTop="@dimen/element_spacing_normal"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/TextHeader2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/book_summary" />
+
+                <TextView
+                    android:id="@+id/book_summary"
+                    style="@style/TextBody"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/element_spacing_normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/author_intro_block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/element_spacing_normal"
+                android:layout_marginTop="@dimen/element_spacing_normal"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/TextHeader2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/author_intro" />
+
+                <TextView
+                    android:id="@+id/author_intro"
+                    style="@style/TextBody"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/element_spacing_normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/book_reviews_block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/element_spacing_normal"
+                android:layout_marginTop="@dimen/element_spacing_normal"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/TextHeader2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/book_reviews" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

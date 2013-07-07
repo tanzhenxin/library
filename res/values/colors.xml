@@ -23,5 +23,7 @@
     
     <color name="text_count_color_pressed">#ff3b3b3b</color>
     <color name="text_count_color_normal">#ff696969</color>
+    
+    <color name="sticky_block_background">#ddffffff</color>
 
 </resources>

@@ -20,9 +20,9 @@
     </style>
 
     <style name="ActionBar.Solid.Library" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
-        <item name="background">@drawable/ab_solid_library</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_library</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_library</item>
+        <item name="background">@drawable/actionbar_background</item>
+        <item name="backgroundStacked">@drawable/actionbar_stacked_background</item>
+        <item name="backgroundSplit">@drawable/actionbar_split_background</item>
         <item name="progressBarStyle">@style/ProgressBar.Library</item>
     </style>
 
