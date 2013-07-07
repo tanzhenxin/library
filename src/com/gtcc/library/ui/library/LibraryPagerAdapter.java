@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 import com.gtcc.library.R;
 import com.gtcc.library.ui.HomeActivity;
@@ -14,7 +16,7 @@ import com.gtcc.library.ui.HomeActivity;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class LibraryPagerAdapter extends FragmentPagerAdapter {
+public class LibraryPagerAdapter extends FragmentStatePagerAdapter {
 	
 	private final Resources resources;
 
@@ -26,9 +28,9 @@ public class LibraryPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
-		Fragment fragment = new LibraryFragment();
+		Fragment fragment = new LibraryBookListFragment();
 		Bundle args = new Bundle();
-		args.putInt(LibraryFragment.ARG_SECTION_NUMBER, position);
+		args.putInt(HomeActivity.ARG_SECTION_NUMBER, position);
 		fragment.setArguments(args);
 		return fragment;
 	}

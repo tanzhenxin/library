@@ -47,6 +47,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private TextView mBookStatusText;
 
 	private Uri mBookUri;
+	private int mPage;
 	private int mSection;
 
 	private ImageFetcher mImageFetcher;
@@ -58,20 +59,21 @@ public class BookDetailFragment extends SherlockFragment implements
 		final Intent intent = BaseActivity
 				.fragmentArgumentsToIntent(getArguments());
 		mBookUri = intent.getData();
-
-		if (mBookUri == null)
+		Bundle bundle = intent.getExtras();
+		
+		if (mBookUri == null || bundle == null)
 			return;
 		
-		Bundle bundle = intent.getExtras();
-		if (bundle != null) 
-			mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
+		mPage = bundle.getInt(HomeActivity.ARG_PAGE_NUMBER);
+		mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
 
 		mImageFetcher = Utils.getImageFetcher(getActivity());
 		mImageFetcher.setImageFadeIn(true);
 
 		setHasOptionsMenu(true);
 
-		getLoaderManager().initLoader(0, null, this);
+		if (mPage == HomeActivity.PAGE_USER) 
+			getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
@@ -237,19 +239,19 @@ public class BookDetailFragment extends SherlockFragment implements
 		mStatusReading.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = HomeActivity.USER_READING;
+				mSection = HomeActivity.TAB_0;
 			}
 		});
 		mStatusWish.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = HomeActivity.USER_WISH;
+				mSection = HomeActivity.TAB_1;
 			}
 		});
 		mStatusRead.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = HomeActivity.USER_READ;
+				mSection = HomeActivity.TAB_2;
 			}
 		});
 	}
@@ -287,11 +289,11 @@ public class BookDetailFragment extends SherlockFragment implements
 	
 	private String getCurrentStatus() {
 		switch (mSection) {
-		case HomeActivity.USER_READING:
+		case HomeActivity.TAB_0:
 			return getActivity().getString(R.string.book_reading_full);
-		case HomeActivity.USER_WISH:
+		case HomeActivity.TAB_1:
 			return getActivity().getString(R.string.book_wish_full);
-		case HomeActivity.USER_READ:
+		case HomeActivity.TAB_2:
 			return getActivity().getString(R.string.book_read_full);
 		default:
 			return null;

@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 import com.gtcc.library.R;
 import com.gtcc.library.ui.HomeActivity;
@@ -14,7 +16,7 @@ import com.gtcc.library.ui.HomeActivity;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class UserPagerAdapter extends FragmentPagerAdapter {
+public class UserPagerAdapter extends FragmentStatePagerAdapter  {
 	
 	private final Resources resources;
 
@@ -45,11 +47,11 @@ public class UserPagerAdapter extends FragmentPagerAdapter {
 	public CharSequence getPageTitle(int position) {
 		Locale l = Locale.getDefault();
 		switch (position) {
-		case HomeActivity.USER_READING:
+		case HomeActivity.TAB_0:
 			return resources.getString(R.string.book_reading).toUpperCase(l);
-		case HomeActivity.USER_WISH:
+		case HomeActivity.TAB_1:
 			return resources.getString(R.string.book_wish).toUpperCase(l);
-		case HomeActivity.USER_READ:
+		case HomeActivity.TAB_2:
 			return resources.getString(R.string.book_read).toUpperCase(l);
 		}
 		return null;

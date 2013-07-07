@@ -9,7 +9,7 @@
         android:id="@+id/book_status_reading"
         style="@style/TextBody"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/book_reading" />
@@ -25,7 +25,7 @@
         android:id="@+id/book_status_wish"
         style="@style/TextBody"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/book_wish" />
@@ -41,7 +41,7 @@
         android:id="@+id/book_status_read"
         style="@style/TextBody"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/book_read" />

@@ -30,6 +30,7 @@ import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
+import com.gtcc.library.ui.BookListFragment;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.ImageCache.ImageCacheParams;
 import com.gtcc.library.util.ImageFetcher;
@@ -40,123 +41,49 @@ import com.gtcc.library.util.Utils;
  * A dummy fragment representing a section of the app, but that simply
  * displays dummy text.
  */
-public class UserBookListFragment extends ListFragment implements 
+public class UserBookListFragment extends BookListFragment implements 
 	LoaderManager.LoaderCallbacks<Cursor> {
 	
-	private static final String IMAGE_CACHE_DIR = "images";
-	private int section;
-
 	private UserBookListAdapter mAdapter;
-	private ImageFetcher mImageFetcher;
-	private Animation mApplaudAnimation;
-	
-	private int mImageWidth;
-	private int mImageHeight;
-	
-    public interface Callbacks {
-        public boolean OnBookSelected(String bookId, int section);
-    }
-
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public boolean OnBookSelected(String bookId, int section) {
-            return true;
-        }
-    };
-
-    private Callbacks mCallbacks = sDummyCallbacks;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setHasOptionsMenu(true);
 		mAdapter = new UserBookListAdapter(getActivity());
 		setListAdapter(mAdapter);
 		
-		mImageWidth = getResources().getDimensionPixelSize(R.dimen.list_image_width);
-		mImageHeight = getResources().getDimensionPixelSize(R.dimen.list_image_height);
-		
-        ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
-        cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
-		
-        // The ImageFetcher takes care of loading images into our ImageView children asynchronously
-        mImageFetcher = new ImageFetcher(getActivity(), mImageWidth, mImageHeight);
-        mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_books_list, container, false);
-		
-		ListView listView = (ListView) rootView.findViewById(android.R.id.list);
-		listView.setOnScrollListener(new OnScrollListener() {
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-			}
-
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // Pause fetcher to ensure smoother scrolling when flinging
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    mImageFetcher.setPauseWork(true);
-                } else {
-                    mImageFetcher.setPauseWork(false);
-                }
-			}
-		});
-		
-		section = getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER);
+		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 		getLoaderManager().initLoader(0, getArguments(), this);
-		mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
-				R.anim.dismiss_ani);
 		return rootView;
 	}
-
+	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	protected int getPage() {
+		return HomeActivity.PAGE_USER;
 	}
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
+	public String getSelectedBookId(ListView l, View v, int position, long id) {
 		final Cursor cursor = (Cursor) mAdapter.getItem(position);
-		String bookId = cursor.getString(BookQuery.BOOK_ID);
-		mCallbacks.OnBookSelected(bookId, section);
+		return cursor.getString(BookQuery.BOOK_ID);
 	}
 	
     @Override
     public void onResume() {
         super.onResume();
-        mImageFetcher.setExitTasksEarly(false);
         mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mImageFetcher.setPauseWork(false);
-        mImageFetcher.setExitTasksEarly(true);
-        mImageFetcher.flushCache();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mImageFetcher.closeCache();
     }
     
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
-            throw new ClassCastException("Activity must implement fragment's callbacks.");
-        }
-
-        mCallbacks = (Callbacks) activity;
         getActivity().getContentResolver().registerContentObserver(
                 Users.CONTENT_URI, true, mObserver);
     }
@@ -164,7 +91,6 @@ public class UserBookListFragment extends ListFragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = sDummyCallbacks;
         getActivity().getContentResolver().unregisterContentObserver(mObserver);
     }
 	
@@ -194,11 +120,11 @@ public class UserBookListFragment extends ListFragment implements
 	
 	private String getStatus() {
 		switch (section) {
-		case HomeActivity.USER_READING:
+		case HomeActivity.TAB_0:
 			return UserBooks.TYPE_READING;
-		case HomeActivity.USER_WISH:
+		case HomeActivity.TAB_1:
 			return UserBooks.TYPE_WISH;
-		case HomeActivity.USER_READ:
+		case HomeActivity.TAB_2:
 			return UserBooks.TYPE_READ;
 		default:
 			throw new UnsupportedOperationException("Unknown section: " + section);

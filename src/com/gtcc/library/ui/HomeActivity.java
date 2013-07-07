@@ -12,6 +12,7 @@ import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
@@ -39,10 +40,11 @@ public class HomeActivity extends BaseActivity implements
 	public static final int PAGE_LIBRARY = 1;
 	public static final int PAGE_SETTINGS = 2;
 	
-	public static final int USER_READING = 0;
-	public static final int USER_WISH = 1;
-	public static final int USER_READ = 2;
+	public static final int TAB_0 = 0;
+	public static final int TAB_1 = 1;
+	public static final int TAB_2 = 2;
 	
+	public static final String ARG_PAGE_NUMBER = "page_number";
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
 	public static final String SHPREF_KEY_ACCESS_TOKEN = "Access_Token";
@@ -216,20 +218,20 @@ public class HomeActivity extends BaseActivity implements
 	private void showUserHome() {
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		UserPagerAdapter mSectionsPagerAdapter = new UserPagerAdapter(this);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		UserPagerAdapter pagerAdapter = new UserPagerAdapter(this);
+		mViewPager.setAdapter(pagerAdapter);
 
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.removeAllTabs();
 
 		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+		for (int i = 0; i < pagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
+					.setText(pagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
 
@@ -321,9 +323,10 @@ public class HomeActivity extends BaseActivity implements
 	}
 
 	@Override
-	public boolean OnBookSelected(String bookId, int section) {
+	public boolean OnBookSelected(String bookId, int page, int section) {
         Uri sessionUri = Books.buildBookUri(bookId);
         Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
+        detailIntent.putExtra(ARG_PAGE_NUMBER, page);
         detailIntent.putExtra(ARG_SECTION_NUMBER, section);
 		startActivity(detailIntent);
 		

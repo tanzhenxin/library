@@ -9,8 +9,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Source;
 
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.UserInfo;
@@ -155,6 +160,51 @@ public class HttpManager {
 		conn.disconnect();
 
 		return resultData;
+	}
+	
+	public static List<Book> getDoubanNewBooks() throws IOException {
+		List<Book> books = new ArrayList<Book>();
+		URL uri = new URL("http://book.douban.com/latest");
+		HttpURLConnection httpConn = (HttpURLConnection) uri.openConnection();
+		httpConn.setDoInput(true);
+		httpConn.connect();
+		InputStream is = httpConn.getInputStream();
+		Source source = new Source(is);
+		List<Element> divs = source.getAllElements("li");
+		for (Element e : divs) {
+			List<Element> childs = e.getChildElements();
+			if (childs.size() == 2) {
+				Element contents = childs.get(0);
+				Element otherinfo = childs.get(1);
+				String id = otherinfo.getAttributeValue("href");
+				String img = otherinfo.getChildElements().get(0).getAttributeValue("src");
+
+				if ("detail-frame".equals(childs.get(0).getAttributeValue("class"))) {
+
+					Book book = new Book();
+
+					id = id.substring(0, id.length() - 1);
+					id = id.substring(id.lastIndexOf("/") + 1);
+					id = DefaultConfigs.API_BOOK_INFO + id;
+					book.setUrl(id);
+					book.setImgUrl(img);
+					book.setTitle(contents.getChildElements().get(0)
+							.getTextExtractor().toString());
+					book.SetAuthor(contents.getChildElements().get(1)
+							.getTextExtractor().toString());
+					book.setSummary(contents.getChildElements().get(2)
+							.getTextExtractor().toString());
+
+					books.add(book);
+				}
+
+			}
+
+		}
+		is.close();
+		Collections.shuffle(books);
+
+		return books;
 	}
 
 	private String constructParams(Map<String, String> params)
