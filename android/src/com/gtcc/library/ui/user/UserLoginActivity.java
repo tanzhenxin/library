@@ -100,8 +100,8 @@ public class UserLoginActivity extends Activity {
 			super.onPostExecute(result);
 			
 			Intent intent = new Intent();
-			intent.putExtra(HomeActivity.SHPREF_KEY_ACCESS_TOKEN, result);
-			intent.putExtra(HomeActivity.SHPREF_KEY_USER_ID, userInfo);
+			intent.putExtra(HomeActivity.ACCESS_TOKEN, result);
+			intent.putExtra(HomeActivity.USER_ID, userInfo);
 			setResult(Activity.RESULT_OK, intent);
 			finish();
 		}

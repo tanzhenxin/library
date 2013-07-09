@@ -35,6 +35,7 @@ public class LibraryBookListFragment extends BookListFragment {
 			.makeLogTag(LibraryBookListFragment.class);
 
 	private List<Book> books;
+	private ViewGroup mLoadingIndicator;
 
 	public LibraryBookListFragment() {
 	}
@@ -49,6 +50,7 @@ public class LibraryBookListFragment extends BookListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
+		mLoadingIndicator = (ViewGroup) rootView.findViewById(R.id.loading_progress);
 		
 		startLoad();
 		return rootView;
@@ -115,6 +117,12 @@ public class LibraryBookListFragment extends BookListFragment {
 		}
 
 		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mLoadingIndicator.setVisibility(View.VISIBLE);
+		}
+
+		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
 				setListAdapter(new LibraryBookListAdapter(getActivity(), books));
@@ -123,6 +131,8 @@ public class LibraryBookListFragment extends BookListFragment {
 						getActivity().getString(R.string.load_failed),
 						Toast.LENGTH_SHORT).show();
 			}
+			
+			mLoadingIndicator.setVisibility(View.GONE);
 		}
 	}
 

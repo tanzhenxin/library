@@ -47,8 +47,8 @@ public class HomeActivity extends BaseActivity implements
 	public static final String ARG_PAGE_NUMBER = "page_number";
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
-	public static final String SHPREF_KEY_ACCESS_TOKEN = "Access_Token";
-	public static final String SHPREF_KEY_USER_ID = "User_Id";
+	public static final String ACCESS_TOKEN = "Access_Token";
+	public static final String USER_ID = "User_Id";
 	private String accessToken;
 	private String currentUserId;
 
@@ -137,13 +137,13 @@ public class HomeActivity extends BaseActivity implements
 			switch (resultCode) {
 			case Activity.RESULT_OK:
 				accessToken = data.getExtras().getString(
-						SHPREF_KEY_ACCESS_TOKEN);
+						ACCESS_TOKEN);
 
 				Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-				editor.putString(SHPREF_KEY_ACCESS_TOKEN, accessToken);
+				editor.putString(ACCESS_TOKEN, accessToken);
 				editor.commit();
 				
-				UserInfo userInfo = (UserInfo) data.getExtras().getSerializable(SHPREF_KEY_USER_ID);
+				UserInfo userInfo = (UserInfo) data.getExtras().getSerializable(USER_ID);
 				storeUserInfo(userInfo);
 
 				new LoadBooksAsyncTask().execute();
@@ -158,7 +158,7 @@ public class HomeActivity extends BaseActivity implements
 		String currentUserId = userInfo.getUserId();
 
 		Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-		editor.putString(SHPREF_KEY_USER_ID, currentUserId);
+		editor.putString(USER_ID, currentUserId);
 		editor.commit();
 
 		ContentValues values = new ContentValues();
@@ -199,14 +199,14 @@ public class HomeActivity extends BaseActivity implements
 	public String getCurrentUserId() {
 		if (currentUserId == null) {
 			currentUserId = getPreferences(Context.MODE_PRIVATE).getString(
-					SHPREF_KEY_USER_ID, null);
+					USER_ID, null);
 		}
 		return currentUserId == null ? "0" : currentUserId;
 	}
 
 	private Boolean hasAccessToken() {
 		accessToken = getPreferences(Context.MODE_PRIVATE).getString(
-				SHPREF_KEY_ACCESS_TOKEN, null);
+				ACCESS_TOKEN, null);
 		return accessToken != null;
 	}
 
@@ -270,12 +270,10 @@ public class HomeActivity extends BaseActivity implements
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			try {
-				HttpManager httpManager = new HttpManager(getAccessToken());
-
 				String uid = getCurrentUserId();
 				BookCollection bookCollection = new BookCollection();
 				while (bookCollection.hasMoreBooks()) {
-					List<Book> books = bookCollection.getBooks(httpManager,	uid);
+					List<Book> books = bookCollection.getBooks(getAccessToken(),	uid);
 					storeBooks(uid, books);
 				}
 			} catch (IOException e) {
@@ -303,8 +301,7 @@ public class HomeActivity extends BaseActivity implements
 				aValues.put(UserBooks.BOOK_ID, book.getId());
 				aValues.put(UserBooks.USE_TYPE, book.getStatus());
 				getContentResolver().insert(
-						Users.buildUserBooksUri(uid,
-								book.getStatus()), aValues);
+						Users.buildUserBooksUri(uid, book.getId()), aValues);
 			}
 		}
 
@@ -328,6 +325,7 @@ public class HomeActivity extends BaseActivity implements
         Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
         detailIntent.putExtra(ARG_PAGE_NUMBER, page);
         detailIntent.putExtra(ARG_SECTION_NUMBER, section);
+        detailIntent.putExtra(USER_ID, getCurrentUserId());
 		startActivity(detailIntent);
 		
 		return true;

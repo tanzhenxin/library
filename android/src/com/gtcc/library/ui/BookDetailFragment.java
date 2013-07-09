@@ -1,8 +1,11 @@
 package com.gtcc.library.ui;
 
+import java.io.IOException;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
@@ -18,18 +21,25 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.entity.Book;
+import com.gtcc.library.entity.BookCollection;
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.util.ImageFetcher;
+import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
 
 public class BookDetailFragment extends SherlockFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
+	private static final String TAG = LogUtils.makeLogTag(BookDetailFragment.class);
+	
 	private ViewGroup mRootView;
 	private ViewGroup mSummaryBlock;
 	private ViewGroup mAuthorIntroBlock;
@@ -45,10 +55,12 @@ public class BookDetailFragment extends SherlockFragment implements
 	private Button mStatusRead;
 	private Button mStatusWish;
 	private TextView mBookStatusText;
+	private ViewGroup mLoadingIndicator;
 
 	private Uri mBookUri;
 	private int mPage;
 	private int mSection;
+	private String mUserId;
 
 	private ImageFetcher mImageFetcher;
 
@@ -66,14 +78,12 @@ public class BookDetailFragment extends SherlockFragment implements
 		
 		mPage = bundle.getInt(HomeActivity.ARG_PAGE_NUMBER);
 		mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
+		mUserId = bundle.getString(HomeActivity.USER_ID);
 
 		mImageFetcher = Utils.getImageFetcher(getActivity());
 		mImageFetcher.setImageFadeIn(true);
 
 		setHasOptionsMenu(true);
-
-		if (mPage == HomeActivity.PAGE_USER) 
-			getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
@@ -139,6 +149,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		mStatusWish = (Button) mRootView.findViewById(R.id.book_status_wish);
 		mStatusRead = (Button) mRootView.findViewById(R.id.book_status_read);
 		mBookStatusText = (TextView) mRootView.findViewById(R.id.book_status_text);
+		mLoadingIndicator = (ViewGroup) mRootView.findViewById(R.id.loading_progress);
 		
 		setChangeStatusAnimation();
 		setClearStatusAnimation();
@@ -148,6 +159,11 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		// mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
 		// R.anim.dismiss_ani);
+		
+		if (mPage == HomeActivity.PAGE_USER) 
+			getLoaderManager().initLoader(0, null, this);
+		else
+			new AsyncBookLoader().execute(Books.getBookId(mBookUri));
 		
 		return mRootView;
 	}
@@ -175,29 +191,49 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (!cursor.moveToFirst()) {
 			return;
 		}
-
+		
+		Book book = new Book();
+		
 		String title = cursor.getString(BookQuery.BOOK_TITLE);
-		mTitleView.setText(title);
-
+		book.setTitle(title);
 		String author = cursor.getString(BookQuery.BOOK_AUTHOR);
-		mAuthorView.setText(author);
-
+		book.SetAuthor(author);
 		String summary = cursor.getString(BookQuery.BOOK_SUMMARY);
+		book.setSummary(summary);
+		String authorIntro = cursor.getString(BookQuery.AUTHOR_INTRO);
+		book.setAuthorIntro(authorIntro);
+		String imgUrl = cursor.getString(BookQuery.BOOK_IMAGE_URL);
+		book.setImgUrl(imgUrl);
+		String status = getCurrentStatus();
+		book.setStatus(status);
+		
+		setContentView(book);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+	}
+	
+	private void setContentView(Book book) {
+		mTitleView.setText(book.getTitle());
+		mAuthorView.setText(book.getAuthor());
+
+		String summary = book.getSummary();
 		if (summary != null && !summary.isEmpty())
 			mSummaryView.setText(summary);
 		else
 			mSummaryBlock.setVisibility(View.GONE);
 
-		String authorIntro = cursor.getString(BookQuery.AUTHOR_INTRO);
+		String authorIntro = book.getAuthorIntro();
 		if (authorIntro != null && !authorIntro.isEmpty())
 			mAuthorIntroView.setText(authorIntro);
 		else
 			mAuthorIntroBlock.setVisibility(View.GONE);
 
-		String imgUrl = cursor.getString(BookQuery.BOOK_IMAGE_URL);
+		String imgUrl = book.getImgUrl();
 		mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
 		
-		String status = getCurrentStatus();
+		String status = book.getStatus();
 		if (status != null) {
 			mStatusActionBlock.setVisibility(View.GONE);
 			mStatusNowBlock.setVisibility(View.VISIBLE);
@@ -207,10 +243,6 @@ public class BookDetailFragment extends SherlockFragment implements
 			mStatusActionBlock.setVisibility(View.VISIBLE);
 			mStatusNowBlock.setVisibility(View.GONE);
 		}
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
 	}
 	
 	private void setChangeStatusAnimation() {
@@ -299,6 +331,43 @@ public class BookDetailFragment extends SherlockFragment implements
 			return null;
 		}
 	}
+	
+	private class AsyncBookLoader extends AsyncTask<String, Void, Book> {
+
+		@Override
+		protected Book doInBackground(String... params) {
+			String bookId = params[0];
+			Book book = null;
+			try {
+				book = BookCollection.getBook(bookId);
+			} catch (IOException e) {
+				LogUtils.LOGE(TAG, "Unable to get book detail");
+			}
+			
+			return book;
+		}
+
+		@Override
+		protected void onPostExecute(Book result) {
+			super.onPostExecute(result);
+			
+			if (result != null) {
+				setContentView(result);
+			}
+			else {
+				Toast.makeText(getActivity(), R.string.load_failed, Toast.LENGTH_SHORT).show();
+			}
+			
+			mLoadingIndicator.setVisibility(View.GONE);
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mLoadingIndicator.setVisibility(View.VISIBLE);
+		}
+		
+	}
 
 	public interface BookQuery {
 		int _TOKEN = 0;
@@ -317,4 +386,16 @@ public class BookDetailFragment extends SherlockFragment implements
 		public int BOOK_IMAGE_URL = 6;
 	}
 
+	public interface UserBookQuery {
+		int _TOKEN = 1;
+		
+		public final String[] PROJECTION = new String[] {
+				UserBooks.USER_ID,
+				UserBooks.BOOK_ID,
+				UserBooks.USE_TYPE, };
+		
+		public int USER_ID = 0;
+		public int BOOK_ID = 1;
+		public int USE_TYPE = 2;
+	}
 }

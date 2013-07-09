@@ -98,11 +98,6 @@ public class HttpManager {
 		return new UserInfo(doGetRequest(url, true));
 	}
 	
-	public String getStaredBooksUrl(String uid) {
-		return DefaultConfigs.API_URL_PREFIX
-				+ String.format(DefaultConfigs.API_USER_BOOKS_COLLECTION, uid);
-	}
-	
 	public String doGetRequest(String url, Map<String, String> params, Boolean requireToken) throws IOException {
 		String theParam = constructParams(params);
 		

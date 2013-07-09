@@ -49,18 +49,27 @@ public final class LibraryContract {
 			return CONTENT_URI.buildUpon().appendPath(userId).build();
 		}
 		
-		public static final Uri buildUserBooksUri(String userId, String relation) {
+		public static final Uri buildUserBooksUri(String userId) {
 			return CONTENT_URI.buildUpon().appendPath(userId).
-					appendPath(PATH_BOOKS).appendPath(relation).build();
+					appendPath(PATH_BOOKS).build();
 		}
 		
-		public static final Uri buildUserBookUri(String userId, String bookId, String relation) {
+		public static final Uri buildUserBooksUri(String userId, String bookId) {
 			return CONTENT_URI.buildUpon().appendPath(userId).
-					appendPath(PATH_BOOKS).appendPath(relation).appendPath(bookId).build();
+					appendPath(PATH_BOOKS).appendPath(bookId).build();
+		}
+		
+		public static final Uri buildUserBooksUri(String userId, String bookId, String relation) {
+			return CONTENT_URI.buildUpon().appendPath(userId).
+					appendPath(PATH_BOOKS).appendPath(bookId).appendPath(relation).build();
 		}
 		
 		public static final String getUserId(Uri uri) {
 			return uri.getPathSegments().get(1);
+		}
+		
+		public static final String getBookId(Uri uri) {
+			return uri.getPathSegments().get(3);
 		}
 	}
 	

@@ -98,13 +98,13 @@ public class UserBookListFragment extends BookListFragment implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
 		HomeActivity activity = (HomeActivity) getActivity();
 		String userId = activity.getCurrentUserId();
-		Uri uri = Users.buildUserBooksUri(userId, getStatus());
+		Uri uri = Users.buildUserBooksUri(userId);
 		return new CursorLoader(
 				getActivity(), 
 				uri, 
 				BookQuery.PROJECTION, 
-				null, 
-				null, 
+				UserBooks.USE_TYPE + "=?", 
+				new String[] { getStatus() }, 
 				Books.DEFAULT_SORT_ORDER);
 	}
 

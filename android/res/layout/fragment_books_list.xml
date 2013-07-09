@@ -16,5 +16,7 @@
         android:listSelector="@color/transparent"
         android:scrollbarStyle="outsideInset" >
     </ListView>
+    
+    <include layout="@layout/activity_loading" />
 
 </LinearLayout>

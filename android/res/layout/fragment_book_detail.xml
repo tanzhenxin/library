@@ -1,137 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1.0"
-    android:scrollbars="none" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:id="@+id/header_book"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/transparent_background_pattern"
-            android:paddingBottom="@dimen/content_padding_normal"
-            android:paddingLeft="@dimen/content_padding_normal"
-            android:paddingRight="@dimen/content_padding_normal"
-            android:paddingTop="@dimen/content_padding_normal" >
-
-            <ImageView
-                android:id="@+id/book_img"
-                android:layout_width="@dimen/detail_image_width"
-                android:layout_height="@dimen/detail_image_height"
-                android:scaleType="fitXY" />
-
-            <TextView
-                android:id="@+id/book_title"
-                style="@style/TextHeader"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/book_img"
-                android:layout_marginLeft="12dip"
-                android:layout_toRightOf="@id/book_img"
-                android:gravity="top" />
-
-            <TextView
-                android:id="@+id/book_author"
-                style="@style/TextHeaderSub"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/book_title"
-                android:layout_below="@id/book_title" />
-
-            <include
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/book_img"
-                android:layout_alignLeft="@id/book_title"
-                layout="@layout/book_footnote" />
-        </RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:scrollbars="none" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/content_padding_normal" >
+            android:orientation="vertical" >
 
-            <include
+            <RelativeLayout
+                android:id="@+id/header_book"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/add_to_schedule_button_height"
-                android:layout_marginLeft="-4dip"
-                android:layout_marginRight="-4dip"
-                layout="@layout/book_status_action" />
-
-            <include
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/add_to_schedule_button_height"
-                android:layout_marginLeft="-4dip"
-                android:layout_marginRight="-4dip"
-                layout="@layout/book_status_now" />
-
-            <LinearLayout
-                android:id="@+id/book_summary_block"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/element_spacing_normal"
-                android:layout_marginTop="@dimen/element_spacing_normal"
-                android:orientation="vertical" >
+                android:background="@drawable/transparent_background_pattern"
+                android:paddingBottom="@dimen/content_padding_normal"
+                android:paddingLeft="@dimen/content_padding_normal"
+                android:paddingRight="@dimen/content_padding_normal"
+                android:paddingTop="@dimen/content_padding_normal" >
+
+                <ImageView
+                    android:id="@+id/book_img"
+                    android:layout_width="@dimen/detail_image_width"
+                    android:layout_height="@dimen/detail_image_height"
+                    android:scaleType="fitXY" />
 
                 <TextView
-                    style="@style/TextHeader2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/book_summary" />
-
-                <TextView
-                    android:id="@+id/book_summary"
-                    style="@style/TextBody"
+                    android:id="@+id/book_title"
+                    style="@style/TextHeader"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/element_spacing_normal" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/author_intro_block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/element_spacing_normal"
-                android:layout_marginTop="@dimen/element_spacing_normal"
-                android:orientation="vertical" >
+                    android:layout_alignTop="@id/book_img"
+                    android:layout_marginLeft="12dip"
+                    android:layout_toRightOf="@id/book_img"
+                    android:gravity="top" />
 
                 <TextView
-                    style="@style/TextHeader2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/author_intro" />
-
-                <TextView
-                    android:id="@+id/author_intro"
-                    style="@style/TextBody"
+                    android:id="@+id/book_author"
+                    style="@style/TextHeaderSub"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/element_spacing_normal" />
-            </LinearLayout>
+                    android:layout_alignLeft="@id/book_title"
+                    android:layout_below="@id/book_title" />
 
-            <LinearLayout
-                android:id="@+id/book_reviews_block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/element_spacing_normal"
-                android:layout_marginTop="@dimen/element_spacing_normal"
-                android:orientation="vertical" >
-
-                <TextView
-                    style="@style/TextHeader2"
+                <include
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/book_reviews" />
+                    android:layout_alignBottom="@id/book_img"
+                    android:layout_alignLeft="@id/book_title"
+                    layout="@layout/book_footnote" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="@dimen/content_padding_normal" >
+
+                <include
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/add_to_schedule_button_height"
+                    android:layout_marginLeft="-4dip"
+                    android:layout_marginRight="-4dip"
+                    layout="@layout/book_status_action" />
+
+                <include
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/add_to_schedule_button_height"
+                    android:layout_marginLeft="-4dip"
+                    android:layout_marginRight="-4dip"
+                    layout="@layout/book_status_now" />
+
+                <LinearLayout
+                    android:id="@+id/book_summary_block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/element_spacing_normal"
+                    android:layout_marginTop="@dimen/element_spacing_normal"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/TextHeader2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/book_summary" />
+
+                    <TextView
+                        android:id="@+id/book_summary"
+                        style="@style/TextBody"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/element_spacing_normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/author_intro_block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/element_spacing_normal"
+                    android:layout_marginTop="@dimen/element_spacing_normal"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/TextHeader2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/author_intro" />
+
+                    <TextView
+                        android:id="@+id/author_intro"
+                        style="@style/TextBody"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/element_spacing_normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/book_reviews_block"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/element_spacing_normal"
+                    android:layout_marginTop="@dimen/element_spacing_normal"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/TextHeader2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/book_reviews" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+    <include layout="@layout/activity_loading" />
+</LinearLayout>
