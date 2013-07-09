@@ -29,6 +29,7 @@ import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.ui.library.LibraryPagerAdapter;
 import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.ui.user.UserLoginActivity;
+import com.gtcc.library.ui.user.UserOAuth2LoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.gtcc.library.util.HttpManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;

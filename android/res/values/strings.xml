@@ -34,5 +34,11 @@
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>
     <string name="book_category">Browse by category</string>
+    
+    <string name="login_signin">Login</string>
+    <string name="login_signin_submit">Submit</string>
+    <string name="login_hint_user_name">Name</string>
+    <string name="login_hint_user_email">Email</string>
+    <string name="or">or</string>
 
 </resources>

@@ -39,4 +39,10 @@
 	<string name="book_new_arrival">新上架</string>
    	<string name="book_hotest">最热门</string>
     <string name="book_category">分类浏览</string>
+    
+    <string name="login_signin">登录</string>
+    <string name="login_signin_submit">登录</string>
+    <string name="login_hint_user_name">姓名</string>
+    <string name="login_hint_user_email">邮件</string>
+    <string name="or">或者</string>
 </resources>

@@ -1,12 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-    <WebView
-    android:id="@+id/login_webview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/content_padding_normal" >
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/title"
+            style="@style/screen_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_signin" />
+
+        <LinearLayout
+            android:id="@+id/doubanLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="15.0dip" >
+
+            <ImageView
+                android:id="@+id/doubanConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/douban_connect" />
+
+            <RelativeLayout
+                android:id="@+id/orLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15.0dip" >
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0dip"
+                    android:layout_centerVertical="true"
+                    android:background="@color/dialog_separator" />
+
+                <TextView
+                    android:id="@+id/orText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:paddingLeft="20.0dip"
+                    android:paddingRight="20.0dip"
+                    android:text="@string/or"
+                    android:textColor="@color/dialog_separator"
+                    android:textSize="15.0dip" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/login_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15.0dip"
+            android:editTextStyle="@style/editbox"
+            android:hint="@string/login_hint_user_name"
+            android:inputType="textEmailAddress"
+            android:minHeight="37.0dip"
+            android:paddingRight="5.0dip"
+            android:singleLine="true"
+            android:textSize="17.0sp" />
+
+        <EditText
+            android:id="@+id/login_email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10.0dip"
+            android:editTextStyle="@style/editbox"
+            android:gravity="fill_vertical|clip_horizontal"
+            android:hint="@string/login_hint_user_email"
+            android:minHeight="37.0dip"
+            android:paddingRight="5.0dip"
+            android:singleLine="true"
+            android:textSize="17.0sp" />
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10.0dip"
+            android:background="@drawable/selector_button_bg"
+            android:minHeight="45.0dip"
+            android:text="@string/login_signin_submit" />
+    </LinearLayout>
+
+</ScrollView>
