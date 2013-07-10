@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="navigation_menu_style">
         <item name="android:alwaysDrawnWithCache">true</item>
@@ -145,23 +145,14 @@
     </style>
 
     <style name="editbox" parent="@android:style/Widget.EditText">
-        <item name="android:textColor">?@color/black</item>
-        <item name="android:textColorHint">?@color/textbox_hint_text</item>
-        <item name="android:background">@drawable/edittext_regular_bg</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/textbox_hint_text</item>
         <item name="android:dropDownWidth">fill_parent</item>
         <item name="android:dropDownHeight">fill_parent</item>
         <item name="android:dropDownVerticalOffset">5.0dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:minHeight">37dp</item>
+        <item name="android:paddingLeft">5dp</item>
     </style>
-
-    <style name="screen_title">
-        <item name="android:textSize">25.0sp</item>
-        <item name="android:textColor">@color/dialog_title</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingTop">10.0dip</item>
-        <item name="android:paddingRight">10.0dip</item>
-        <item name="android:paddingBottom">10.0dip</item>
-        <item name="android:includeFontPadding">true</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
-
 </resources>

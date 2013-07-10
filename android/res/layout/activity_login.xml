@@ -9,87 +9,93 @@
         android:orientation="vertical"
         android:padding="@dimen/content_padding_normal" >
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/screen_title"
+        <EditText
+            android:id="@+id/login_first_name"
+            style="@style/editbox"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_signin" />
-
-        <LinearLayout
-            android:id="@+id/doubanLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="15.0dip" >
-
-            <ImageView
-                android:id="@+id/doubanConnect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/douban_connect" />
-
-            <RelativeLayout
-                android:id="@+id/orLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15.0dip" >
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1.0dip"
-                    android:layout_centerVertical="true"
-                    android:background="@color/dialog_separator" />
-
-                <TextView
-                    android:id="@+id/orText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:paddingLeft="20.0dip"
-                    android:paddingRight="20.0dip"
-                    android:text="@string/or"
-                    android:textColor="@color/dialog_separator"
-                    android:textSize="15.0dip" />
-            </RelativeLayout>
-        </LinearLayout>
+            android:hint="@string/login_hint_user_first_name"
+            android:inputType="textCapWords" />
 
         <EditText
-            android:id="@+id/login_name"
+            android:id="@+id/login_last_name"
+            style="@style/editbox"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15.0dip"
-            android:editTextStyle="@style/editbox"
-            android:hint="@string/login_hint_user_name"
-            android:inputType="textEmailAddress"
-            android:minHeight="37.0dip"
-            android:paddingRight="5.0dip"
-            android:singleLine="true"
-            android:textSize="17.0sp" />
+            android:layout_marginTop="@dimen/element_spacing_normal"
+            android:hint="@string/login_hint_user_last_name"
+            android:inputType="textCapWords" />
 
         <EditText
             android:id="@+id/login_email"
+            style="@style/editbox"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10.0dip"
-            android:editTextStyle="@style/editbox"
-            android:gravity="fill_vertical|clip_horizontal"
+            android:layout_marginTop="@dimen/element_spacing_normal"
             android:hint="@string/login_hint_user_email"
-            android:minHeight="37.0dip"
-            android:paddingRight="5.0dip"
-            android:singleLine="true"
-            android:textSize="17.0sp" />
+            android:inputType="textEmailAddress" />
 
         <Button
             android:id="@+id/submit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10.0dip"
+            android:layout_marginTop="@dimen/content_padding_normal"
             android:background="@drawable/selector_button_bg"
-            android:minHeight="45.0dip"
             android:text="@string/login_signin_submit" />
+
+        <RelativeLayout
+            android:id="@+id/or_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_padding_normal" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:layout_centerVertical="true"
+                android:background="@color/dialog_separator" />
+
+            <TextView
+                android:id="@+id/orText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/content_padding_normal"
+                android:paddingRight="@dimen/content_padding_normal"
+                android:text="@string/or"
+                android:textColor="@color/dialog_separator"
+                android:textSize="15.0dip" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/douban_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/content_padding_normal" >
+
+            <Button
+                android:id="@+id/login_douban"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_button_bg"
+                android:drawableLeft="@drawable/douban_connect"
+                android:drawablePadding="@dimen/element_spacing_normal"
+                android:drawableRight="@drawable/ic_navi_next"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="@dimen/element_spacing_normal"
+                android:text="@string/login_with_douban" />
+
+            <TextView
+                android:id="@+id/join_explain"
+                style="@style/TextFootNote"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/element_spacing_normal"
+                android:text="@string/login_douban_explain" />
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

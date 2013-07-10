@@ -29,7 +29,6 @@
     <color name="dialog_title">#ff0099cc</color>
     <color name="dialog_separator">#ffc1c1c1</color>
     <color name="textbox_hint_text">#ffd7d7d7</color>
-    <color name="textbox_border">#ffa7c9d8</color>
     <color name="button_border">#ffe3e3e3</color>
     <color name="button_border_disabled">#ffdddddd</color>
 

@@ -37,8 +37,11 @@
     
     <string name="login_signin">Login</string>
     <string name="login_signin_submit">Submit</string>
-    <string name="login_hint_user_name">Name</string>
+    <string name="login_hint_user_first_name">First name</string>
+    <string name="login_hint_user_last_name">Last name</string>
     <string name="login_hint_user_email">Email</string>
+    <string name="login_with_douban">Login with Douban Account</string>
+    <string name="login_douban_explain">Login with Douban account to sync your data</string>
     <string name="or">or</string>
 
 </resources>
