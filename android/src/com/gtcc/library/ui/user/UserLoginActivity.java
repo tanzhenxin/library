@@ -46,7 +46,7 @@ public class UserLoginActivity extends Activity {
 		mUserName.addTextChangedListener(mTextWatcher);
 		mUserEmail.addTextChangedListener(mTextWatcher);
 		
-		mLoginSubmit = (Button) findViewById(R.id.login_submit);
+		mLoginSubmit = (Button) findViewById(R.id.login_signin);
 		mLoginSubmit.setEnabled(false);
 		mLoginSubmit.setOnClickListener(new OnClickListener() {
 			

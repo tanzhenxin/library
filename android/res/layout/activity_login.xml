@@ -7,38 +7,31 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/content_padding_normal" >
+        android:padding="50dp" >
 
-        <EditText
-            android:id="@+id/login_name"
-            style="@style/editbox"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_hint_user_name"
-            android:inputType="textPersonName" />
+            android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/login_email"
-            style="@style/editbox"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:hint="@string/login_hint_user_email"
-            android:inputType="textEmailAddress" />
-
-        <Button
-            android:id="@+id/login_submit"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/content_padding_normal"
-            android:background="@drawable/selector_button_bg"
-            android:text="@string/login_signin_submit" />
+            <Button
+                android:id="@+id/login_douban"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_button_bg"
+                android:drawableLeft="@drawable/douban_connect"
+                android:drawablePadding="@dimen/element_spacing_normal"
+                android:drawableRight="@drawable/ic_navi_next"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="@dimen/element_spacing_normal"
+                android:text="@string/login_with_douban" />
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/or_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/content_padding_normal"
             android:layout_marginTop="@dimen/content_padding_normal" >
 
             <View
@@ -60,23 +53,64 @@
                 android:textSize="15.0dip" />
         </RelativeLayout>
 
+        <EditText
+            android:id="@+id/login_name"
+            style="@style/editbox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_hint_user_name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/login_email"
+            style="@style/editbox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/element_spacing_normal"
+            android:hint="@string/login_hint_user_email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/login_password"
+            style="@style/editbox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/element_spacing_normal"
+            android:hint="@string/login_hint_user_password"
+            android:inputType="textPassword" />
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/content_padding_normal" >
+            android:layout_marginTop="@dimen/content_padding_normal"
+            android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/login_douban"
-                android:layout_width="fill_parent"
+                android:id="@+id/login_signup"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:background="@drawable/selector_button_bg"
-                android:drawableLeft="@drawable/douban_connect"
-                android:drawablePadding="@dimen/element_spacing_normal"
-                android:drawableRight="@drawable/ic_navi_next"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="@dimen/element_spacing_normal"
-                android:text="@string/login_with_douban" />
+                android:text="@string/login_signup" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4.0dip"
+                android:layout_marginLeft="@dimen/element_spacing_normal"
+                android:layout_marginRight="@dimen/element_spacing_normal"
+                android:layout_marginTop="4.0dip"
+                android:background="?android:attr/dividerVertical" />
+
+            <Button
+                android:id="@+id/login_signin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button_bg"
+                android:text="@string/login_signin" />
         </LinearLayout>
     </LinearLayout>
 
