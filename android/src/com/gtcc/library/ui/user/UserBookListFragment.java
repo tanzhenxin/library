@@ -97,7 +97,7 @@ public class UserBookListFragment extends BookListFragment implements
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
 		HomeActivity activity = (HomeActivity) getActivity();
-		String userId = activity.getCurrentUserId();
+		String userId = activity.getUserId();
 		Uri uri = Users.buildUserBooksUri(userId);
 		return new CursorLoader(
 				getActivity(), 

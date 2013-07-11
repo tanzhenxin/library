@@ -10,21 +10,12 @@
         android:padding="@dimen/content_padding_normal" >
 
         <EditText
-            android:id="@+id/login_first_name"
+            android:id="@+id/login_name"
             style="@style/editbox"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_hint_user_first_name"
-            android:inputType="textCapWords" />
-
-        <EditText
-            android:id="@+id/login_last_name"
-            style="@style/editbox"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:hint="@string/login_hint_user_last_name"
-            android:inputType="textCapWords" />
+            android:hint="@string/login_hint_user_name"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/login_email"
@@ -36,7 +27,7 @@
             android:inputType="textEmailAddress" />
 
         <Button
-            android:id="@+id/submit"
+            android:id="@+id/login_submit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -70,7 +61,6 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/douban_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -87,14 +77,6 @@
                 android:gravity="left|center_vertical"
                 android:paddingLeft="@dimen/element_spacing_normal"
                 android:text="@string/login_with_douban" />
-
-            <TextView
-                android:id="@+id/join_explain"
-                style="@style/TextFootNote"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/element_spacing_normal"
-                android:text="@string/login_douban_explain" />
         </LinearLayout>
     </LinearLayout>
 

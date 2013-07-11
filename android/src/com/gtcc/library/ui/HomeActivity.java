@@ -34,24 +34,26 @@ import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.gtcc.library.util.HttpManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class HomeActivity extends BaseActivity implements 
-	ActionBar.TabListener, UserBookListFragment.Callbacks {
+public class HomeActivity extends BaseActivity implements
+		ActionBar.TabListener, UserBookListFragment.Callbacks {
 
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
 	public static final int PAGE_SETTINGS = 2;
-	
+
 	public static final int TAB_0 = 0;
 	public static final int TAB_1 = 1;
 	public static final int TAB_2 = 2;
-	
+
 	public static final String ARG_PAGE_NUMBER = "page_number";
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
-	public static final String ACCESS_TOKEN = "Access_Token";
-	public static final String USER_ID = "User_Id";
-	private String accessToken;
-	private String currentUserId;
+	public static final String ACCESS_TOKEN = "access_token";
+	public static final String USER_ID = "user_id";
+	public static final String USER_EMAIL = "user_email";
+	private String mAccessToken;
+	private String mUserId;
+	private String mUserEmail;
 
 	private int REQUEST_LOGIN = 1;
 
@@ -100,6 +102,7 @@ public class HomeActivity extends BaseActivity implements
 					}
 				});
 
+		loadUserInfo();
 		showPage(PAGE_USER);
 
 		getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -137,24 +140,45 @@ public class HomeActivity extends BaseActivity implements
 		if (requestCode == REQUEST_LOGIN) {
 			switch (resultCode) {
 			case Activity.RESULT_OK:
-				accessToken = data.getExtras().getString(
-						ACCESS_TOKEN);
+				int loginType = data.getExtras().getInt(
+						UserLoginActivity.LOGIN_TYPE);
+				if (loginType == UserLoginActivity.LOGIN_NORMAL) {
+					mUserId = data.getExtras().getString(USER_ID);
+					mUserEmail = data.getExtras().getString(USER_EMAIL);
 
-				Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-				editor.putString(ACCESS_TOKEN, accessToken);
-				editor.commit();
-				
-				UserInfo userInfo = (UserInfo) data.getExtras().getSerializable(USER_ID);
-				storeUserInfo(userInfo);
+					Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+					editor.putString(USER_ID, mUserId);
+					editor.putString(USER_EMAIL, mUserEmail);
+					editor.commit();
+				} else {
+					mAccessToken = data.getExtras().getString(ACCESS_TOKEN);
 
-				new LoadBooksAsyncTask().execute();
+					Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+					editor.putString(ACCESS_TOKEN, mAccessToken);
+					editor.commit();
+
+					UserInfo userInfo = (UserInfo) data.getExtras()
+							.getSerializable(USER_ID);
+					storeUserInfo(userInfo);
+
+					new LoadBooksAsyncTask().execute();
+				}
 
 				showUserHome();
+				break;
+			case Activity.RESULT_CANCELED:
+				finish();
 				break;
 			}
 		}
 	}
 	
+	private void loadUserInfo() {
+		mUserId = getPreferences(Context.MODE_PRIVATE).getString(USER_ID, "0");
+		mUserEmail = getPreferences(Context.MODE_PRIVATE).getString(USER_EMAIL, null);
+		mAccessToken = getPreferences(Context.MODE_PRIVATE).getString(ACCESS_TOKEN, null);
+	}
+
 	private void storeUserInfo(UserInfo userInfo) {
 		String currentUserId = userInfo.getUserId();
 
@@ -173,8 +197,8 @@ public class HomeActivity extends BaseActivity implements
 		if (position != mCurrentPage) {
 			switch (position) {
 			case PAGE_USER:
-				if (!hasAccessToken())
-					requestAccessToken();
+				if (!hasLogin())
+					login();
 				else
 					showUserHome();
 				break;
@@ -189,31 +213,26 @@ public class HomeActivity extends BaseActivity implements
 		mCurrentPage = position;
 		showContent();
 	}
-
-	public String getAccessToken() {
-		if (!hasAccessToken())
-			requestAccessToken();
-
-		return accessToken;
+	
+	public boolean hasLogin() {
+		return mUserId != "0";
 	}
-
-	public String getCurrentUserId() {
-		if (currentUserId == null) {
-			currentUserId = getPreferences(Context.MODE_PRIVATE).getString(
-					USER_ID, null);
-		}
-		return currentUserId == null ? "0" : currentUserId;
-	}
-
-	private Boolean hasAccessToken() {
-		accessToken = getPreferences(Context.MODE_PRIVATE).getString(
-				ACCESS_TOKEN, null);
-		return accessToken != null;
-	}
-
-	private void requestAccessToken() {
+	
+	private void login() {
 		Intent intent = new Intent(this, UserLoginActivity.class);
 		startActivityForResult(intent, REQUEST_LOGIN);
+	}
+	
+	public String getUserId() {
+		return mUserId;
+	}
+
+	private String getAccessToken() {
+		if (mAccessToken == null) {
+			mAccessToken = getPreferences(Context.MODE_PRIVATE).getString(
+					ACCESS_TOKEN, null);
+		}
+		return mAccessToken;
 	}
 
 	private void showUserHome() {
@@ -231,9 +250,10 @@ public class HomeActivity extends BaseActivity implements
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(pagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+			actionBar
+					.addTab(actionBar.newTab()
+							.setText(pagerAdapter.getPageTitle(i))
+							.setTabListener(this));
 		}
 
 		setTitle(R.string.user_center);
@@ -271,11 +291,15 @@ public class HomeActivity extends BaseActivity implements
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			try {
-				String uid = getCurrentUserId();
-				BookCollection bookCollection = new BookCollection();
-				while (bookCollection.hasMoreBooks()) {
-					List<Book> books = bookCollection.getBooks(getAccessToken(),	uid);
-					storeBooks(uid, books);
+				String accessToken = getAccessToken();
+				if (accessToken != null) {
+					String uid = mUserId;
+					BookCollection bookCollection = new BookCollection();
+					while (bookCollection.hasMoreBooks()) {
+						List<Book> books = bookCollection.getBooks(
+								getAccessToken(), uid);
+						storeBooks(uid, books);
+					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -322,13 +346,13 @@ public class HomeActivity extends BaseActivity implements
 
 	@Override
 	public boolean OnBookSelected(String bookId, int page, int section) {
-        Uri sessionUri = Books.buildBookUri(bookId);
-        Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
-        detailIntent.putExtra(ARG_PAGE_NUMBER, page);
-        detailIntent.putExtra(ARG_SECTION_NUMBER, section);
-        detailIntent.putExtra(USER_ID, getCurrentUserId());
+		Uri sessionUri = Books.buildBookUri(bookId);
+		Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
+		detailIntent.putExtra(ARG_PAGE_NUMBER, page);
+		detailIntent.putExtra(ARG_SECTION_NUMBER, section);
+		detailIntent.putExtra(USER_ID, mUserId);
 		startActivity(detailIntent);
-		
+
 		return true;
 	}
 }

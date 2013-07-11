@@ -37,6 +37,7 @@
     
     <string name="login_signin">Login</string>
     <string name="login_signin_submit">Submit</string>
+    <string name="login_hint_user_name">User name</string>
     <string name="login_hint_user_first_name">First name</string>
     <string name="login_hint_user_last_name">Last name</string>
     <string name="login_hint_user_email">Email</string>
