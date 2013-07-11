@@ -50,10 +50,15 @@ public class HomeActivity extends BaseActivity implements
 
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String USER_ID = "user_id";
-	public static final String USER_EMAIL = "user_email";
+	public static final String USER_NAME = "user_name";
+	public static final String USER_PASSWORD = "user_password";
+	public static final String USER_IMAGE_URL = "user_image_url";
+	
 	private String mAccessToken;
 	private String mUserId;
-	private String mUserEmail;
+	private String mUserName;
+	private String mUserPassword;
+	private String mUserImageUrl;
 
 	private int REQUEST_LOGIN = 1;
 
@@ -144,25 +149,33 @@ public class HomeActivity extends BaseActivity implements
 						UserLoginActivity.LOGIN_TYPE);
 				if (loginType == UserLoginActivity.LOGIN_NORMAL) {
 					mUserId = data.getExtras().getString(USER_ID);
-					mUserEmail = data.getExtras().getString(USER_EMAIL);
+					mUserName = data.getExtras().getString(USER_NAME);
+					mUserPassword = data.getExtras().getString(USER_PASSWORD);
 
 					Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
 					editor.putString(USER_ID, mUserId);
-					editor.putString(USER_EMAIL, mUserEmail);
+					editor.putString(USER_NAME, mUserName);
+					editor.putString(USER_PASSWORD, mUserPassword);
 					editor.commit();
 				} else {
+					UserInfo userInfo = (UserInfo) data.getExtras()
+							.getSerializable(USER_ID);
+					mUserId = userInfo.getUserId();
+					mUserName = userInfo.getUserName();
+					mUserImageUrl = userInfo.getUserImageUrl();
 					mAccessToken = data.getExtras().getString(ACCESS_TOKEN);
 
 					Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+					editor.putString(USER_ID, mUserId);
+					editor.putString(USER_NAME, mUserName);
+					editor.putString(USER_IMAGE_URL, mUserImageUrl);
 					editor.putString(ACCESS_TOKEN, mAccessToken);
 					editor.commit();
 
-					UserInfo userInfo = (UserInfo) data.getExtras()
-							.getSerializable(USER_ID);
-					storeUserInfo(userInfo);
-
 					new LoadBooksAsyncTask().execute();
 				}
+				
+				storeUserInfo();
 
 				showUserHome();
 				break;
@@ -175,21 +188,17 @@ public class HomeActivity extends BaseActivity implements
 	
 	private void loadUserInfo() {
 		mUserId = getPreferences(Context.MODE_PRIVATE).getString(USER_ID, "0");
-		mUserEmail = getPreferences(Context.MODE_PRIVATE).getString(USER_EMAIL, null);
+		mUserName = getPreferences(Context.MODE_PRIVATE).getString(USER_NAME, null);
+		mUserPassword = getPreferences(Context.MODE_PRIVATE).getString(USER_PASSWORD, null);
+		mUserImageUrl = getPreferences(Context.MODE_PRIVATE).getString(USER_IMAGE_URL, null);
 		mAccessToken = getPreferences(Context.MODE_PRIVATE).getString(ACCESS_TOKEN, null);
 	}
 
-	private void storeUserInfo(UserInfo userInfo) {
-		String currentUserId = userInfo.getUserId();
-
-		Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-		editor.putString(USER_ID, currentUserId);
-		editor.commit();
-
+	private void storeUserInfo() {
 		ContentValues values = new ContentValues();
-		values.put(Users.USER_ID, userInfo.getUserId());
-		values.put(Users.USER_NAME, userInfo.getUserName());
-		values.put(Users.USER_IMAGE_URL, userInfo.getUserImageUrl());
+		values.put(Users.USER_ID, mUserId);
+		values.put(Users.USER_NAME, mUserName);
+		values.put(Users.USER_IMAGE_URL, mUserImageUrl);
 		getContentResolver().insert(Users.CONTENT_URI, values);
 	}
 

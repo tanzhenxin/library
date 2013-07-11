@@ -1,10 +1,10 @@
 package com.gtcc.library.ui.user;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -17,55 +17,45 @@ public class UserLoginActivity extends Activity {
 	public static final String LOGIN_TYPE = "login_type";
 	public static final int LOGIN_NORMAL = 0;
 	public static final int LOGIN_DOUBAN = 1;
-	
+
 	private Button mDoubanLogin;
-	private Button mLoginSubmit;
+	private Button mSignup;
+	private Button mSignin;
 	private EditText mUserName;
-	private EditText mUserEmail;
-	
+	private EditText mUserPassword;
+
 	private int REQUEST_DOUBAN_LOGIN = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
+
 		mDoubanLogin = (Button) findViewById(R.id.login_douban);
 		mDoubanLogin.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserLoginActivity.this, UserOAuth2LoginActivity.class);
+				Intent intent = new Intent(UserLoginActivity.this,
+						UserOAuth2LoginActivity.class);
 				startActivityForResult(intent, REQUEST_DOUBAN_LOGIN);
 			}
-			
+
 		});
-		
+
 		mUserName = (EditText) findViewById(R.id.login_name);
-		mUserEmail = (EditText) findViewById(R.id.login_email);
-		mUserName.addTextChangedListener(mTextWatcher);
-		mUserEmail.addTextChangedListener(mTextWatcher);
-		
-		mLoginSubmit = (Button) findViewById(R.id.login_signin);
-		mLoginSubmit.setEnabled(false);
-		mLoginSubmit.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.putExtra(LOGIN_TYPE, LOGIN_NORMAL);
-				intent.putExtra(HomeActivity.USER_ID, mUserName.getText().toString());
-				intent.putExtra(HomeActivity.USER_EMAIL, mUserEmail.getText().toString());
-				setResult(RESULT_OK, intent);
-				finish();
-			}
-		});
+		mUserPassword = (EditText) findViewById(R.id.login_password);
+
+		mSignup = (Button) findViewById(R.id.login_signup);
+		mSignin = (Button) findViewById(R.id.login_signin);
+		mSignup.setOnClickListener(btnClickListener);
+		mSignin.setOnClickListener(btnClickListener);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
 		if (requestCode == REQUEST_DOUBAN_LOGIN) {
 			switch (resultCode) {
 			case Activity.RESULT_OK:
@@ -76,25 +66,52 @@ public class UserLoginActivity extends Activity {
 			}
 		}
 	}
-	
-	private TextWatcher mTextWatcher = new TextWatcher() {
+
+	private OnClickListener btnClickListener = new OnClickListener() {
 
 		@Override
-		public void afterTextChanged(Editable s) {
-			if (mUserName.length() > 0 && mUserEmail.length() > 0) 
-				mLoginSubmit.setEnabled(true);
-			else
-				mLoginSubmit.setEnabled(false);
-		}
+		public void onClick(View v) {
+			if (mUserName.length() == 0) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						UserLoginActivity.this);
+				builder.setMessage(R.string.user_name_not_empty)
+						.setPositiveButton(R.string.ok,
+								new DialogInterface.OnClickListener() {
 
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-		}
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.dismiss();
+									}
 
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
+								});
+				builder.create().show();
+			} else if (mUserPassword.length() == 0) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						UserLoginActivity.this);
+				builder.setMessage(R.string.user_password_not_empty)
+						.setPositiveButton(R.string.ok,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.dismiss();
+									}
+
+								});
+				builder.create().show();
+			} else {
+				Intent intent = new Intent();
+				intent.putExtra(LOGIN_TYPE, LOGIN_NORMAL);
+				intent.putExtra(HomeActivity.USER_ID, "1");
+				intent.putExtra(HomeActivity.USER_NAME, mUserName.getText()
+						.toString());
+				intent.putExtra(HomeActivity.USER_PASSWORD, mUserPassword
+						.getText().toString());
+				setResult(RESULT_OK, intent);
+				finish();
+			}
 		}
 	};
 }

@@ -37,14 +37,12 @@
     
     <string name="login_signup">Sign up</string>
     <string name="login_signin">Sign in</string>
-    <string name="login_signin_submit">Submit</string>
     <string name="login_hint_user_name">User name</string>
-    <string name="login_hint_user_first_name">First name</string>
-    <string name="login_hint_user_last_name">Last name</string>
     <string name="login_hint_user_email">Email</string>
     <string name="login_hint_user_password">Password</string>
     <string name="login_with_douban">Login with Douban Account</string>
-    <string name="login_douban_explain">Login with Douban account to sync your data</string>
     <string name="or">or</string>
-
+    <string name="ok">OK</string>
+	<string name="user_name_not_empty">User name cannot be empty</string>
+	<string name="user_password_not_empty">Password cannot be empty</string>
 </resources>

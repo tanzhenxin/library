@@ -172,7 +172,11 @@ public class HttpManager {
 				Element contents = childs.get(0);
 				Element otherinfo = childs.get(1);
 				String id = otherinfo.getAttributeValue("href");
-				String img = otherinfo.getChildElements().get(0).getAttributeValue("src");
+				
+				String img = "";
+				List<Element> childElements = otherinfo.getChildElements();
+				if (childElements.size() > 0)
+					img = childElements.get(0).getAttributeValue("src");
 
 				if ("detail-frame".equals(childs.get(0).getAttributeValue("class"))) {
 

@@ -42,13 +42,12 @@
     
     <string name="login_signup">注册</string>
     <string name="login_signin">登录</string>
-    <string name="login_signin_submit">登录</string>
-    <string name="login_hint_user_name">姓名</string>
-    <string name="login_hint_user_first_name">名</string>
-    <string name="login_hint_user_last_name">姓</string>
+    <string name="login_hint_user_name">账号</string>
     <string name="login_hint_user_email">邮件</string>
     <string name="login_hint_user_password">密码</string>
     <string name="login_with_douban">使用豆瓣账号登陆</string>
-    <string name="login_douban_explain">使用豆瓣账号登陆可以同步你在豆瓣上的数据</string>
     <string name="or">或</string>
+    <string name="ok">确认</string>
+	<string name="user_name_not_empty">用户名不能为空</string>
+	<string name="user_password_not_empty">密码不能为空</string>
 </resources>
