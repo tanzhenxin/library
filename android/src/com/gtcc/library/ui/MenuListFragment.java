@@ -24,7 +24,7 @@ public class MenuListFragment extends ListFragment {
 		
 		adapter.add(new SampleItem(getString(R.string.user_center), R.drawable.ic_user_center));
 		adapter.add(new SampleItem(getString(R.string.book_library), R.drawable.ic_collections));
-		adapter.add(new SampleItem(getString(R.string.action_settings), R.drawable.ic_settings));
+		adapter.add(new SampleItem(getString(R.string.settings), R.drawable.ic_settings));
 		setListAdapter(adapter);
 	}
 	

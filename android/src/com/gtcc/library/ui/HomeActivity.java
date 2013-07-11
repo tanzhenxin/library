@@ -215,6 +215,7 @@ public class HomeActivity extends BaseActivity implements
 				showLibrary();
 				break;
 			case PAGE_SETTINGS:
+				showSettings();
 				break;
 			}
 		}
@@ -292,6 +293,11 @@ public class HomeActivity extends BaseActivity implements
 
 		setTitle(R.string.book_library);
 		mViewPager.setCurrentItem(0);
+	}
+	
+	private void showSettings() {
+		Intent intent = new Intent(this, SettingsActivity.class);
+		startActivity(intent);
 	}
 
 	private class LoadBooksAsyncTask extends AsyncTask<Void, Void, Boolean> {

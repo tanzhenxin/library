@@ -2,7 +2,7 @@
 <resources>
     
    	<string name="app_name">图书馆</string>
-    <string name="action_settings">设置</string>
+    <string name="settings">设置</string>
     <string name="user_borrowing">在看的</string>
     <string name="user_borrowed">看过的</string>
     <string name="user_wanted">想看的</string>
@@ -50,4 +50,7 @@
     <string name="ok">确认</string>
 	<string name="user_name_not_empty">用户名不能为空</string>
 	<string name="user_password_not_empty">密码不能为空</string>
+	
+	<string name="pref_user_account_title">账号设置</string>
+	<string name="pref_title_edit_account">账号管理</string>
 </resources>

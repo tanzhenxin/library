@@ -41,6 +41,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.gtcc.library.ui.SettingsActivity"
+            android:label="@string/settings" >
+        </activity>
+        <activity
             android:name="com.gtcc.library.ui.user.UserLoginActivity"
             android:label="@string/login_signin"
             android:logo="@drawable/ic_user_login" >
