@@ -6,6 +6,17 @@
 
         <Preference
             android:key="pref_key_edit_account"
+            android:summary="High"
             android:title="@string/pref_title_edit_account" />
+
+        <com.gtcc.library.ui.AlertDialogPreference
+            android:dialogMessage="@string/pref_logout_confirm"
+            android:dialogTitle="@string/pref_logout_confirm"
+            android:key="pref_key_log_out"
+            android:negativeButtonText="@string/cancel"
+            android:positiveButtonText="@string/ok"
+            android:title="@string/pref_title_log_out" >
+        </com.gtcc.library.ui.AlertDialogPreference>
     </PreferenceCategory>
-</PreferenceScreen>
+
+</PreferenceScreen>

@@ -42,10 +42,13 @@
     <string name="login_hint_user_password">Password</string>
     <string name="login_with_douban">Login with Douban Account</string>
     <string name="or">or</string>
+    <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
 	<string name="user_name_not_empty">User name cannot be empty</string>
 	<string name="user_password_not_empty">Password cannot be empty</string>
 	
 	<string name="pref_user_account_title">Account Settings</string>
 	<string name="pref_title_edit_account">Edit Account</string>
+	<string name="pref_title_log_out">Log out</string>
+	<string name="pref_logout_confirm">Are you sure to log out?</string>
 </resources>
