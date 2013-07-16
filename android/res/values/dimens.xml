@@ -12,9 +12,10 @@
     
     <dimen name="list_image_width">60dp</dimen>
     <dimen name="list_image_height">80dp</dimen>
-    
     <dimen name="detail_image_width">80dp</dimen>
     <dimen name="detail_image_height">120dp</dimen>
+    <dimen name="comment_user_image_size">48dp</dimen>
+    <dimen name="comment_user_image_padding">8dp</dimen>
     
     <!-- body content -->
     <dimen name="element_spacing_normal">8dp</dimen>
