@@ -21,6 +21,7 @@
     <string name="library_english">English</string>
     <string name="library_misc">Misc</string>
     <string name="action_search">Search</string>
+    <string name="action_add_review">Comment</string>
     <string name="book_info">Book</string>
     <string name="book_detail">Book Detail</string>
     <string name="book_summary">Book Summary</string>
@@ -30,6 +31,9 @@
     <string name="no_network_connection_toast">No network connection</string>
     <string name="plus_one">+1</string>
     <string name="book_from">From: </string>
+    <string name="add_review">Add review</string>
+    <string name="add_review_hint">Add review</string>
+    <string name="send_review">Send</string>
     
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>

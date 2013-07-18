@@ -38,8 +38,11 @@ import com.gtcc.library.util.Utils;
 
 public class BookDetailFragment extends SherlockFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
-	private static final String TAG = LogUtils.makeLogTag(BookDetailFragment.class);
+	private static final String TAG = LogUtils
+			.makeLogTag(BookDetailFragment.class);
 	
+	private int ADD_REVIEW = 0;
+
 	private ViewGroup mRootView;
 	private ViewGroup mSummaryBlock;
 	private ViewGroup mAuthorIntroBlock;
@@ -72,10 +75,10 @@ public class BookDetailFragment extends SherlockFragment implements
 				.fragmentArgumentsToIntent(getArguments());
 		mBookUri = intent.getData();
 		Bundle bundle = intent.getExtras();
-		
+
 		if (mBookUri == null || bundle == null)
 			return;
-		
+
 		mPage = bundle.getInt(HomeActivity.ARG_PAGE_NUMBER);
 		mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
 		mUserId = bundle.getString(HomeActivity.USER_ID);
@@ -88,40 +91,17 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// inflater.inflate(R.menu.book_detail_menu, menu);
-		//
-		// final MenuItem item = menu.findItem(R.id.menu_book_rating);
-		// item.getActionView().setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// onOptionsItemSelected(item);
-		// }
-		// });
-
 		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.book_detail_menu, menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
-		// if (item.getItemId() == R.id.menu_book_rating) {
-		// View view = item.getActionView();
-		//
-		// final TextView plusOne = (TextView)
-		// view.findViewById(R.id.plus_one_text);
-		// plusOne.startAnimation(mApplaudAnimation);
-		//
-		// new Handler().postDelayed(new Runnable() {
-		// public void run() {
-		// // Drawable icon = item.getIcon();
-		// // ColorFilter filter = new LightingColorFilter( Color.RED, Color.RED
-		// );
-		// // icon.setColorFilter(filter);
-		//
-		// plusOne.setText("1");
-		// }
-		// }, 1000);
-		// return true;
-		// }
+		if (item.getItemId() == R.id.add_review) {
+			Intent intent = new Intent(getActivity(), BookCommentActivity.class);
+			//intent.getExtras().putString(BookCommentActivity.BOOK_TITLE, mTitleView.getText().toString());
+			getActivity().startActivityForResult(intent, ADD_REVIEW);
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -148,9 +128,11 @@ public class BookDetailFragment extends SherlockFragment implements
 				.findViewById(R.id.book_status_reading);
 		mStatusWish = (Button) mRootView.findViewById(R.id.book_status_wish);
 		mStatusRead = (Button) mRootView.findViewById(R.id.book_status_read);
-		mBookStatusText = (TextView) mRootView.findViewById(R.id.book_status_text);
-		mLoadingIndicator = (ViewGroup) mRootView.findViewById(R.id.loading_progress);
-		
+		mBookStatusText = (TextView) mRootView
+				.findViewById(R.id.book_status_text);
+		mLoadingIndicator = (ViewGroup) mRootView
+				.findViewById(R.id.loading_progress);
+
 		setChangeStatusAnimation();
 		setClearStatusAnimation();
 
@@ -159,12 +141,12 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		// mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
 		// R.anim.dismiss_ani);
-		
-		if (mPage == HomeActivity.PAGE_USER) 
+
+		if (mPage == HomeActivity.PAGE_USER)
 			getLoaderManager().initLoader(0, null, this);
 		else
 			new AsyncBookLoader().execute(Books.getBookId(mBookUri));
-		
+
 		return mRootView;
 	}
 
@@ -191,9 +173,9 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (!cursor.moveToFirst()) {
 			return;
 		}
-		
+
 		Book book = new Book();
-		
+
 		String title = cursor.getString(BookQuery.BOOK_TITLE);
 		book.setTitle(title);
 		String author = cursor.getString(BookQuery.BOOK_AUTHOR);
@@ -206,14 +188,14 @@ public class BookDetailFragment extends SherlockFragment implements
 		book.setImgUrl(imgUrl);
 		String status = getCurrentStatus();
 		book.setStatus(status);
-		
+
 		setContentView(book);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 	}
-	
+
 	private void setContentView(Book book) {
 		mTitleView.setText(book.getTitle());
 		mAuthorView.setText(book.getAuthor());
@@ -232,33 +214,34 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		String imgUrl = book.getImgUrl();
 		mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
-		
+
 		String status = book.getStatus();
 		if (status != null) {
 			mStatusActionBlock.setVisibility(View.GONE);
 			mStatusNowBlock.setVisibility(View.VISIBLE);
 			mBookStatusText.setText(status);
-		}
-		else {
+		} else {
 			mStatusActionBlock.setVisibility(View.VISIBLE);
 			mStatusNowBlock.setVisibility(View.GONE);
 		}
 	}
-	
+
 	private void setChangeStatusAnimation() {
 		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
 				getActivity(), R.anim.fade_out);
-		
+
 		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
 				getActivity(), R.anim.fade_in_slowly);
-		
+
 		fadeOutAnimation.setAnimationListener(new AnimationListener() {
 			@Override
 			public void onAnimationStart(Animation animation) {
 			}
+
 			@Override
 			public void onAnimationRepeat(Animation animation) {
 			}
+
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				mStatusActionBlock.setVisibility(View.GONE);
@@ -287,21 +270,23 @@ public class BookDetailFragment extends SherlockFragment implements
 			}
 		});
 	}
-	
+
 	private void setClearStatusAnimation() {
 		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
 				getActivity(), R.anim.fade_out);
-		
+
 		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_in_slowly); 
-		
+				getActivity(), R.anim.fade_in_slowly);
+
 		fadeOutAnimation.setAnimationListener(new AnimationListener() {
 			@Override
 			public void onAnimationStart(Animation animation) {
 			}
+
 			@Override
 			public void onAnimationRepeat(Animation animation) {
 			}
+
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				mStatusNowBlock.setVisibility(View.GONE);
@@ -318,7 +303,7 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		mStatusNowBlock.setOnClickListener(onclickListener);
 	}
-	
+
 	private String getCurrentStatus() {
 		switch (mSection) {
 		case HomeActivity.TAB_0:
@@ -331,7 +316,7 @@ public class BookDetailFragment extends SherlockFragment implements
 			return null;
 		}
 	}
-	
+
 	private class AsyncBookLoader extends AsyncTask<String, Void, Book> {
 
 		@Override
@@ -343,21 +328,21 @@ public class BookDetailFragment extends SherlockFragment implements
 			} catch (IOException e) {
 				LogUtils.LOGE(TAG, "Unable to get book detail");
 			}
-			
+
 			return book;
 		}
 
 		@Override
 		protected void onPostExecute(Book result) {
 			super.onPostExecute(result);
-			
+
 			if (result != null) {
 				setContentView(result);
+			} else {
+				Toast.makeText(getActivity(), R.string.load_failed,
+						Toast.LENGTH_SHORT).show();
 			}
-			else {
-				Toast.makeText(getActivity(), R.string.load_failed, Toast.LENGTH_SHORT).show();
-			}
-			
+
 			mLoadingIndicator.setVisibility(View.GONE);
 		}
 
@@ -366,7 +351,7 @@ public class BookDetailFragment extends SherlockFragment implements
 			super.onPreExecute();
 			mLoadingIndicator.setVisibility(View.VISIBLE);
 		}
-		
+
 	}
 
 	public interface BookQuery {
@@ -388,12 +373,10 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	public interface UserBookQuery {
 		int _TOKEN = 1;
-		
-		public final String[] PROJECTION = new String[] {
-				UserBooks.USER_ID,
-				UserBooks.BOOK_ID,
-				UserBooks.USE_TYPE, };
-		
+
+		public final String[] PROJECTION = new String[] { UserBooks.USER_ID,
+				UserBooks.BOOK_ID, UserBooks.USE_TYPE, };
+
 		public int USER_ID = 0;
 		public int BOOK_ID = 1;
 		public int USE_TYPE = 2;
