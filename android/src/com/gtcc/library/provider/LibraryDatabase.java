@@ -1,6 +1,7 @@
 package com.gtcc.library.provider;
 
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
 
 import android.content.Context;
@@ -13,13 +14,14 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 	
 	private final static String DATABASE_NAME = "library.db";
 	
-	private final static int DATABASE_VERSION = 5;
+	private final static int DATABASE_VERSION = 6;
 
 	private static final String TAG = "LibraryProvider";
 	
 	interface Tables {
 		String USERS = "users";
 		String BOOKS = "books";
+		String COMMENTS = "comments";
 		String USER_BOOKS = "user_books";
 		
 		String USER_BOOKS_JOIN_BOOKS = "user_books "
@@ -73,6 +75,15 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         		+ UserBooks.BOOK_ID + " TEXT NOT NULL,"
         		+ UserBooks.USE_TYPE + " TEXT NOT NULL,"
         		+ "UNIQUE (" + UserBooks.USER_ID + "," + UserBooks.BOOK_ID + ") ON CONFLICT REPLACE)");
+        Log.w(TAG, "Creating Comments table");
+        db.execSQL("CREATE TABLE " + Tables.COMMENTS + " ("
+        		+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        		+ Comments.USER_ID + " TEXT NOT NULL,"
+        		+ Comments.BOOK_ID + " TEXT NOT NULL,"
+        		+ Comments.COMMENT + " TEXT NOT NULL,"
+        		+ Comments.REPLY_TO + " TEXT NULL,"
+        		+ Comments.TIMESTAMP + " TEXT NOT NULL,"
+        		+ "UNIQUE (" + BaseColumns._ID + ") ON CONFLICT REPLACE)");
         Log.w(TAG, "Finish creating tables");
 	}
 
@@ -86,6 +97,7 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Tables.USERS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.BOOKS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.USER_BOOKS);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.COMMENTS);
 
         // Recreates the database with a new version
         onCreate(db);

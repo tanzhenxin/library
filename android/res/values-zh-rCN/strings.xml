@@ -34,8 +34,8 @@
 	<string name="book_reviews">评论</string>
 	<string name="load_failed">加载数据失败</string>
 	<string name="no_network_connection_toast">没有网络连接</string>
-	<string name="add_review">写评论</string>
-	<string name="add_review_hint">评论内容...</string>
+	<string name="add_review">评论：</string>
+	<string name="add_review_hint">写评论...</string>
 	<string name="send_review">发送</string>
 	
 	<string name="book_from">来自: 豆瓣网</string>

@@ -31,7 +31,7 @@
     <string name="no_network_connection_toast">No network connection</string>
     <string name="plus_one">+1</string>
     <string name="book_from">From: </string>
-    <string name="add_review">Add review</string>
+    <string name="add_review">Add review : </string>
     <string name="add_review_hint">Add review</string>
     <string name="send_review">Send</string>
     

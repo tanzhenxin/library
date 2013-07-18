@@ -31,8 +31,17 @@ public final class LibraryContract {
 		String DUE_DATE = "due_date";
 	}
 	
+	interface CommentColumns {
+		String USER_ID = "user_id";
+		String BOOK_ID = "book_id";
+		String COMMENT = "comment";
+		String REPLY_TO = "reply_to";
+		String TIMESTAMP = "timestamp";
+	}
+	
 	private final static String PATH_USERS = "users";
 	private final static String PATH_BOOKS = "books";
+	private final static String PATH_COMMENTS = "comments";
 	
 	public static final class Users implements BaseColumns, UserColumns {
 		public static final Uri CONTENT_URI = 
@@ -64,6 +73,10 @@ public final class LibraryContract {
 					appendPath(PATH_BOOKS).appendPath(bookId).appendPath(relation).build();
 		}
 		
+		public static final Uri buildCommentUri(String userId) {
+			return CONTENT_URI.buildUpon().appendPath(userId).appendPath(PATH_COMMENTS).build();
+		}
+		
 		public static final String getUserId(Uri uri) {
 			return uri.getPathSegments().get(1);
 		}
@@ -93,7 +106,31 @@ public final class LibraryContract {
 			return CONTENT_URI.buildUpon().appendPath(bookId).build();
 		}
 		
+		public static final Uri buildCommentUri(String bookId) {
+			return CONTENT_URI.buildUpon().appendPath(bookId).appendPath(PATH_COMMENTS).build();
+		}
+		
 		public static final String getBookId(Uri uri) {
+			return uri.getPathSegments().get(1);
+		}
+	}
+	
+	public static final class Comments implements BaseColumns, CommentColumns {
+		public static final Uri CONTENT_URI =
+				BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMMENTS).build();
+		
+		public static final String CONTENT_TYPE =
+				"vnd.android.cursor.dir/vnd.library.comment";
+		public static final String CONTENT_ITEM_TYPE =
+				"vnd.android.cursor.item/vnd.library.comment";
+		public static final String DEFAULT_SORT_ORDER =
+				" comments.timestamp desc";
+		
+		public static final Uri buildCommentUri(String commentId) {
+			return CONTENT_URI.buildUpon().appendPath(commentId).build();
+		}
+		
+		public static final String getCommentId(Uri uri) {
 			return uri.getPathSegments().get(1);
 		}
 	}

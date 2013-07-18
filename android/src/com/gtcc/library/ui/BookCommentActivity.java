@@ -1,8 +1,6 @@
 package com.gtcc.library.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -18,10 +16,9 @@ public class BookCommentActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment);
 		
-		//String bookTitle = getIntent().getExtras().getString(BOOK_TITLE);
+		String bookTitle = getIntent().getExtras().getString(BOOK_TITLE);
 
-		setTitle(R.string.add_review);
-		getSupportActionBar().setSubtitle("test");
+		setTitle(getString(R.string.add_review) + bookTitle);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 

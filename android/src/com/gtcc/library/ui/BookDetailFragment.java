@@ -64,6 +64,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private int mPage;
 	private int mSection;
 	private String mUserId;
+	private Book book;
 
 	private ImageFetcher mImageFetcher;
 
@@ -99,7 +100,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		if (item.getItemId() == R.id.add_review) {
 			Intent intent = new Intent(getActivity(), BookCommentActivity.class);
-			//intent.getExtras().putString(BookCommentActivity.BOOK_TITLE, mTitleView.getText().toString());
+			intent.putExtra(BookCommentActivity.BOOK_TITLE, book.getTitle());
 			getActivity().startActivityForResult(intent, ADD_REVIEW);
 		}
 		return super.onOptionsItemSelected(item);
@@ -173,8 +174,8 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (!cursor.moveToFirst()) {
 			return;
 		}
-
-		Book book = new Book();
+		
+		book = new Book();
 
 		String title = cursor.getString(BookQuery.BOOK_TITLE);
 		book.setTitle(title);
@@ -317,27 +318,27 @@ public class BookDetailFragment extends SherlockFragment implements
 		}
 	}
 
-	private class AsyncBookLoader extends AsyncTask<String, Void, Book> {
+	private class AsyncBookLoader extends AsyncTask<String, Void, Boolean> {
 
 		@Override
-		protected Book doInBackground(String... params) {
+		protected Boolean doInBackground(String... params) {
 			String bookId = params[0];
-			Book book = null;
 			try {
 				book = BookCollection.getBook(bookId);
 			} catch (IOException e) {
 				LogUtils.LOGE(TAG, "Unable to get book detail");
+				return false;
 			}
 
-			return book;
+			return true;
 		}
 
 		@Override
-		protected void onPostExecute(Book result) {
+		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 
-			if (result != null) {
-				setContentView(result);
+			if (result) {
+				setContentView(book);
 			} else {
 				Toast.makeText(getActivity(), R.string.load_failed,
 						Toast.LENGTH_SHORT).show();
