@@ -2,7 +2,9 @@ package com.gtcc.library.ui;
 
 import java.io.IOException;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -31,6 +33,8 @@ import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.BookCollection;
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.provider.LibraryContract.Comments;
+import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.LogUtils;
@@ -48,6 +52,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private ViewGroup mAuthorIntroBlock;
 	private ViewGroup mStatusActionBlock;
 	private ViewGroup mStatusNowBlock;
+	private ViewGroup mLoadingIndicator;
 
 	private TextView mTitleView;
 	private TextView mAuthorView;
@@ -58,9 +63,9 @@ public class BookDetailFragment extends SherlockFragment implements
 	private Button mStatusRead;
 	private Button mStatusWish;
 	private TextView mBookStatusText;
-	private ViewGroup mLoadingIndicator;
-
+	
 	private Uri mBookUri;
+	private Uri mCommentsUri;
 	private int mPage;
 	private int mSection;
 	private String mUserId;
@@ -80,6 +85,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (mBookUri == null || bundle == null)
 			return;
 
+		mCommentsUri = Books.buildCommentUri(Books.getBookId(mBookUri));
 		mPage = bundle.getInt(HomeActivity.ARG_PAGE_NUMBER);
 		mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
 		mUserId = bundle.getString(HomeActivity.USER_ID);
@@ -144,7 +150,10 @@ public class BookDetailFragment extends SherlockFragment implements
 		// R.anim.dismiss_ani);
 
 		if (mPage == HomeActivity.PAGE_USER)
-			getLoaderManager().initLoader(0, null, this);
+		{
+			getLoaderManager().initLoader(BookQuery._TOKEN, null, this);
+			getLoaderManager().initLoader(CommentQuery._TOKEN, null, this);
+		}
 		else
 			new AsyncBookLoader().execute(Books.getBookId(mBookUri));
 
@@ -164,9 +173,29 @@ public class BookDetailFragment extends SherlockFragment implements
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		return new CursorLoader(getActivity(), mBookUri, BookQuery.PROJECTION,
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		getActivity().getContentResolver().registerContentObserver(mCommentsUri, true, mObserver);
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		getActivity().getContentResolver().unregisterContentObserver(mObserver);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
+		CursorLoader cursor = null;
+		if (id == BookQuery._TOKEN) {
+			cursor = new CursorLoader(getActivity(), mBookUri, BookQuery.PROJECTION,
 				null, null, Books.DEFAULT_SORT_ORDER);
+		}
+		else {
+			cursor = new CursorLoader(getActivity(), mCommentsUri, CommentQuery.PROJECTION, 
+					null, null, Comments.DEFAULT_SORT_ORDER);
+		}
+		return cursor;
 	}
 
 	@Override
@@ -195,6 +224,17 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (requestCode == ADD_REVIEW) {
+			if (resultCode == Activity.RESULT_OK) {
+				
+			}
+		}
 	}
 
 	private void setContentView(Book book) {
@@ -352,8 +392,25 @@ public class BookDetailFragment extends SherlockFragment implements
 			super.onPreExecute();
 			mLoadingIndicator.setVisibility(View.VISIBLE);
 		}
-
 	}
+	
+	private final ContentObserver mObserver = new ContentObserver(new Handler()) {
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			
+			if (getActivity() == null) {
+				return;
+			}
+			
+			Loader<Cursor> loader = getLoaderManager().getLoader(CommentQuery._TOKEN);
+			if (loader != null) {
+				loader.forceLoad();
+			}
+		}
+		
+	};
 
 	public interface BookQuery {
 		int _TOKEN = 0;
@@ -370,6 +427,26 @@ public class BookDetailFragment extends SherlockFragment implements
 		public int BOOK_SUMMARY = 4;
 		public int AUTHOR_INTRO = 5;
 		public int BOOK_IMAGE_URL = 6;
+	}
+	
+	public interface CommentQuery {
+		int _TOKEN = 1;
+		
+		public final String[] PROJECTION = new String[] {
+				Comments._ID,
+				Comments.USER_ID,
+				Comments.REPLY_TO,
+				Comments.TIMESTAMP,
+				Users.USER_NAME,
+				Users.USER_IMAGE_URL,
+		};
+		
+		public int _ID = 0;
+		public int USER_ID = 1;
+		public int REPLY_TO = 2;
+		public int TIMESTAMP = 3;
+		public int USER_NAME = 4;
+		public int USER_IMAGE_URL = 5;
 	}
 
 	public interface UserBookQuery {
