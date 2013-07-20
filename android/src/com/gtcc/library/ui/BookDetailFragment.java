@@ -96,8 +96,6 @@ public class BookDetailFragment extends SherlockFragment implements
 		mImageFetcher.setImageFadeIn(false);
 
 		setHasOptionsMenu(true);
-		
-		getActivity().getContentResolver().registerContentObserver(mCommentsUri, true, mObserver);
 	}
 
 	@Override
@@ -176,18 +174,18 @@ public class BookDetailFragment extends SherlockFragment implements
 	public void onDestroy() {
 		super.onDestroy();
 		mImageFetcher.closeCache();
-		
-		getActivity().getContentResolver().unregisterContentObserver(mObserver);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		getActivity().getContentResolver().registerContentObserver(Comments.CONTENT_URI, true, mObserver);
 	}
 
 	@Override
 	public void onDetach() {
 		super.onDetach();
+		getActivity().getContentResolver().unregisterContentObserver(mObserver);
 	}
 
 	@Override
