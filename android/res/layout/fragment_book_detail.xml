@@ -142,4 +142,5 @@
     </ScrollView>
 
     <include layout="@layout/activity_loading" />
+
 </LinearLayout>

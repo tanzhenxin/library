@@ -22,7 +22,7 @@
     <color name="accent_1">#ff4683ec</color>
     
     <color name="text_count_color_pressed">#ff3b3b3b</color>
-    <color name="text_count_color_normal">#ff555555</color>
+    <color name="text_count_color_normal">#99555555</color>
     
     <color name="sticky_block_background">#ddffffff</color>
     <color name="comment_divider">#ffe6e6e6</color>

@@ -67,7 +67,6 @@ public class BezelImageView extends ImageView {
 
     private Bitmap mCached;
 
-    @SuppressLint("WrongCall")
 	private void invalidateCache() {
         if (mBounds == null || mBounds.width() == 0 || mBounds.height() == 0) {
             return;

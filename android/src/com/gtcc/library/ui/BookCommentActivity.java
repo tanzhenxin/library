@@ -1,5 +1,8 @@
 package com.gtcc.library.ui;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -81,7 +84,15 @@ public class BookCommentActivity extends SherlockActivity {
 		values.put(Comments.USER_ID, mUserId);
 		values.put(Comments.BOOK_ID, mBookId);
 		values.put(Comments.COMMENT, review);
-		values.put(Comments.TIMESTAMP, "7/20 11:08");
+		values.put(Comments.TIMESTAMP, getCurrentTime());
 		getContentResolver().insert(Comments.CONTENT_URI, values);
+	}
+	
+	private String getCurrentTime() {
+		Calendar now = Calendar.getInstance();
+		return String.format("%02d", now.get(Calendar.MONTH)) + "-" 
+				+ String.format("%02d", now.get(Calendar.DAY_OF_MONTH)) + " " 
+				+ String.format("%02d", now.get(Calendar.HOUR_OF_DAY)) + ":" 
+				+ String.format("%02d", now.get(Calendar.MINUTE));
 	}
 }

@@ -93,7 +93,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		mUserId = bundle.getString(HomeActivity.USER_ID);
 
 		mImageFetcher = Utils.getImageFetcher(getActivity());
-		mImageFetcher.setImageFadeIn(true);
+		mImageFetcher.setImageFadeIn(false);
 
 		setHasOptionsMenu(true);
 		
@@ -243,6 +243,11 @@ public class BookDetailFragment extends SherlockFragment implements
 		final ViewGroup reviewsGroup = (ViewGroup) mRootView.findViewById(R.id.book_reviews_block);
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		
+		// clear all children from this view group except the first child.
+		if (reviewsGroup.getChildCount() > 1) {
+			reviewsGroup.removeViews(1, reviewsGroup.getChildCount() -1);
+		}
+		
 		boolean hasReviews = false;
 		while (cursor.moveToNext()) {
 			final String comment = cursor.getString(CommentQuery.COMMENT);
@@ -285,7 +290,10 @@ public class BookDetailFragment extends SherlockFragment implements
 		
 		if (requestCode == ADD_REVIEW) {
 			if (resultCode == Activity.RESULT_OK) {
-				
+				Loader<Cursor> loader = getLoaderManager().getLoader(CommentQuery._TOKEN);
+				if (loader != null) {
+					loader.forceLoad();
+				}
 			}
 		}
 	}
