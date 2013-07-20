@@ -1,42 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:library="http://schemas.android.com/apk/res/com.gtcc.library"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/element_spacing_normal"
     android:layout_marginTop="@dimen/element_spacing_normal"
     android:orientation="vertical" >
 
-    <com.gtcc.library.ui.BezelImageView
-        android:id="@+id/speaker_image"
-        android:layout_width="@dimen/comment_user_image_size"
-        android:layout_height="@dimen/comment_user_image_size"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/comment_user_image_padding"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/person_image_empty"
-        library:borderDrawable="@drawable/circle_border"
-        library:maskDrawable="@drawable/circle_mask" />
-
-    <TextView
-        android:id="@+id/speaker_header"
-        style="@style/TextHeader3"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/speaker_image" />
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/speaker_abstract"
-        style="@style/TextBody"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/speaker_header"
-        android:layout_alignRight="@id/speaker_header"
-        android:layout_below="@id/speaker_header" />
+        <com.gtcc.library.ui.BezelImageView
+            android:id="@+id/user_image"
+            android:layout_width="@dimen/comment_user_image_size"
+            android:layout_height="@dimen/comment_user_image_size"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/element_spacing_normal"
+            android:layout_marginRight="@dimen/element_spacing_normal"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/person_image_empty"
+            library:borderDrawable="@drawable/circle_border"
+            library:maskDrawable="@drawable/circle_mask" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/user_name"
+            style="@style/TextHeader3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/user_image" />
+
+        <TextView
+            android:id="@+id/comment_date"
+            style="@style/TextFootNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/user_name"
+            android:layout_toRightOf="@id/user_image" />
+
+        <TextView
+            android:id="@+id/comment_content"
+            style="@style/TextBodyMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/user_image" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgDivider"
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_marginTop="@dimen/content_padding_normal"
+        android:scaleType="fitXY"
+        android:src="@color/comment_divider" />
+
+</LinearLayout>

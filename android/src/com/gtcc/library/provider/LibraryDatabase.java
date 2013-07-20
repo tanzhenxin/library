@@ -26,6 +26,8 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 		
 		String USER_BOOKS_JOIN_BOOKS = "user_books "
 				+ "LEFT OUTER JOIN books ON user_books.book_id=books.book_id";
+		String COMMENTS_JOIN_USERS = "comments "
+				+ "LEFT OUTER JOIN users ON comments.user_id=users.user_id";
 	}
 	
 	public interface UserBooks {

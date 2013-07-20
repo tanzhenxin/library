@@ -3,6 +3,7 @@ package com.gtcc.library.provider;
 import java.util.Arrays;
 
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.Tables;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
@@ -29,6 +30,7 @@ public class LibraryProvider extends ContentProvider {
 	public static final int USERS_ID = 101;
 	public static final int USERS_ID_BOOKS = 102;
 	public static final int USERS_ID_BOOKS_ID = 103;
+	public static final int USERS_ID_COMMENTS = 110;
 	
 	public static final int BOOKS = 200;
 	public static final int BOOKS_ID = 201;
@@ -36,6 +38,10 @@ public class LibraryProvider extends ContentProvider {
 	public static final int BOOKS_SELF = 203;
 	public static final int BOOKS_ENGLISH = 204;
 	public static final int BOOKS_MISC = 205;
+	public static final int BOOKS_ID_COMMENTS = 210;
+	
+	public static final int COMMENTS = 300;
+	public static final int COMMENTS_ID = 301;
 	
 	private static UriMatcher buildUriMatcher() {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -45,6 +51,7 @@ public class LibraryProvider extends ContentProvider {
 		sUriMatcher.addURI(authority, "users/*", USERS_ID);
 		sUriMatcher.addURI(authority, "users/*/books", USERS_ID_BOOKS);
 		sUriMatcher.addURI(authority, "users/*/books/*", USERS_ID_BOOKS_ID);
+		sUriMatcher.addURI(authority, "users/*/comments", USERS_ID_COMMENTS);
 		
 		sUriMatcher.addURI(authority, "books", BOOKS);
 		sUriMatcher.addURI(authority, "books/*", BOOKS_ID);
@@ -52,6 +59,10 @@ public class LibraryProvider extends ContentProvider {
 		sUriMatcher.addURI(authority, "books/self", BOOKS_SELF);
 		sUriMatcher.addURI(authority, "books/english", BOOKS_ENGLISH);
 		sUriMatcher.addURI(authority, "books/misc", BOOKS_MISC);
+		sUriMatcher.addURI(authority, "books/*/comments", BOOKS_ID_COMMENTS);
+		
+		sUriMatcher.addURI(authority, "comments", COMMENTS);
+		sUriMatcher.addURI(authority, "comments/*", COMMENTS_ID);
 		
 		return sUriMatcher;
 	}
@@ -74,6 +85,8 @@ public class LibraryProvider extends ContentProvider {
 			return Books.CONTENT_TYPE;
 		case USERS_ID_BOOKS_ID:
 			return Books.CONTENT_ITEM_TYPE;
+		case USERS_ID_COMMENTS:
+			return Comments.CONTENT_TYPE;
 			
 		case BOOKS:
 			return Books.CONTENT_TYPE;
@@ -87,6 +100,14 @@ public class LibraryProvider extends ContentProvider {
 			return Books.CONTENT_TYPE;
 		case BOOKS_MISC:
 			return Books.CONTENT_TYPE;
+		case BOOKS_ID_COMMENTS:
+			return Comments.CONTENT_TYPE;
+			
+		case COMMENTS:
+			return Comments.CONTENT_TYPE;
+		case COMMENTS_ID:
+			return Comments.CONTENT_ITEM_TYPE;
+			
         default:
             throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -156,6 +177,14 @@ public class LibraryProvider extends ContentProvider {
 					.table(Tables.BOOKS)
 					.where(Books.BOOK_CATEGORY + "=?", Books.CATEGORY_MISC);
 		}
+		case BOOKS_ID_COMMENTS: {
+			final String bookId = Books.getBookId(uri);
+			return queryBuilder
+					.table(Tables.COMMENTS_JOIN_USERS)
+					.mapToTable(Comments._ID, Tables.COMMENTS)
+					.mapToTable(Comments.USER_ID, Tables.COMMENTS)
+					.where(Comments.BOOK_ID + "=?", bookId);
+		}
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -176,6 +205,10 @@ public class LibraryProvider extends ContentProvider {
         	db.insertOrThrow(Tables.BOOKS, null, values);
         	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
         	return Books.buildBookUri(values.getAsString(Books.BOOK_ID));
+        case COMMENTS:
+        	long commentId = db.insertOrThrow(Tables.COMMENTS, null, values);
+        	getContext().getContentResolver().notifyChange(uri, null, syncToNetwork);
+        	return Books.buildCommentUri(values.getAsString(Comments.BOOK_ID), Long.toString(commentId));
         	
         case USERS_ID_BOOKS_ID:
         	db.insertOrThrow(Tables.USER_BOOKS, null, values);

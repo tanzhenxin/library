@@ -110,6 +110,14 @@ public final class LibraryContract {
 			return CONTENT_URI.buildUpon().appendPath(bookId).appendPath(PATH_COMMENTS).build();
 		}
 		
+		public static final Uri buildCommentUri(String bookId, String commentId) {
+			return CONTENT_URI.buildUpon()
+					.appendPath(bookId)
+					.appendPath(PATH_COMMENTS)
+					.appendPath(commentId)
+					.build();
+		}
+		
 		public static final String getBookId(Uri uri) {
 			return uri.getPathSegments().get(1);
 		}

@@ -61,7 +61,8 @@ public class Book implements Serializable, Comparable<Book> {
 	private String summary; 
 	private String title;
 	private String type;
-	private String url; 
+	private String url;
+	private String id;
 
 	public boolean isCollection() {
 		return collection;
@@ -85,14 +86,15 @@ public class Book implements Serializable, Comparable<Book> {
 
 	public void setUrl(String url) {
 		this.url = url;
+		this.id = this.url.substring(this.url.lastIndexOf("/") + 1);
 	}
 
 	public String getId() {
-		String id = "";
-		if (this.url != null) {
-			id = this.url.substring(this.url.lastIndexOf("/") + 1);
-		}
 		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getTitle() {

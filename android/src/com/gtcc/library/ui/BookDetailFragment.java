@@ -13,13 +13,15 @@ import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -94,6 +96,8 @@ public class BookDetailFragment extends SherlockFragment implements
 		mImageFetcher.setImageFadeIn(true);
 
 		setHasOptionsMenu(true);
+		
+		getActivity().getContentResolver().registerContentObserver(mCommentsUri, true, mObserver);
 	}
 
 	@Override
@@ -106,6 +110,8 @@ public class BookDetailFragment extends SherlockFragment implements
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		if (item.getItemId() == R.id.add_review) {
 			Intent intent = new Intent(getActivity(), BookCommentActivity.class);
+			intent.putExtra(BookCommentActivity.USER_ID, mUserId);
+			intent.putExtra(BookCommentActivity.BOOK_ID, book.getId());
 			intent.putExtra(BookCommentActivity.BOOK_TITLE, book.getTitle());
 			getActivity().startActivityForResult(intent, ADD_REVIEW);
 		}
@@ -170,18 +176,18 @@ public class BookDetailFragment extends SherlockFragment implements
 	public void onDestroy() {
 		super.onDestroy();
 		mImageFetcher.closeCache();
+		
+		getActivity().getContentResolver().unregisterContentObserver(mObserver);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		getActivity().getContentResolver().registerContentObserver(mCommentsUri, true, mObserver);
 	}
 
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		getActivity().getContentResolver().unregisterContentObserver(mObserver);
 	}
 
 	@Override
@@ -200,30 +206,77 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		if (getActivity() == null) {
+			return;
+		}
+		
+		if (loader.getId() == BookQuery._TOKEN) {
+			onBookQueryComplete(cursor);
+		}
+		else {
+			onCommentQueryComplete(cursor);
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+	}
+	
+	private void onBookQueryComplete(Cursor cursor) {
 		if (!cursor.moveToFirst()) {
 			return;
 		}
 		
 		book = new Book();
-
-		String title = cursor.getString(BookQuery.BOOK_TITLE);
-		book.setTitle(title);
-		String author = cursor.getString(BookQuery.BOOK_AUTHOR);
-		book.SetAuthor(author);
-		String summary = cursor.getString(BookQuery.BOOK_SUMMARY);
-		book.setSummary(summary);
-		String authorIntro = cursor.getString(BookQuery.AUTHOR_INTRO);
-		book.setAuthorIntro(authorIntro);
-		String imgUrl = cursor.getString(BookQuery.BOOK_IMAGE_URL);
-		book.setImgUrl(imgUrl);
-		String status = getCurrentStatus();
-		book.setStatus(status);
+		book.setId(cursor.getString(BookQuery.BOOK_ID));
+		book.setTitle(cursor.getString(BookQuery.BOOK_TITLE));
+		book.SetAuthor(cursor.getString(BookQuery.BOOK_AUTHOR));
+		book.setSummary(cursor.getString(BookQuery.BOOK_SUMMARY));
+		book.setAuthorIntro(cursor.getString(BookQuery.AUTHOR_INTRO));
+		book.setImgUrl(cursor.getString(BookQuery.BOOK_IMAGE_URL));
+		book.setStatus(getCurrentStatus());
 
 		setContentView(book);
 	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
+	
+	private void onCommentQueryComplete(Cursor cursor) {
+		final ViewGroup reviewsGroup = (ViewGroup) mRootView.findViewById(R.id.book_reviews_block);
+		LayoutInflater inflater = getActivity().getLayoutInflater();
+		
+		boolean hasReviews = false;
+		while (cursor.moveToNext()) {
+			final String comment = cursor.getString(CommentQuery.COMMENT);
+			if (TextUtils.isEmpty(comment)) {
+				continue;
+			}
+			
+			final String userName = cursor.getString(CommentQuery.USER_NAME);
+			final String userImageUrl = cursor.getString(CommentQuery.USER_IMAGE_URL);
+			final String timestamp = cursor.getString(CommentQuery.TIMESTAMP);
+			
+			final View commentView = inflater.inflate(R.layout.book_comment, reviewsGroup, false);
+			final ImageView userImageView = (ImageView) commentView.findViewById(R.id.user_image);
+			final TextView userNameView = (TextView) commentView.findViewById(R.id.user_name);
+			final TextView commentDateView = (TextView) commentView.findViewById(R.id.comment_date);
+			final TextView commentContentView = (TextView) commentView.findViewById(R.id.comment_content);
+			
+			userNameView.setText(userName);
+			commentDateView.setText(timestamp);
+			commentContentView.setText(comment);
+			mImageFetcher.loadThumbnailImage(userImageUrl, userImageView, R.drawable.person_image_empty);
+			
+			if (cursor.isLast()) {
+				final ImageView divider = (ImageView) commentView.findViewById(R.id.imgDivider);
+				divider.setVisibility(View.GONE);
+			}
+			
+			hasReviews = true;
+			reviewsGroup.addView(commentView);
+		}
+		
+		if (hasReviews) {
+			reviewsGroup.setVisibility(View.VISIBLE);
+		}
 	}
 	
 	@Override
@@ -436,6 +489,7 @@ public class BookDetailFragment extends SherlockFragment implements
 				Comments._ID,
 				Comments.USER_ID,
 				Comments.REPLY_TO,
+				Comments.COMMENT,
 				Comments.TIMESTAMP,
 				Users.USER_NAME,
 				Users.USER_IMAGE_URL,
@@ -444,9 +498,10 @@ public class BookDetailFragment extends SherlockFragment implements
 		public int _ID = 0;
 		public int USER_ID = 1;
 		public int REPLY_TO = 2;
-		public int TIMESTAMP = 3;
-		public int USER_NAME = 4;
-		public int USER_IMAGE_URL = 5;
+		public int COMMENT = 3;
+		public int TIMESTAMP = 4;
+		public int USER_NAME = 5;
+		public int USER_IMAGE_URL = 6;
 	}
 
 	public interface UserBookQuery {
