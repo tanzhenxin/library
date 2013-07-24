@@ -9,6 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/element_spacing_small"
         android:orientation="vertical" >
 
         <com.gtcc.library.ui.BezelImageView
@@ -44,21 +45,54 @@
             android:layout_below="@id/user_name"
             android:layout_toRightOf="@id/user_image" />
 
-        <TextView
-            android:id="@+id/comment_content"
-            style="@style/TextBodyMedium"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/comment_reply"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/user_image" />
+            android:layout_alignParentTop="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_reply" />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/quote_comment_block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/element_spacing_small"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/quote_comment_content"
+            style="@style/text_quote_comment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/element_spacing_normal" />
+
+        <ImageView
+            android:layout_width="1.0dip"
+            android:layout_height="fill_parent"
+            android:layout_alignBottom="@id/quote_comment_content"
+            android:layout_alignTop="@id/quote_comment_content"
+            android:layout_marginRight="@dimen/element_spacing_normal"
+            android:layout_toLeftOf="@id/quote_comment_content"
+            android:background="@color/comment_divider" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/comment_content"
+        style="@style/TextBodyMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/element_spacing_normal" />
 
     <ImageView
         android:id="@+id/imgDivider"
         android:layout_width="fill_parent"
         android:layout_height="1.0dip"
-        android:layout_marginTop="@dimen/content_padding_normal"
         android:scaleType="fitXY"
         android:src="@color/comment_divider" />
 

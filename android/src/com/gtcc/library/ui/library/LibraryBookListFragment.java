@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,8 @@ public class LibraryBookListFragment extends BookListFragment {
 
 	private List<Book> books;
 	private ViewGroup mLoadingIndicator;
+	
+	private AsyncLoader mAsyncLoader;
 
 	public LibraryBookListFragment() {
 	}
@@ -95,10 +98,20 @@ public class LibraryBookListFragment extends BookListFragment {
 	private void startLoad() {
 		switch (section) {
 		case HomeActivity.TAB_0:
-			new AsyncLoader().execute(newBooksLoader);
+			mAsyncLoader = new AsyncLoader();
+			mAsyncLoader.execute(newBooksLoader);
 			break;
 		default:
 			break;
+		}
+	}
+	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		
+		if (mAsyncLoader != null && mAsyncLoader.getStatus() != Status.FINISHED) {
+			mAsyncLoader.cancel(true);
 		}
 	}
 
@@ -125,6 +138,10 @@ public class LibraryBookListFragment extends BookListFragment {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
+				if (getActivity() == null || isCancelled()) {
+					return;
+				}
+				
 				setListAdapter(new LibraryBookListAdapter(getActivity(), books));
 			} else {
 				Toast.makeText(getActivity(),

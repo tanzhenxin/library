@@ -18,6 +18,7 @@
     <dimen name="comment_user_image_padding">8dp</dimen>
     
     <!-- body content -->
+    <dimen name="element_spacing_small">4dp</dimen>
     <dimen name="element_spacing_normal">8dp</dimen>
     <dimen name="content_padding_normal">16dp</dimen>
     <dimen name="image_small">16dp</dimen>

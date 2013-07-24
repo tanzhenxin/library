@@ -46,7 +46,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = LogUtils
 			.makeLogTag(BookDetailFragment.class);
-	
+
 	private int ADD_REVIEW = 0;
 
 	private ViewGroup mRootView;
@@ -65,7 +65,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private Button mStatusRead;
 	private Button mStatusWish;
 	private TextView mBookStatusText;
-	
+
 	private Uri mBookUri;
 	private Uri mCommentsUri;
 	private int mPage;
@@ -153,12 +153,10 @@ public class BookDetailFragment extends SherlockFragment implements
 		// mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
 		// R.anim.dismiss_ani);
 
-		if (mPage == HomeActivity.PAGE_USER)
-		{
-			getLoaderManager().initLoader(BookQuery._TOKEN, null, this);
-			getLoaderManager().initLoader(CommentQuery._TOKEN, null, this);
-		}
-		else
+		if (mPage == HomeActivity.PAGE_USER) {
+			getLoaderManager().restartLoader(BookQuery._TOKEN, null, this);
+			getLoaderManager().restartLoader(CommentQuery._TOKEN, null, this);
+		} else
 			new AsyncBookLoader().execute(Books.getBookId(mBookUri));
 
 		return mRootView;
@@ -179,7 +177,8 @@ public class BookDetailFragment extends SherlockFragment implements
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		getActivity().getContentResolver().registerContentObserver(Comments.CONTENT_URI, true, mObserver);
+		getActivity().getContentResolver().registerContentObserver(
+				Comments.CONTENT_URI, true, mObserver);
 	}
 
 	@Override
@@ -192,12 +191,12 @@ public class BookDetailFragment extends SherlockFragment implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
 		CursorLoader cursor = null;
 		if (id == BookQuery._TOKEN) {
-			cursor = new CursorLoader(getActivity(), mBookUri, BookQuery.PROJECTION,
-				null, null, Books.DEFAULT_SORT_ORDER);
-		}
-		else {
-			cursor = new CursorLoader(getActivity(), mCommentsUri, CommentQuery.PROJECTION, 
-					null, null, Comments.DEFAULT_SORT_ORDER);
+			cursor = new CursorLoader(getActivity(), mBookUri,
+					BookQuery.PROJECTION, null, null, Books.DEFAULT_SORT_ORDER);
+		} else {
+			cursor = new CursorLoader(getActivity(), mCommentsUri,
+					CommentQuery.PROJECTION, null, null,
+					Comments.DEFAULT_SORT_ORDER);
 		}
 		return cursor;
 	}
@@ -207,11 +206,10 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (getActivity() == null) {
 			return;
 		}
-		
+
 		if (loader.getId() == BookQuery._TOKEN) {
 			onBookQueryComplete(cursor);
-		}
-		else {
+		} else {
 			onCommentQueryComplete(cursor);
 		}
 	}
@@ -219,12 +217,12 @@ public class BookDetailFragment extends SherlockFragment implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 	}
-	
+
 	private void onBookQueryComplete(Cursor cursor) {
 		if (!cursor.moveToFirst()) {
 			return;
 		}
-		
+
 		book = new Book();
 		book.setId(cursor.getString(BookQuery.BOOK_ID));
 		book.setTitle(cursor.getString(BookQuery.BOOK_TITLE));
@@ -236,59 +234,98 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		setContentView(book);
 	}
-	
+
 	private void onCommentQueryComplete(Cursor cursor) {
-		final ViewGroup reviewsGroup = (ViewGroup) mRootView.findViewById(R.id.book_reviews_block);
+		final ViewGroup reviewsGroup = (ViewGroup) mRootView
+				.findViewById(R.id.book_reviews_block);
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-		
+
 		// clear all children from this view group except the first child.
 		if (reviewsGroup.getChildCount() > 1) {
-			reviewsGroup.removeViews(1, reviewsGroup.getChildCount() -1);
+			reviewsGroup.removeViews(1, reviewsGroup.getChildCount() - 1);
 		}
-		
+
 		boolean hasReviews = false;
 		while (cursor.moveToNext()) {
 			final String comment = cursor.getString(CommentQuery.COMMENT);
 			if (TextUtils.isEmpty(comment)) {
 				continue;
 			}
-			
+
 			final String userName = cursor.getString(CommentQuery.USER_NAME);
-			final String userImageUrl = cursor.getString(CommentQuery.USER_IMAGE_URL);
+			final String userImageUrl = cursor
+					.getString(CommentQuery.USER_IMAGE_URL);
 			final String timestamp = cursor.getString(CommentQuery.TIMESTAMP);
-			
-			final View commentView = inflater.inflate(R.layout.book_comment, reviewsGroup, false);
-			final ImageView userImageView = (ImageView) commentView.findViewById(R.id.user_image);
-			final TextView userNameView = (TextView) commentView.findViewById(R.id.user_name);
-			final TextView commentDateView = (TextView) commentView.findViewById(R.id.comment_date);
-			final TextView commentContentView = (TextView) commentView.findViewById(R.id.comment_content);
-			
+			final String mReplyAuthor = cursor
+					.getString(CommentQuery.REPLY_AUTHOR);
+			final String mReplyQuote = cursor
+					.getString(CommentQuery.REPLY_QUOTE);
+
+			final View commentView = inflater.inflate(R.layout.book_comment,
+					reviewsGroup, false);
+			final ImageView userImageView = (ImageView) commentView
+					.findViewById(R.id.user_image);
+			final TextView userNameView = (TextView) commentView
+					.findViewById(R.id.user_name);
+			final TextView commentDateView = (TextView) commentView
+					.findViewById(R.id.comment_date);
+			final TextView commentContentView = (TextView) commentView
+					.findViewById(R.id.comment_content);
+
 			userNameView.setText(userName);
 			commentDateView.setText(timestamp);
 			commentContentView.setText(comment);
-			mImageFetcher.loadThumbnailImage(userImageUrl, userImageView, R.drawable.person_image_empty);
-			
+			mImageFetcher.loadThumbnailImage(userImageUrl, userImageView,
+					R.drawable.person_image_empty);
+
+			final ImageView replyImageView = (ImageView) commentView
+					.findViewById(R.id.comment_reply);
+			replyImageView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getActivity(),
+							BookCommentActivity.class);
+					intent.putExtra(BookCommentActivity.USER_ID, mUserId);
+					intent.putExtra(BookCommentActivity.BOOK_ID, book.getId());
+					intent.putExtra(BookCommentActivity.REPLY_AUTHOR, userName);
+					intent.putExtra(BookCommentActivity.REPLY_COMMENT, comment);
+					getActivity().startActivityForResult(intent, ADD_REVIEW);
+				}
+			});
+
+			if (!TextUtils.isEmpty(mReplyAuthor)) {
+				final ViewGroup mCommentQuoteBlock = (ViewGroup) commentView
+						.findViewById(R.id.quote_comment_block);
+				final TextView mCommentQuoteContent = (TextView) commentView
+						.findViewById(R.id.quote_comment_content);
+				mCommentQuoteContent.setText(mReplyQuote);
+				mCommentQuoteBlock.setVisibility(View.VISIBLE);
+			}
+
 			if (cursor.isLast()) {
-				final ImageView divider = (ImageView) commentView.findViewById(R.id.imgDivider);
+				final ImageView divider = (ImageView) commentView
+						.findViewById(R.id.imgDivider);
 				divider.setVisibility(View.GONE);
 			}
-			
+
 			hasReviews = true;
 			reviewsGroup.addView(commentView);
 		}
-		
+
 		if (hasReviews) {
 			reviewsGroup.setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
 		if (requestCode == ADD_REVIEW) {
 			if (resultCode == Activity.RESULT_OK) {
-				Loader<Cursor> loader = getLoaderManager().getLoader(CommentQuery._TOKEN);
+				Loader<Cursor> loader = getLoaderManager().getLoader(
+						CommentQuery._TOKEN);
 				if (loader != null) {
 					loader.forceLoad();
 				}
@@ -452,23 +489,24 @@ public class BookDetailFragment extends SherlockFragment implements
 			mLoadingIndicator.setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	private final ContentObserver mObserver = new ContentObserver(new Handler()) {
 
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			
+
 			if (getActivity() == null) {
 				return;
 			}
-			
-			Loader<Cursor> loader = getLoaderManager().getLoader(CommentQuery._TOKEN);
+
+			Loader<Cursor> loader = getLoaderManager().getLoader(
+					CommentQuery._TOKEN);
 			if (loader != null) {
 				loader.forceLoad();
 			}
 		}
-		
+
 	};
 
 	public interface BookQuery {
@@ -487,27 +525,23 @@ public class BookDetailFragment extends SherlockFragment implements
 		public int AUTHOR_INTRO = 5;
 		public int BOOK_IMAGE_URL = 6;
 	}
-	
+
 	public interface CommentQuery {
 		int _TOKEN = 1;
-		
-		public final String[] PROJECTION = new String[] {
-				Comments._ID,
-				Comments.USER_ID,
-				Comments.REPLY_TO,
-				Comments.COMMENT,
-				Comments.TIMESTAMP,
-				Users.USER_NAME,
-				Users.USER_IMAGE_URL,
-		};
-		
+
+		public final String[] PROJECTION = new String[] { Comments._ID,
+				Comments.USER_ID, Comments.COMMENT, Comments.REPLY_AUTHOR,
+				Comments.REPLY_QUOTE, Comments.TIMESTAMP, Users.USER_NAME,
+				Users.USER_IMAGE_URL, };
+
 		public int _ID = 0;
 		public int USER_ID = 1;
-		public int REPLY_TO = 2;
-		public int COMMENT = 3;
-		public int TIMESTAMP = 4;
-		public int USER_NAME = 5;
-		public int USER_IMAGE_URL = 6;
+		public int COMMENT = 2;
+		public int REPLY_AUTHOR = 3;
+		public int REPLY_QUOTE = 4;
+		public int TIMESTAMP = 5;
+		public int USER_NAME = 6;
+		public int USER_IMAGE_URL = 7;
 	}
 
 	public interface UserBookQuery {

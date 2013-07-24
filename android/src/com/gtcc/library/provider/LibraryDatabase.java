@@ -14,7 +14,7 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 	
 	private final static String DATABASE_NAME = "library.db";
 	
-	private final static int DATABASE_VERSION = 6;
+	private final static int DATABASE_VERSION = 7;
 
 	private static final String TAG = "LibraryProvider";
 	
@@ -83,7 +83,8 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         		+ Comments.USER_ID + " TEXT NOT NULL,"
         		+ Comments.BOOK_ID + " TEXT NOT NULL,"
         		+ Comments.COMMENT + " TEXT NOT NULL,"
-        		+ Comments.REPLY_TO + " TEXT NULL,"
+        		+ Comments.REPLY_AUTHOR + " TEXT NULL,"
+        		+ Comments.REPLY_QUOTE + " TEXT NULL,"
         		+ Comments.TIMESTAMP + " TEXT NOT NULL,"
         		+ "UNIQUE (" + BaseColumns._ID + ") ON CONFLICT REPLACE)");
         Log.w(TAG, "Finish creating tables");

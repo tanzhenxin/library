@@ -35,7 +35,8 @@ public final class LibraryContract {
 		String USER_ID = "user_id";
 		String BOOK_ID = "book_id";
 		String COMMENT = "comment";
-		String REPLY_TO = "reply_to";
+		String REPLY_AUTHOR = "reply_author";
+		String REPLY_QUOTE = "reply_quote";
 		String TIMESTAMP = "timestamp";
 	}
 	

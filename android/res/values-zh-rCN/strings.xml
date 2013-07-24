@@ -36,6 +36,10 @@
 	<string name="no_network_connection_toast">没有网络连接</string>
 	<string name="add_review">评论：</string>
 	<string name="add_review_hint">写评论...</string>
+    <string name="add_comment">回复：</string>
+    <string name="add_comment_hint">写回复...</string>	
+    <string name="comment_not_empty">评论不能为空</string>
+    <string name="quote">：</string>
 	<string name="send_review">发送</string>
 	
 	<string name="book_from">来自: 豆瓣网</string>

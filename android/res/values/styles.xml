@@ -142,6 +142,11 @@
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/body_text_1</item>
     </style>
+    
+    <style name="text_quote_comment">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_count_color_normal</item>        
+    </style>
 
     <style name="TextFootNote">
         <item name="android:textSize">@dimen/text_size_small</item>

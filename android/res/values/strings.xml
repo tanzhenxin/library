@@ -32,7 +32,11 @@
     <string name="plus_one">+1</string>
     <string name="book_from">From: </string>
     <string name="add_review">Add review : </string>
-    <string name="add_review_hint">Add review</string>
+    <string name="add_review_hint">Add review...</string>
+    <string name="add_comment">Add comment : </string>
+    <string name="add_comment_hint">Add comment...</string>
+    <string name="comment_not_empty">Comment cannot be empty.</string>
+    <string name="quote"> : </string>
     <string name="send_review">Send</string>
     
     <string name="book_new_arrival">New Arrival</string>
