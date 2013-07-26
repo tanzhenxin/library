@@ -29,5 +29,6 @@
     <dimen name="text_size_diff_large_small">6sp</dimen>
     
     <dimen name="add_to_schedule_button_height">48.0dip</dimen>
+    <dimen name="login_input_height">50dp</dimen>
     
 </resources>

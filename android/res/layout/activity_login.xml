@@ -9,98 +9,121 @@
         android:orientation="vertical"
         android:padding="@dimen/content_padding_normal" >
 
-        <EditText
-            android:id="@+id/login_name"
-            style="@style/editbox"
+        <RelativeLayout
+            android:id="@+id/user_password_block"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_hint_user_name"
-            android:inputType="textPersonName" />
+            android:background="@drawable/person_item_normal" >
 
-        <EditText
-            android:id="@+id/login_password"
-            style="@style/editbox"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:hint="@string/login_hint_user_password"
-            android:inputType="textPassword" />
+            <TextView
+                android:id="@+id/user_label"
+                style="@style/RegisterText"
+                android:layout_marginLeft="@dimen/content_padding_normal"
+                android:text="@string/login_hint_user_name" />
 
-        <LinearLayout
+            <EditText
+                android:id="@+id/login_user"
+                style="@style/RegisterEdit"
+                android:layout_alignTop="@id/user_label"
+                android:layout_toRightOf="@id/user_label"
+                android:inputType="textPersonName" />
+
+            <View
+                android:id="@+id/line_separator"
+                style="@style/line_separator"
+                android:layout_below="@id/user_label" />
+
+            <TextView
+                android:id="@+id/password_label"
+                style="@style/RegisterText"
+                android:layout_alignLeft="@id/user_label"
+                android:layout_below="@id/line_separator"
+                android:text="@string/login_hint_user_password" />
+
+            <EditText
+                android:id="@+id/login_password"
+                style="@style/RegisterEdit"
+                android:layout_alignTop="@id/password_label"
+                android:layout_toRightOf="@id/password_label"
+                android:inputType="textPassword" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/login_signin"
+            style="@style/login_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/content_padding_normal"
             android:layout_marginTop="@dimen/content_padding_normal"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/login_signup"
-                style="@style/login_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/btn_blue"
-                android:text="@string/login_signup" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/element_spacing_normal"
-                android:layout_marginRight="@dimen/element_spacing_normal"
-                android:background="@color/transparent" />
-
-            <Button
-                android:id="@+id/login_signin"
-                style="@style/login_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/btn_red"
-                android:text="@string/login_signin" />
-        </LinearLayout>
+            android:background="@drawable/btn_blue"
+            android:text="@string/login_signin" />
 
         <RelativeLayout
-            android:id="@+id/or_layout"
+            android:id="@+id/separator_block"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/element_spacing_normal"
             android:layout_marginTop="@dimen/element_spacing_normal" >
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1.0dip"
-                android:layout_centerVertical="true"
-                android:background="@color/dialog_separator" />
+            <View style="@style/line_separator_accent" />
 
             <TextView
-                android:id="@+id/orText"
+                android:id="@+id/login_oauth_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/element_spacing_normal"
                 android:paddingRight="@dimen/element_spacing_normal"
-                android:text="@string/or"
+                android:text="@string/login_oauth_text"
                 android:textColor="@color/dialog_separator"
-                android:textSize="15.0dip" />
+                android:textSize="@dimen/text_size_large" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
 
-            <Button
+            <LinearLayout
                 android:id="@+id/login_douban"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_button_bg"
-                android:drawableLeft="@drawable/douban_connect"
-                android:drawablePadding="@dimen/element_spacing_normal"
-                android:drawableRight="@drawable/ic_navi_next"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="@dimen/element_spacing_normal"
-                android:text="@string/login_with_douban" />
+                style="@style/login_oauth_block"
+                android:background="@drawable/login_douban_bg" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/douban_connect" />
+
+                <TextView
+                    android:id="@+id/login_douban_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="@dimen/element_spacing_normal"
+                    android:text="@string/login_douban_text"
+                    android:textSize="@dimen/text_size_medium" />
+            </LinearLayout>
+
+            <View style="@style/vertical_line_separator" />
+
+            <LinearLayout
+                android:id="@+id/login_sina"
+                style="@style/login_oauth_block"
+                android:background="@drawable/login_sina_bg" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/sina_connect" />
+
+                <TextView
+                    android:id="@+id/login_sina_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="@dimen/element_spacing_normal"
+                    android:text="@string/login_sina_text"
+                    android:textSize="@dimen/text_size_medium" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
