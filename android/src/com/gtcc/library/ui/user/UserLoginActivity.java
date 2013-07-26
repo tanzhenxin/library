@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -18,7 +19,6 @@ public class UserLoginActivity extends Activity {
 	public static final int LOGIN_NORMAL = 0;
 	public static final int LOGIN_DOUBAN = 1;
 
-	private Button mDoubanLogin;
 	private Button mSignup;
 	private Button mSignin;
 	private EditText mUserName;
@@ -31,7 +31,15 @@ public class UserLoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 
-		mDoubanLogin = (Button) findViewById(R.id.login_douban);
+		mUserName = (EditText) findViewById(R.id.login_user);
+		mUserPassword = (EditText) findViewById(R.id.login_password);
+
+		mSignup = (Button) findViewById(R.id.login_signin);
+		mSignin = (Button) findViewById(R.id.login_signin);
+		mSignup.setOnClickListener(btnClickListener);
+		mSignin.setOnClickListener(btnClickListener);
+		
+		ViewGroup mDoubanLogin = (ViewGroup) findViewById(R.id.login_douban);
 		mDoubanLogin.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -42,14 +50,6 @@ public class UserLoginActivity extends Activity {
 			}
 
 		});
-
-		mUserName = (EditText) findViewById(R.id.login_name);
-		mUserPassword = (EditText) findViewById(R.id.login_password);
-
-		mSignup = (Button) findViewById(R.id.login_signup);
-		mSignin = (Button) findViewById(R.id.login_signin);
-		mSignup.setOnClickListener(btnClickListener);
-		mSignin.setOnClickListener(btnClickListener);
 	}
 
 	@Override

@@ -53,7 +53,11 @@
     <string name="login_hint_user_name">账号</string>
     <string name="login_hint_user_email">邮件</string>
     <string name="login_hint_user_password">密码</string>
+    <string name="login_oauth_text">使用第三方账号登陆</string>
+    <string name="login_douban_text">豆瓣</string>
     <string name="login_with_douban">使用豆瓣账号登陆</string>
+    <string name="login_sina_text">新浪微博</string>
+    <string name="login_with_sina">使用新浪微博账号登录</string>
     <string name="or">或</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
