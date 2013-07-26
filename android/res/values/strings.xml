@@ -38,6 +38,8 @@
     <string name="comment_not_empty">Comment cannot be empty.</string>
     <string name="quote"> : </string>
     <string name="send_review">Send</string>
+    <string name="cancel_comment">Cancel Comment?</string>
+    <string name="lost_comment">Your comment will be lost.</string>
     
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>

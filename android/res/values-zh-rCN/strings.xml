@@ -41,6 +41,8 @@
     <string name="comment_not_empty">评论不能为空</string>
     <string name="quote">：</string>
 	<string name="send_review">发送</string>
+	<string name="cancel_comment">取消发表？</string>
+	<string name="lost_comment">已输入的内容将会丢失</string>
 	
 	<string name="book_from">来自: 豆瓣网</string>
 	

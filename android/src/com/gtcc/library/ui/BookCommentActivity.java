@@ -1,25 +1,29 @@
 package com.gtcc.library.ui;
 
 import java.util.Calendar;
-import java.util.Date;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Comments;
 
-public class BookCommentActivity extends SherlockActivity {
+public class BookCommentActivity extends SherlockFragmentActivity {
 
 	public static final String USER_ID = "user_id";
 	public static final String BOOK_ID = "book_id";
@@ -54,7 +58,8 @@ public class BookCommentActivity extends SherlockActivity {
 			mEditText.setHint(R.string.add_comment_hint);
 
 			TextView quoteCommentContent = (TextView) findViewById(R.id.ref_comment_content);
-			quoteCommentContent.setText(mReplyAuthor + getString(R.string.quote) + mReplyQuote);
+			quoteCommentContent.setText(mReplyAuthor
+					+ getString(R.string.quote) + mReplyQuote);
 			quoteCommentContent.setVisibility(View.VISIBLE);
 		}
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,7 +75,7 @@ public class BookCommentActivity extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			finish();
+			confirmExit();
 			return true;
 		case R.id.send_review:
 			final String review = mEditText.getText().toString();
@@ -103,6 +108,15 @@ public class BookCommentActivity extends SherlockActivity {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			confirmExit();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	private void sendReview(String review) {
 		ContentValues values = new ContentValues();
@@ -125,5 +139,41 @@ public class BookCommentActivity extends SherlockActivity {
 				+ String.format("%02d", now.get(Calendar.DAY_OF_MONTH)) + " "
 				+ String.format("%02d", now.get(Calendar.HOUR_OF_DAY)) + ":"
 				+ String.format("%02d", now.get(Calendar.MINUTE));
+	}
+	
+	private void confirmExit() {
+		final String review = mEditText.getText().toString();
+		if (TextUtils.isEmpty(review)) {
+			finish();
+		}
+		else {
+			new CancelDialogFragment().show(getSupportFragmentManager(), "Exit");
+		}
+	}
+
+	class CancelDialogFragment extends DialogFragment implements
+			DialogInterface.OnClickListener {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle(R.string.cancel_comment)
+					.setMessage(R.string.lost_comment)
+					.setPositiveButton(R.string.ok, this)
+					.setNegativeButton(R.string.cancel, this);
+			return builder.create();
+		}
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				getActivity().finish();
+				break;
+			case DialogInterface.BUTTON_NEGATIVE:
+				dialog.dismiss();
+				break;
+			}
+		}
 	}
 }

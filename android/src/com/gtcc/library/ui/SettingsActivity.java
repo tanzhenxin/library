@@ -8,6 +8,7 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
@@ -34,9 +35,16 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 					break;
 				}
 			}
-			
 		});
 	}
 
-
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

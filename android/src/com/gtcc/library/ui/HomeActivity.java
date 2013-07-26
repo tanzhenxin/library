@@ -61,6 +61,7 @@ public class HomeActivity extends BaseActivity implements
 	private String mUserImageUrl;
 
 	private int REQUEST_LOGIN = 1;
+	private int SETTINGS = 2;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -203,6 +204,8 @@ public class HomeActivity extends BaseActivity implements
 	}
 
 	public void showPage(int position) {
+		boolean showContent = true;
+		
 		if (position != mCurrentPage) {
 			switch (position) {
 			case PAGE_USER:
@@ -216,12 +219,15 @@ public class HomeActivity extends BaseActivity implements
 				break;
 			case PAGE_SETTINGS:
 				showSettings();
+				showContent = false;
 				break;
 			}
 		}
 
-		mCurrentPage = position;
-		showContent();
+		if (showContent) {
+			mCurrentPage = position;
+			showContent();
+		}
 	}
 	
 	public boolean hasLogin() {
@@ -297,7 +303,7 @@ public class HomeActivity extends BaseActivity implements
 	
 	private void showSettings() {
 		Intent intent = new Intent(this, SettingsActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, SETTINGS);
 	}
 
 	private class LoadBooksAsyncTask extends AsyncTask<Void, Void, Boolean> {
