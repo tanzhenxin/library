@@ -16,6 +16,7 @@
     <dimen name="detail_image_height">120dp</dimen>
     <dimen name="comment_user_image_size">40dp</dimen>
     <dimen name="comment_user_image_padding">8dp</dimen>
+    <dimen name="register_user_image_size">80dp</dimen>
     
     <!-- body content -->
     <dimen name="element_spacing_small">4dp</dimen>

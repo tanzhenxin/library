@@ -1,6 +1,12 @@
 package com.gtcc.library.util;
 
+import java.util.List;
+
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
@@ -39,4 +45,19 @@ public class Utils {
         fetcher.addImageCache(activity);
         return fetcher;
     }
+    
+	public static boolean isIntentAvailable(Context context, String action) {
+	    final PackageManager packageManager = context.getPackageManager();
+	    final Intent intent = new Intent(action);
+	    List<ResolveInfo> list =
+	            packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+	    return list.size() > 0;
+	}
+	
+	public static boolean isIntentAvailable(Context context, Intent intent) {
+	    final PackageManager packageManager = context.getPackageManager();
+	    List<ResolveInfo> list =
+	            packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+	    return list.size() > 0;
+	}
 }

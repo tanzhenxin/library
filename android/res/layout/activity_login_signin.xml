@@ -13,7 +13,7 @@
             android:id="@+id/user_password_block"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/person_item_normal" >
+            android:background="@drawable/login_item_bg0" >
 
             <TextView
                 android:id="@+id/user_label"
