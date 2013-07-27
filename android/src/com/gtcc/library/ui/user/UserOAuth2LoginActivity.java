@@ -6,9 +6,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.oauth2.DefaultConfigs;
@@ -19,7 +22,7 @@ import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
 
-public class UserOAuth2LoginActivity extends Activity {
+public class UserOAuth2LoginActivity extends SherlockActivity {
 	private static final String TAG = LogUtils.makeLogTag(UserOAuth2LoginActivity.class);
 	
 	private WebView webview;
@@ -58,6 +61,19 @@ public class UserOAuth2LoginActivity extends Activity {
         // do OAuth2 login
         String authorizationUri = provider.getGetCodeRedirectUrl();
         webview.loadUrl(authorizationUri);
+        
+       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

@@ -11,16 +11,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.ui.HomeActivity;
 
-public class UserLoginActivity extends Activity {
+public class UserLoginActivity extends SherlockActivity {
 	public static final String LOGIN_TYPE = "login_type";
 	public static final int LOGIN_NORMAL = 0;
 	public static final int LOGIN_DOUBAN = 1;
 
-	private Button mSignup;
-	private Button mSignin;
 	private EditText mUserName;
 	private EditText mUserPassword;
 
@@ -29,16 +31,14 @@ public class UserLoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_login_signin);
 
 		mUserName = (EditText) findViewById(R.id.login_user);
 		mUserPassword = (EditText) findViewById(R.id.login_password);
 
-		mSignup = (Button) findViewById(R.id.login_signin);
-		mSignin = (Button) findViewById(R.id.login_signin);
-		mSignup.setOnClickListener(btnClickListener);
-		mSignin.setOnClickListener(btnClickListener);
-		
+		final Button mSignin = (Button) findViewById(R.id.login_signin);
+		mSignin.setOnClickListener(onLoginClicked);
+
 		ViewGroup mDoubanLogin = (ViewGroup) findViewById(R.id.login_douban);
 		mDoubanLogin.setOnClickListener(new OnClickListener() {
 
@@ -50,6 +50,29 @@ public class UserLoginActivity extends Activity {
 			}
 
 		});
+
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		View view = View.inflate(this, R.layout.login_register_btn, null);
+		final Button register = (Button) view.findViewById(android.R.id.button1);
+		register.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(UserLoginActivity.this, UserRegisterActivity.class);
+				startActivity(intent);
+			}
+		});
+		getSupportActionBar().setCustomView(view);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -67,7 +90,7 @@ public class UserLoginActivity extends Activity {
 		}
 	}
 
-	private OnClickListener btnClickListener = new OnClickListener() {
+	private OnClickListener onLoginClicked = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {

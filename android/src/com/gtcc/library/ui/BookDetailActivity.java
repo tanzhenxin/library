@@ -46,11 +46,8 @@ public class BookDetailActivity extends SherlockFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent parentIntent = new Intent(this, HomeActivity.class);
-            NavUtils.navigateUpTo(this, parentIntent);
-            
+            NavUtils.navigateUpFromSameTask(this);
             this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            
             return true;
         }
 

@@ -50,12 +50,25 @@
             android:logo="@drawable/ic_user_login" >
         </activity>
         <activity
+            android:name="com.gtcc.library.ui.user.UserRegisterActivity"
+            android:label="@string/login_signup"
+            android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gtcc.library.ui.user.UserLoginActivity" />
+        </activity>
+        <activity
             android:name="com.gtcc.library.ui.user.UserOAuth2LoginActivity"
-            android:label="@string/login_with_douban" >
+            android:label="@string/login_with_douban"
+            android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gtcc.library.ui.user.UserLoginActivity" />
         </activity>
         <activity
             android:name="com.gtcc.library.ui.BookDetailActivity"
-            android:label="@string/book_detail" >
+            android:label="@string/book_detail"
+            android:parentActivityName="com.gtcc.library.ui.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -66,7 +79,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value="com.gtcc.library.ui.HomeActivity" />
         </activity>
         <activity
             android:name="com.gtcc.library.ui.BookCommentActivity"

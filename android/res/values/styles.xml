@@ -74,7 +74,7 @@
 
     <!--
          SimpleListItems are items whose containers provides the appropriate padding, and
-         usually the container and content are a single view.
+         usually the container and content are a single view.
     -->
     <style name="SimpleListItem" parent="ListItemContainerBase">
         <item name="android:paddingLeft">12dp</item>
@@ -170,7 +170,6 @@
         <item name="android:imeOptions">actionNext</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/login_input_height</item>
-        <item name="android:layout_marginLeft">32dp</item>
     </style>
 
     <style name="login_button" parent="@android:style/Widget.Button">
@@ -178,7 +177,7 @@
         <item name="android:textSize">@dimen/text_size_xlarge</item>
         <item name="android:textColor">@color/white</item>
     </style>
-    
+
     <style name="login_oauth_block">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">@dimen/login_input_height</item>
@@ -199,11 +198,11 @@
     <style name="line_separator_accent" parent="line_separator">
         <item name="android:background">@color/dialog_separator</item>
     </style>
-    
+
     <style name="vertical_line_separator" parent="line_separator">
         <item name="android:layout_width">1.0dp</item>
         <item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_centerHorizontal">true</item>        
+        <item name="android:layout_centerHorizontal">true</item>
     </style>
 
 </resources>

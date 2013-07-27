@@ -26,6 +26,7 @@
                 style="@style/RegisterEdit"
                 android:layout_alignTop="@id/user_label"
                 android:layout_toRightOf="@id/user_label"
+                android:layout_marginLeft="32dp"
                 android:inputType="textPersonName" />
 
             <View
@@ -43,8 +44,8 @@
             <EditText
                 android:id="@+id/login_password"
                 style="@style/RegisterEdit"
-                android:layout_alignTop="@id/password_label"
-                android:layout_toRightOf="@id/password_label"
+                android:layout_alignLeft="@id/login_user"
+                android:layout_below="@id/line_separator"
                 android:inputType="textPassword" />
         </RelativeLayout>
 
@@ -55,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/content_padding_normal"
             android:layout_marginTop="@dimen/content_padding_normal"
-            android:background="@drawable/btn_blue"
+            android:background="@drawable/btn_cyan"
             android:text="@string/login_signin" />
 
         <RelativeLayout
