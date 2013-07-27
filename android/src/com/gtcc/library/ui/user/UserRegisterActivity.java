@@ -1,11 +1,14 @@
 package com.gtcc.library.ui.user;
 
 import java.io.File;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,7 +108,8 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 							Environment
 									.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
 							"tmp_avatar_"
-									+ String.valueOf(System.currentTimeMillis())));
+									+ String.valueOf(System.currentTimeMillis()
+											+ ".jpg")));
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
 			intent.putExtra("return-data", true);
 			startActivityForResult(intent, TAKE_PHOTO);
@@ -121,15 +125,22 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 		if (Utils.isIntentAvailable(this, intent)) {
 			startActivityForResult(intent, REQUEST_IMAGE);
 		} else {
-			Toast.makeText(this, R.string.camera_not_found, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, "Cannot find image gallery",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	private void cropImage() {
 		Intent intent = new Intent(ACTION_IMAGE_CROP);
 		intent.setType("image/*");
-		if (Utils.isIntentAvailable(this, intent)) {
+		List<ResolveInfo> list = getPackageManager().queryIntentActivities(
+				intent, 0);
+
+		if (list.size() == 0) {
+			Toast.makeText(this, "Cannot find image crop app",
+					Toast.LENGTH_SHORT).show();
+			return;
+		} else {
 			intent.setData(mPhotoUri);
 			intent.putExtra("outputX", 200);
 			intent.putExtra("outputY", 200);
@@ -137,10 +148,14 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			intent.putExtra("aspectY", 1);
 			intent.putExtra("scale", true);
 			intent.putExtra("return-data", true);
-			startActivityForResult(intent, REQUEST_CROP);
-		} else {
-			Toast.makeText(this, R.string.camera_not_found, Toast.LENGTH_SHORT)
-					.show();
+
+			Intent i = new Intent(intent);
+			ResolveInfo res = list.get(0);
+
+			i.setComponent(new ComponentName(res.activityInfo.packageName,
+					res.activityInfo.name));
+
+			startActivityForResult(i, REQUEST_CROP);
 		}
 	}
 
