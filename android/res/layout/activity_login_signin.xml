@@ -6,6 +6,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:padding="@dimen/content_padding_normal" >
 
@@ -25,8 +27,8 @@
                 android:id="@+id/login_user"
                 style="@style/RegisterEdit"
                 android:layout_alignTop="@id/user_label"
-                android:layout_toRightOf="@id/user_label"
                 android:layout_marginLeft="32dp"
+                android:layout_toRightOf="@id/user_label"
                 android:inputType="textPersonName" />
 
             <View
