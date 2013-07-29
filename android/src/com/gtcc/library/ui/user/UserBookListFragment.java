@@ -26,6 +26,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Users;
@@ -64,6 +67,17 @@ public class UserBookListFragment extends BookListFragment implements
 		return rootView;
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.books_list_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
+	}
+
 	@Override
 	protected int getPage() {
 		return HomeActivity.PAGE_USER;

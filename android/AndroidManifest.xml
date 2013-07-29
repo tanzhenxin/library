@@ -87,6 +87,26 @@
             android:name="com.gtcc.library.ui.BookCommentActivity"
             android:label="@string/add_review" >
         </activity>
+        <activity
+            android:name="com.gtcc.library.ui.SearchActivty"
+            android:label="@string/title_search"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gtcc.libary.ui.HomeActivity" />
+        </activity>
+        
+        <meta-data android:name="android.app.default_searchable"
+            android:value="com.gtcc.library.ui.SearchActivty"/>
     </application>
 
 </manifest>
