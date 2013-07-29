@@ -4,21 +4,28 @@ import java.io.IOException;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.BookCollection;
@@ -32,6 +39,7 @@ import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.user.UserOAuth2LoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.gtcc.library.util.HttpManager;
+import com.gtcc.library.util.Utils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class HomeActivity extends BaseActivity implements
@@ -116,9 +124,42 @@ public class HomeActivity extends BaseActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		getSupportMenuInflater().inflate(R.menu.books_list_menu, menu);
+		setupSearchMenuItem(menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_search:
+            if (!Utils.hasHoneycomb()) {
+            	startSearch(null, false, Bundle.EMPTY, false);
+                return true;
+            }
+            break;
+		case R.id.menu_refresh:
+			triggerRefresh();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupSearchMenuItem(Menu menu) {
+		MenuItem searchMenu = menu.findItem(R.id.menu_search);
+		if (searchMenu != null && Utils.hasHoneycomb()) {
+			SearchView searchView = (SearchView) searchMenu.getActionView();
+			if (searchView != null) {
+				SearchManager searchManager = (SearchManager) getSystemService(Activity.SEARCH_SERVICE);
+				SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
+				searchView.setSearchableInfo(info);
+			}
+		}
+	}
+	
+	private void triggerRefresh() {
+		
 	}
 
 	@Override

@@ -88,7 +88,7 @@
             android:label="@string/add_review" >
         </activity>
         <activity
-            android:name="com.gtcc.library.ui.SearchActivty"
+            android:name="com.gtcc.library.ui.SearchActivity"
             android:label="@string/title_search"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -106,7 +106,7 @@
         </activity>
         
         <meta-data android:name="android.app.default_searchable"
-            android:value="com.gtcc.library.ui.SearchActivty"/>
+            android:value="com.gtcc.library.ui.SearchActivity"/>
     </application>
 
 </manifest>

@@ -3,10 +3,13 @@ package com.gtcc.library.ui.library;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,20 +58,33 @@ public class LibraryBookListFragment extends BookListFragment {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 		mLoadingIndicator = (ViewGroup) rootView.findViewById(R.id.loading_progress);
 		
-		startLoad();
+		reloadFromArguments(getArguments());
+		
 		return rootView;
 	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.books_list_menu, menu);
-
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
+	
+	public void reloadFromArguments(Bundle arguments) {
+		if (arguments == null) {
+			return;
+		}
+		
+		if (mAsyncLoader != null) {
+			mAsyncLoader.cancel(true);
+		}
+		mAsyncLoader = new AsyncLoader();
+		
+		switch (section) {
+		case HomeActivity.TAB_0:
+			mAsyncLoader.execute(newBooksLoader);
+			break;
+		case HomeActivity.TAB_1:
+		case HomeActivity.TAB_2:
+			break;
+		case -1:
+			String query = arguments.getString(SearchManager.QUERY);
+			mAsyncLoader.execute(newBooksLoader);
+			break;
+		}
 	}
 
 	@Override
@@ -94,17 +110,6 @@ public class LibraryBookListFragment extends BookListFragment {
 		}
 	
 	};
-	
-	private void startLoad() {
-		switch (section) {
-		case HomeActivity.TAB_0:
-			mAsyncLoader = new AsyncLoader();
-			mAsyncLoader.execute(newBooksLoader);
-			break;
-		default:
-			break;
-		}
-	}
 	
 	@Override
 	public void onDetach() {

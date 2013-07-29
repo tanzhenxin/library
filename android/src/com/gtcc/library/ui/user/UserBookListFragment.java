@@ -1,15 +1,16 @@
 package com.gtcc.library.ui.user;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
-import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -17,13 +18,10 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
@@ -35,9 +33,6 @@ import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.ui.BookListFragment;
 import com.gtcc.library.ui.HomeActivity;
-import com.gtcc.library.util.ImageCache.ImageCacheParams;
-import com.gtcc.library.util.ImageFetcher;
-import com.gtcc.library.util.ImageWorker;
 import com.gtcc.library.util.Utils;
 
 /**
@@ -65,17 +60,6 @@ public class UserBookListFragment extends BookListFragment implements
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		return rootView;
-	}
-	
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.books_list_menu, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

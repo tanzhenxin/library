@@ -85,12 +85,6 @@ public class BaseActivity extends SlidingFragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
 	
     /**
      * Converts an intent into a {@link Bundle} suitable for use as fragment arguments.

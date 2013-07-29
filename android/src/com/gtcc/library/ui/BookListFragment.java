@@ -18,7 +18,7 @@ import com.gtcc.library.util.ImageCache.ImageCacheParams;
 
 public abstract class BookListFragment extends SherlockListFragment {
 	private static final String IMAGE_CACHE_DIR = "images";
-	protected int section;
+	protected int section = -1;
 
 	protected ImageFetcher mImageFetcher;
 	protected Animation mApplaudAnimation;
@@ -80,7 +80,11 @@ public abstract class BookListFragment extends SherlockListFragment {
 			}
 		});
 		
-		section = getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER);
+		Bundle arguments = getArguments();
+		if (arguments != null) {
+			section = arguments.getInt(HomeActivity.ARG_SECTION_NUMBER, -1);
+		}
+		
 		mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
 				R.anim.dismiss_ani);
 		return rootView;

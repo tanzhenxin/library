@@ -75,6 +75,7 @@
 	<string name="pref_title_log_out">登出</string>
 	<string name="pref_logout_confirm">确定要登出？</string>
 	
-	<string name="title_search">搜索结果：</string>
+	<string name="title_search">搜索</string>
+	<string name="title_search_query">搜索 \"&lt;b>%1$s&lt;b>\"</string>
 	<string name="search_hint">搜索图书</string>
 </resources>

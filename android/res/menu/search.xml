@@ -8,11 +8,5 @@
         android:orderInCategory="100"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_search"/>
-    <item
-        android:id="@+id/menu_refresh"
-        android:icon="@drawable/ic_action_refresh"
-        android:orderInCategory="200"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_refresh"/>
 
 </menu>
