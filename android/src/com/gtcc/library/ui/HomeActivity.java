@@ -3,7 +3,6 @@ package com.gtcc.library.ui;
 import java.io.IOException;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
@@ -11,12 +10,10 @@ import android.app.SearchableInfo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
@@ -36,13 +32,11 @@ import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.ui.library.LibraryPagerAdapter;
 import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.ui.user.UserLoginActivity;
-import com.gtcc.library.ui.user.UserOAuth2LoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
-import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.Utils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class HomeActivity extends BaseActivity implements
+public class HomeActivity extends SlidingFragmentActivity implements
 		ActionBar.TabListener, UserBookListFragment.Callbacks {
 
 	public static final int PAGE_USER = 0;
@@ -55,18 +49,6 @@ public class HomeActivity extends BaseActivity implements
 
 	public static final String ARG_PAGE_NUMBER = "page_number";
 	public static final String ARG_SECTION_NUMBER = "section_number";
-
-	public static final String ACCESS_TOKEN = "access_token";
-	public static final String USER_ID = "user_id";
-	public static final String USER_NAME = "user_name";
-	public static final String USER_PASSWORD = "user_password";
-	public static final String USER_IMAGE_URL = "user_image_url";
-	
-	private String mAccessToken;
-	private String mUserId;
-	private String mUserName;
-	private String mUserPassword;
-	private String mUserImageUrl;
 
 	private int REQUEST_LOGIN = 1;
 	private int SETTINGS = 2;
@@ -116,7 +98,6 @@ public class HomeActivity extends BaseActivity implements
 					}
 				});
 
-		loadUserInfo();
 		showPage(PAGE_USER);
 
 		getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -193,12 +174,6 @@ public class HomeActivity extends BaseActivity implements
 					mUserId = data.getExtras().getString(USER_ID);
 					mUserName = data.getExtras().getString(USER_NAME);
 					mUserPassword = data.getExtras().getString(USER_PASSWORD);
-
-					Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-					editor.putString(USER_ID, mUserId);
-					editor.putString(USER_NAME, mUserName);
-					editor.putString(USER_PASSWORD, mUserPassword);
-					editor.commit();
 				} else {
 					UserInfo userInfo = (UserInfo) data.getExtras()
 							.getSerializable(USER_ID);
@@ -206,13 +181,6 @@ public class HomeActivity extends BaseActivity implements
 					mUserName = userInfo.getUserName();
 					mUserImageUrl = userInfo.getUserImageUrl();
 					mAccessToken = data.getExtras().getString(ACCESS_TOKEN);
-
-					Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-					editor.putString(USER_ID, mUserId);
-					editor.putString(USER_NAME, mUserName);
-					editor.putString(USER_IMAGE_URL, mUserImageUrl);
-					editor.putString(ACCESS_TOKEN, mAccessToken);
-					editor.commit();
 
 					new LoadBooksAsyncTask().execute();
 				}
@@ -226,22 +194,6 @@ public class HomeActivity extends BaseActivity implements
 				break;
 			}
 		}
-	}
-	
-	private void loadUserInfo() {
-		mUserId = getPreferences(Context.MODE_PRIVATE).getString(USER_ID, "0");
-		mUserName = getPreferences(Context.MODE_PRIVATE).getString(USER_NAME, null);
-		mUserPassword = getPreferences(Context.MODE_PRIVATE).getString(USER_PASSWORD, null);
-		mUserImageUrl = getPreferences(Context.MODE_PRIVATE).getString(USER_IMAGE_URL, null);
-		mAccessToken = getPreferences(Context.MODE_PRIVATE).getString(ACCESS_TOKEN, null);
-	}
-
-	private void storeUserInfo() {
-		ContentValues values = new ContentValues();
-		values.put(Users.USER_ID, mUserId);
-		values.put(Users.USER_NAME, mUserName);
-		values.put(Users.USER_IMAGE_URL, mUserImageUrl);
-		getContentResolver().insert(Users.CONTENT_URI, values);
 	}
 
 	public void showPage(int position) {
@@ -349,7 +301,6 @@ public class HomeActivity extends BaseActivity implements
 
 	private class LoadBooksAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-		@SuppressLint("NewApi")
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			try {
@@ -364,7 +315,6 @@ public class HomeActivity extends BaseActivity implements
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return false;
 			}

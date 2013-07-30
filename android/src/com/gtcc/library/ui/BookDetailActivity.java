@@ -10,12 +10,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 
-public class BookDetailActivity extends SherlockFragmentActivity {
+public class BookDetailActivity extends BaseActivity {
 	
 	private Fragment mFragment;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public  void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_book_detail);
 
@@ -29,7 +29,7 @@ public class BookDetailActivity extends SherlockFragmentActivity {
 
 		if (savedInstanceState == null) {
 			mFragment = new BookDetailFragment();
-			mFragment.setArguments(BaseActivity.intentToFragmentArguments(getIntent()));
+			mFragment.setArguments(intentToFragmentArguments(getIntent()));
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.root_container, mFragment, "single_pane")
 					.commit();

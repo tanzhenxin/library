@@ -79,8 +79,11 @@ public class BookDetailFragment extends SherlockFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final Intent intent = BaseActivity
-				.fragmentArgumentsToIntent(getArguments());
+		BookDetailActivity activity = (BookDetailActivity) getActivity();
+		if (activity == null)
+			return;
+		
+		final Intent intent = activity.fragmentArgumentsToIntent(getArguments());
 		mBookUri = intent.getData();
 		Bundle bundle = intent.getExtras();
 
@@ -338,13 +341,13 @@ public class BookDetailFragment extends SherlockFragment implements
 		mAuthorView.setText(book.getAuthor());
 
 		String summary = book.getSummary();
-		if (summary != null && !summary.isEmpty())
+		if (summary != null && !TextUtils.isEmpty(summary))
 			mSummaryView.setText(summary);
 		else
 			mSummaryBlock.setVisibility(View.GONE);
 
 		String authorIntro = book.getAuthorIntro();
-		if (authorIntro != null && !authorIntro.isEmpty())
+		if (authorIntro != null && !TextUtils.isEmpty(authorIntro))
 			mAuthorIntroView.setText(authorIntro);
 		else
 			mAuthorIntroBlock.setVisibility(View.GONE);

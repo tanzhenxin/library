@@ -23,7 +23,6 @@ import com.gtcc.library.oauth2.AccessToken;
 import com.gtcc.library.oauth2.Converters;
 import com.gtcc.library.oauth2.DefaultConfigs;
 import com.gtcc.library.oauth2.DoubanException;
-import com.gtcc.library.provider.LibraryProvider;
 
 public class HttpManager {
 
@@ -205,7 +204,7 @@ public class HttpManager {
 
 		return books;
 	}
-
+	
 	private String constructParams(Map<String, String> params)
 			throws UnsupportedEncodingException {
 		StringBuffer sb = new StringBuffer();

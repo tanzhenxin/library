@@ -82,7 +82,7 @@ public class LibraryBookListFragment extends BookListFragment {
 			break;
 		case -1:
 			String query = arguments.getString(SearchManager.QUERY);
-			mAsyncLoader.execute(newBooksLoader);
+			mAsyncLoader.execute(new SearchBooksLoader(query));
 			break;
 		}
 	}
@@ -97,7 +97,16 @@ public class LibraryBookListFragment extends BookListFragment {
 	protected int getPage() {
 		return HomeActivity.PAGE_LIBRARY;
 	}
-
+	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		
+		if (mAsyncLoader != null && mAsyncLoader.getStatus() != Status.FINISHED) {
+			mAsyncLoader.cancel(true);
+		}
+	}
+	
 	private interface Loader {
 		List<Book> loadBooks() throws IOException;
 	}
@@ -111,13 +120,19 @@ public class LibraryBookListFragment extends BookListFragment {
 	
 	};
 	
-	@Override
-	public void onDetach() {
-		super.onDetach();
+	class SearchBooksLoader implements Loader {
 		
-		if (mAsyncLoader != null && mAsyncLoader.getStatus() != Status.FINISHED) {
-			mAsyncLoader.cancel(true);
+		String query;
+		
+		public SearchBooksLoader(String query) {
+			this.query = query;
 		}
+
+		@Override
+		public List<Book> loadBooks() throws IOException {
+			return HttpManager.getDoubanNewBooks();
+		}
+		
 	}
 
 	private class AsyncLoader extends AsyncTask<Loader, Void, Boolean> {

@@ -17,13 +17,13 @@ import com.gtcc.library.R;
 import com.gtcc.library.ui.library.LibraryBookListFragment;
 import com.gtcc.library.util.Utils;
 
-public class SearchActivity extends SherlockFragmentActivity
+public class SearchActivity extends BaseActivity
 	implements BookListFragment.Callbacks {
 	
 	LibraryBookListFragment mBooksFragment;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 		
@@ -51,7 +51,7 @@ public class SearchActivity extends SherlockFragmentActivity
 		String query = intent.getStringExtra(SearchManager.QUERY);
 		
 		setTitle(Html.fromHtml(getString(R.string.title_search_query, query)));
-		mBooksFragment.reloadFromArguments(BaseActivity.intentToFragmentArguments(intent));
+		mBooksFragment.reloadFromArguments(intentToFragmentArguments(intent));
 	}
 
 	@Override
