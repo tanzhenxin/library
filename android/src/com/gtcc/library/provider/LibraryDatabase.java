@@ -4,6 +4,7 @@ import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -23,6 +24,8 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 		String BOOKS = "books";
 		String COMMENTS = "comments";
 		String USER_BOOKS = "user_books";
+		
+		String SEARCH_SUGGEST = "search_suggest";
 		
 		String USER_BOOKS_JOIN_BOOKS = "user_books "
 				+ "LEFT OUTER JOIN books ON user_books.book_id=books.book_id";
@@ -87,6 +90,13 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         		+ Comments.REPLY_QUOTE + " TEXT NULL,"
         		+ Comments.TIMESTAMP + " TEXT NOT NULL,"
         		+ "UNIQUE (" + BaseColumns._ID + ") ON CONFLICT REPLACE)");
+        
+        Log.w(TAG, "Creating search_suggest table");
+        db.execSQL("CREATE TABLE " + Tables.SEARCH_SUGGEST + " ("
+                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + SearchManager.SUGGEST_COLUMN_TEXT_1 + " TEXT NOT NULL,"
+                + "UNIQUE (" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") ON CONFLICT REPLACE)");
+        
         Log.w(TAG, "Finish creating tables");
 	}
 
@@ -101,9 +111,13 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Tables.BOOKS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.USER_BOOKS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.COMMENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.SEARCH_SUGGEST);
 
         // Recreates the database with a new version
         onCreate(db);
 	}
 
+    public static void deleteDatabase(Context context) {
+        context.deleteDatabase(DATABASE_NAME);
+    }
 }

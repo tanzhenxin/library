@@ -3,7 +3,9 @@ package com.gtcc.library.ui;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +16,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.provider.LibraryContract.SearchSuggest;
 import com.gtcc.library.ui.library.LibraryBookListFragment;
 import com.gtcc.library.util.Utils;
 
@@ -52,6 +56,14 @@ public class SearchActivity extends BaseActivity
 		
 		setTitle(Html.fromHtml(getString(R.string.title_search_query, query)));
 		mBooksFragment.reloadFromArguments(intentToFragmentArguments(intent));
+		
+		addSearchSuggest(query);
+	}
+	
+	private void addSearchSuggest(String query) {
+		ContentValues values = new ContentValues();
+		values.put(SearchManager.SUGGEST_COLUMN_TEXT_1, query);
+		getContentResolver().insert(SearchSuggest.CONTENT_URI, values);
 	}
 
 	@Override
@@ -111,8 +123,14 @@ public class SearchActivity extends BaseActivity
 	}
 
 	@Override
-	public boolean OnBookSelected(String bookId, int page, int tab) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean OnBookSelected(String bookId, int page, int section) {
+		Uri sessionUri = Books.buildBookUri(bookId);
+		Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
+		detailIntent.putExtra(HomeActivity.ARG_PAGE_NUMBER, page);
+		detailIntent.putExtra(HomeActivity.ARG_SECTION_NUMBER, section);
+		detailIntent.putExtra(USER_ID, mUserId);
+		startActivity(detailIntent);
+		
+		return true;
 	}
 }

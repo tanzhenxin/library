@@ -104,6 +104,53 @@ public class BookCollection {
 		return book;
 	}
 	
+	public List<Book> searchBooks(String query) throws IOException
+	{
+		HttpManager httpManager = new HttpManager();
+		
+		List<Book> books = new ArrayList<Book>();
+		count = 20;
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(START, Integer.valueOf(start).toString());
+		params.put(COUNT, Integer.valueOf(count).toString());
+		params.put(DefaultConfigs.API_BOOK_SEARCH_KEY, query);
+
+		String response = httpManager.doGetRequest(getSearchBookUrl(), params, false);
+		try {
+			JSONObject jObj = new JSONObject(response);
+
+			total = jObj.getInt(TOTAL);
+			start = jObj.getInt(START);
+			count = jObj.getInt(COUNT);
+
+			JSONArray jArray = jObj.getJSONArray("books");
+			for (int i = 0; i < jArray.length(); ++i) {
+				JSONObject bookObj = jArray.getJSONObject(i);
+				
+				Book book = new Book();
+				book.setUrl(bookObj.getString("url"));
+				book.setTitle(bookObj.getString("title"));
+				book.SetAuthor(bookObj.getString("author"));
+				book.setAuthorIntro(bookObj.getString("author_intro").replace(
+						"\n", "\n\n"));
+				book.setSummary(bookObj.getString("summary").replace("\n",
+						"\n\n"));
+				book.setRating((float) bookObj.getJSONObject("rating")
+						.getDouble("average"));
+				book.setImgUrl(bookObj.getString("image").replace("mpic",
+						"lpic"));
+
+				books.add(book);
+			}
+
+		} catch (JSONException e) {
+			total = 0;
+			LogUtils.LOGE(TAG, "Unable to parse json string: " + response);
+		}
+
+		return books;
+	}
+	
 	public static String getStaredBooksUrl(String uid) {
 		return DefaultConfigs.API_URL_PREFIX
 				+ String.format(DefaultConfigs.API_USER_BOOKS_COLLECTION, uid);
@@ -111,5 +158,10 @@ public class BookCollection {
 	
 	public static String getStaredBookUrl(String bookId) {
 		return DefaultConfigs.API_URL_PREFIX + DefaultConfigs.API_BOOK_INFO + bookId;
+	}
+	
+	public static String getSearchBookUrl()
+	{
+		return DefaultConfigs.API_URL_PREFIX + DefaultConfigs.API_BOOK_SEARCH;
 	}
 }

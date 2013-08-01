@@ -69,9 +69,13 @@
 	<string name="pref_title_edit_account">Edit Account</string>
 	<string name="pref_title_log_out">Log out</string>
 	<string name="pref_logout_confirm">Are you sure to log out?</string>
+	<string name="pref_others">Others</string>
+	<string name="pref_title_check_update">Check for update</string>
+	<string name="pref_title_feedback">Feedback</string>
+	<string name="pref_title_about">About GTCC Library</string>
 	
 	<string name="title_search">Search result: </string>
 	<string name="title_search_query">Search for \"&lt;b>%1$s&lt;b>\"</string>
 	<string name="search_hint">Search Books</string>
-	
+	<string name="feedback_hint">Add your feedback...</string>
 </resources>

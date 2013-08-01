@@ -1,12 +1,13 @@
 package com.gtcc.library.provider;
 
+import android.app.SearchManager;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
 
 public final class LibraryContract {
 	public final static String CONTENT_AUTHORITY = "com.gtcc.library";
-	private final static Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+	public final static Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 	
 	private LibraryContract() {
 		
@@ -43,6 +44,7 @@ public final class LibraryContract {
 	private final static String PATH_USERS = "users";
 	private final static String PATH_BOOKS = "books";
 	private final static String PATH_COMMENTS = "comments";
+	private final static String PATH_SEARCH_SUGGEST = "search_suggest_query";
 	
 	public static final class Users implements BaseColumns, UserColumns {
 		public static final Uri CONTENT_URI = 
@@ -143,4 +145,12 @@ public final class LibraryContract {
 			return uri.getPathSegments().get(1);
 		}
 	}
+	
+    public static class SearchSuggest {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_SEARCH_SUGGEST).build();
+
+        public static final String DEFAULT_SORT = BaseColumns._ID
+                + " DESC";
+    }
 }

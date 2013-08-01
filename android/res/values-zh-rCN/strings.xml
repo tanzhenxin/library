@@ -74,8 +74,13 @@
 	<string name="pref_title_edit_account">账号管理</string>
 	<string name="pref_title_log_out">登出</string>
 	<string name="pref_logout_confirm">确定要登出？</string>
+	<string name="pref_others">其他</string>
+	<string name="pref_title_check_update">检查更新</string>
+	<string name="pref_title_feedback">意见反馈</string>
+	<string name="pref_title_about">关于 GTCC图书馆</string>
 	
 	<string name="title_search">搜索</string>
 	<string name="title_search_query">搜索 \"&lt;b>%1$s&lt;b>\"</string>
 	<string name="search_hint">搜索图书</string>
+	<string name="feedback_hint">输入你的意见</string>
 </resources>

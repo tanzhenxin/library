@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import android.app.SearchManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -25,6 +26,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
+import com.gtcc.library.entity.BookCollection;
+import com.gtcc.library.provider.LibraryContract.SearchSuggest;
 import com.gtcc.library.ui.BookListFragment;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.HttpManager;
@@ -42,6 +45,8 @@ public class LibraryBookListFragment extends BookListFragment {
 	private ViewGroup mLoadingIndicator;
 	
 	private AsyncLoader mAsyncLoader;
+	
+	private SearchBooksLoader mSearchBooksLoader;
 
 	public LibraryBookListFragment() {
 	}
@@ -82,7 +87,8 @@ public class LibraryBookListFragment extends BookListFragment {
 			break;
 		case -1:
 			String query = arguments.getString(SearchManager.QUERY);
-			mAsyncLoader.execute(new SearchBooksLoader(query));
+			mSearchBooksLoader = new SearchBooksLoader(query);
+			mAsyncLoader.execute(mSearchBooksLoader);
 			break;
 		}
 	}
@@ -123,16 +129,20 @@ public class LibraryBookListFragment extends BookListFragment {
 	class SearchBooksLoader implements Loader {
 		
 		String query;
+		BookCollection loader;
 		
 		public SearchBooksLoader(String query) {
 			this.query = query;
+			loader = new BookCollection();
 		}
 
 		@Override
 		public List<Book> loadBooks() throws IOException {
-			return HttpManager.getDoubanNewBooks();
+			if (loader.hasMoreBooks()) {
+				return loader.searchBooks(query);
+			}
+			return null;
 		}
-		
 	}
 
 	private class AsyncLoader extends AsyncTask<Loader, Void, Boolean> {
@@ -158,7 +168,7 @@ public class LibraryBookListFragment extends BookListFragment {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
-				if (getActivity() == null || isCancelled()) {
+				if (getActivity() == null || isCancelled() || books == null) {
 					return;
 				}
 				

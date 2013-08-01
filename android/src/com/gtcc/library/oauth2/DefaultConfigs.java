@@ -12,4 +12,6 @@ public class DefaultConfigs {
 	  public static final String API_USER_BOOKS_COLLECTION = "/v2/book/user/%s/collections";
 	  public static final String API_USER_INFO = "/v2/user/~me";
 	  public static final String API_BOOK_INFO = "/v2/book/";
+	  public static final String API_BOOK_SEARCH = "/v2/book/search";
+	  public static final String API_BOOK_SEARCH_KEY = "q";
 }

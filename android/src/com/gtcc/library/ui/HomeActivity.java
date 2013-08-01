@@ -26,6 +26,7 @@ import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.BookCollection;
 import com.gtcc.library.entity.UserInfo;
+import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
@@ -187,10 +188,19 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				
 				storeUserInfo();
 
-				showUserHome();
+				showPage(PAGE_USER);
 				break;
 			case Activity.RESULT_CANCELED:
 				finish();
+				break;
+			}
+		}
+		if (requestCode == SETTINGS) {
+			switch (resultCode) {
+			case Activity.RESULT_FIRST_USER:
+				clearUserInfo();
+				getContentResolver().delete(LibraryContract.BASE_CONTENT_URI, null, null);
+				login();
 				break;
 			}
 		}

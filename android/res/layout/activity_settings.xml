@@ -19,4 +19,21 @@
         </com.gtcc.library.ui.AlertDialogPreference>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="pref_others"
+        android:title="@string/pref_others" >
+
+        <Preference
+            android:key="pref_key_check_update"
+            android:title="@string/pref_title_check_update" />
+
+        <Preference
+            android:key="pref_key_feedback"
+            android:title="@string/pref_title_feedback" />
+
+        <Preference
+            android:key="pref_key_about"
+            android:title="@string/pref_title_about" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

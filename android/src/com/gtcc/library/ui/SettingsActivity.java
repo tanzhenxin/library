@@ -3,6 +3,7 @@ package com.gtcc.library.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -29,6 +30,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
+					Intent intent = new Intent();
+					setResult(RESULT_FIRST_USER, intent);
+					finish();
 					break;
 				case DialogInterface.BUTTON_NEGATIVE:
 					dialog.dismiss();

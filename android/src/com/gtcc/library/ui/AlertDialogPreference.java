@@ -5,13 +5,12 @@ import android.content.DialogInterface;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-public class AlertDialogPreference extends DialogPreference {
+class AlertDialogPreference extends DialogPreference {
 	
 	public DialogInterface.OnClickListener onClickListener;
 
 	public AlertDialogPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 	}
 
 	public AlertDialogPreference(Context context, AttributeSet attrs,

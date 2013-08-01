@@ -133,4 +133,10 @@ public class BaseActivity extends SherlockFragmentActivity {
 		values.put(Users.USER_IMAGE_URL, mUserImageUrl);
 		getContentResolver().insert(Users.CONTENT_URI, values);
 	}
+	
+	protected void clearUserInfo() {
+		Editor editor = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE).edit();
+		editor.clear();
+		editor.commit();
+	}
 }
