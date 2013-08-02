@@ -43,10 +43,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.gtcc.library.ui.SettingsActivity"
-            android:label="@string/settings" >
-        </activity>
-        <activity
             android:name="com.gtcc.library.ui.user.UserLoginActivity"
             android:label="@string/login_signin"
             android:logo="@drawable/ic_user_login" >
@@ -104,9 +100,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gtcc.libary.ui.HomeActivity" />
         </activity>
-        
-        <meta-data android:name="android.app.default_searchable"
-            android:value="com.gtcc.library.ui.SearchActivity"/>
+        <activity
+            android:name="com.gtcc.library.ui.SettingsActivity"
+            android:label="@string/settings" >
+        </activity>
+        <activity
+            android:name="com.gtcc.library.ui.FeedbackActivity"
+            android:label="@string/pref_title_feedback"
+            android:parentActivityName="com.gtcc.library.ui.SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gtcc.library.ui.SettingsActivity" />
+        </activity>
+
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value="com.gtcc.library.ui.SearchActivity" />
     </application>
 
 </manifest>

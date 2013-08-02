@@ -6,6 +6,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.preference.Preference;
 import android.util.AttributeSet;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -14,8 +15,6 @@ import com.gtcc.library.R;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 
-	private AlertDialogPreference logoutPreference;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,7 +22,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		addPreferencesFromResource(R.layout.activity_settings);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		logoutPreference = (AlertDialogPreference) findPreference("pref_key_log_out");
+		final AlertDialogPreference logoutPreference = (AlertDialogPreference) findPreference("pref_key_log_out");
 		logoutPreference.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -38,6 +37,17 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 					dialog.dismiss();
 					break;
 				}
+			}
+		});
+		
+		final Preference feedbackPreference = findPreference("pref_key_feedback");
+		feedbackPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(SettingsActivity.this, FeedbackActivity.class);
+				startActivity(intent);
+				return true;
 			}
 		});
 	}
