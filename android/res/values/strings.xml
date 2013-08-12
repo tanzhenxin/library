@@ -41,7 +41,6 @@
     <string name="send_review">Send</string>
     <string name="cancel_comment">Cancel Comment?</string>
     <string name="lost_comment">Your comment will be lost.</string>
-    
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>
     <string name="book_category">Browse by category</string>
@@ -62,6 +61,7 @@
     <string name="ok">OK</string>
 	<string name="user_name_not_empty">User name cannot be empty</string>
 	<string name="user_email_not_empty">Email cannot be empty</string>
+	<string name="user_email_invalid">Invalid email address</string>
 	<string name="user_password_not_empty">Password cannot be empty</string>
 	<string name="camera_not_found">Camera not found</string>
 	

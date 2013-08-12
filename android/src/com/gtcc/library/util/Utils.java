@@ -1,14 +1,14 @@
 package com.gtcc.library.util;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
-import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 
 /**
@@ -59,5 +59,19 @@ public class Utils {
 	    List<ResolveInfo> list =
 	            packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 	    return list.size() > 0;
+	}
+	
+	public static boolean isEmailValid(String email) {
+	    boolean isValid = false;
+
+	    String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+	    CharSequence inputStr = email;
+
+	    Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+	    Matcher matcher = pattern.matcher(inputStr);
+	    if (matcher.matches()) {
+	        isValid = true;
+	    }
+	    return isValid;
 	}
 }

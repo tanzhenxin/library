@@ -67,6 +67,7 @@
     <string name="cancel">取消</string>
 	<string name="user_name_not_empty">用户名不能为空</string>
 	<string name="user_email_not_empty">邮箱不能为空</string>
+	<string name="user_email_invalid">非法的邮箱地址</string>
 	<string name="user_password_not_empty">密码不能为空</string>
 	<string name="camera_not_found">找不到照相应用</string>
 	

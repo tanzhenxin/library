@@ -3,7 +3,7 @@
     package="com.gtcc.library"
     android:versionCode="1"
     android:versionName="1.0" >
- 
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
@@ -33,11 +33,10 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="vnd.android.cursor.dir/vnd.library.book" />
             </intent-filter>
@@ -75,6 +74,9 @@
                 <data android:mimeType="vnd.android.cursor.item/vnd.library.book" />
             </intent-filter>
 
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gtcc.library.ui.HomeActivity" />

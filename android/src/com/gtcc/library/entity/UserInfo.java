@@ -7,9 +7,11 @@ import org.json.JSONObject;
 
 public class UserInfo implements Serializable {
 
-	private String uid;
-	private String userName;
-	private String userImageUrl;
+	private String mUid;
+	private String mUserName;
+	private String mUserEmail;
+	private String mUserPassword;
+	private String mUserImageUrl;
 
 	public UserInfo(String jsonUser) {
 		JSONObject jObj;
@@ -17,29 +19,43 @@ public class UserInfo implements Serializable {
 			jObj = new JSONObject(jsonUser);
 
 			if (jObj.has("uid")) {
-				uid = jObj.getString("uid");
+				mUid = jObj.getString("uid");
 			}
 			if (jObj.has("name")) {
-				userName = jObj.getString("name");
+				mUserName = jObj.getString("name");
 			}
 			if (jObj.has("avatar")) {
-				userImageUrl = jObj.getString("avatar");
+				mUserImageUrl = jObj.getString("avatar");
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	public UserInfo(String userName, String email, String password) {
+		mUserName = userName;
+		mUserEmail = email;
+		mUserPassword = password;
+	}
 
 	public String getUserId() {
-		return uid;
+		return mUid;
 	}
 
 	public String getUserName() {
-		return userName;
+		return mUserName;
+	}
+	
+	public String getUserEmail() {
+		return mUserEmail;
+	}
+	
+	public String getUserPassword() {
+		return mUserPassword;
 	}
 
 	public String getUserImageUrl() {
-		return userImageUrl;
+		return mUserImageUrl;
 	}
 }
