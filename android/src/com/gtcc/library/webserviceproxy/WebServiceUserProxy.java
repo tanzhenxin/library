@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.gtcc.library.entity.UserInfo;
+
 
 public class WebServiceUserProxy {
 	
@@ -95,20 +97,15 @@ public class WebServiceUserProxy {
         return false;
 	}
 	
-	public static boolean addUser(JSONObject user) throws UnsupportedEncodingException{
-		
-		String strUser = null, strPWD = null, strEmail = null;
+	public static boolean addUser(UserInfo user) throws UnsupportedEncodingException{
 		JSONObject jsonParas = new JSONObject();
 		try {
 			jsonParas.put(WebServiceInfo.SERVICENAME, WebServiceInfo.USERSERVICE);
 			jsonParas.put(WebServiceInfo.METHODNAME, WebServiceInfo.ADDUSERMETHOD);
-			strUser = user.getString("username");
-			strPWD = user.getString("password");
-			strEmail = user.getString("email");
 			JSONArray array = new JSONArray();
-			array.put(strUser);
-			array.put(strPWD);
-			array.put(strEmail);
+			array.put(user.getUserName());
+			array.put(user.getUserPassword());
+			array.put(user.getUserEmail());
 			jsonParas.put(WebServiceInfo.PARAMETERS, array);
 			
 		} catch (JSONException e1) {

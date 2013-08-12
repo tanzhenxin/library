@@ -212,8 +212,10 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		if (position != mCurrentPage) {
 			switch (position) {
 			case PAGE_USER:
-				if (!hasLogin())
+				if (!hasLogin()) {
 					login();
+					return;
+				}
 				else
 					showUserHome();
 				break;
