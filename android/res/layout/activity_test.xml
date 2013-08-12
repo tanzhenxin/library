@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".TestActivity" >
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world" />
+
+     <Button
+         android:id="@+id/adduser_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/removeuser_button"
+         android:layout_alignLeft="@+id/username"
+         android:paddingLeft="32dp"
+         android:paddingRight="32dp"
+         android:text="AddUser" />
+
+     <Button
+         android:id="@+id/removeuser_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/adduser_button"
+         android:layout_alignParentBottom="true"
+         android:layout_marginBottom="62dp"
+         android:paddingLeft="32dp"
+         android:paddingRight="32dp"
+         android:text="RemoveUser" />
+
+     <Button
+         android:id="@+id/edituser_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/removeuser_button"
+         android:layout_marginLeft="16dp"
+         android:layout_toRightOf="@+id/adduser_button"
+         android:paddingLeft="32dp"
+         android:paddingRight="32dp"
+         android:text="GetAllUsers" />
+
+     <EditText
+         android:id="@+id/editText1"
+         android:hint="UserName"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignRight="@+id/adduser_button"
+         android:layout_below="@+id/username"
+         android:layout_marginTop="38dp"
+         android:ems="10" >
+
+         <requestFocus />
+     </EditText>
+
+     <EditText
+         android:id="@+id/editText2"
+         android:hint="Password"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/editText1"
+         android:layout_below="@+id/editText1"
+         android:layout_marginTop="24dp"
+         android:ems="10" />
+
+     <EditText
+         android:id="@+id/editText3"
+         android:hint="Email"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/editText2"
+         android:layout_below="@+id/editText2"
+         android:layout_marginTop="21dp"
+         android:ems="10" />
+
+</RelativeLayout>

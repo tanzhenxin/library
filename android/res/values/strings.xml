@@ -13,7 +13,6 @@
     <string name="book_reading_full">I\'m reading this book.</string>
     <string name="book_read_full">I\'ve read this book.</string>
     <string name="book_wish_full">I want to read this book.</string>
-    
     <string name="user_center">User Center</string>
     <string name="book_library">Book Library</string>
     <string name="library_technical">Technical</string>
@@ -41,10 +40,11 @@
     <string name="send_review">Send</string>
     <string name="cancel_comment">Cancel Comment?</string>
     <string name="lost_comment">Your comment will be lost.</string>
-    
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>
     <string name="book_category">Browse by category</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_world">Hello world!</string>
     
     <string name="login_signup">Sign up</string>
     <string name="login_signin">Sign in</string>
