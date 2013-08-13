@@ -1,9 +1,11 @@
 package com.gtcc.library.ui.user;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
@@ -34,7 +36,9 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
+import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.Utils;
+import com.gtcc.library.webserviceproxy.WebServiceInfo;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
 public class UserRegisterActivity extends SherlockFragmentActivity {
@@ -205,8 +209,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			mPassword.setError(getString(R.string.user_password_not_empty));
 			mPassword.requestFocus();
 		} else {
-			UserInfo user = new UserInfo(userName, email, password);
-			new UserRegisterTask().execute(user);
+			new UserRegisterTask().execute(userName, password, email);
 		}
 	}
 
@@ -236,26 +239,46 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 		}
 	}
 	
-	public class UserRegisterTask extends AsyncTask<UserInfo, Void, Boolean> {
+	public class UserRegisterTask extends AsyncTask<String, Void, Integer> {
+		
+		String userName;
+		String password;
+		String email;
+		
 		@Override
-		protected Boolean doInBackground(UserInfo... params) {
-			boolean isSuccessful = false;
+		protected Integer doInBackground(String... params) {
+			int ret = WebServiceInfo.OPERATION_FAILED;
+			
+			userName = params[0];
+			password = params[1];
+			email = params[2];
 			
 			try {
-				isSuccessful = WebServiceUserProxy.addUser(params[0]);
-			} catch (UnsupportedEncodingException e) {
+				ret = WebServiceUserProxy.addUser(userName, password, email);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
-			return isSuccessful;
+			return ret;
 		}
 
 		@Override
-		protected void onPostExecute(final Boolean success) {
-			if (success) {
+		protected void onPostExecute(final Integer result) {
+			switch (result) {
+			case WebServiceInfo.OPERATION_SUCCEED:
+				Intent intent = new Intent();
+				intent.putExtra(HomeActivity.USER_ID, userName);
+				intent.putExtra(HomeActivity.USER_NAME, userName);
+				intent.putExtra(HomeActivity.USER_PASSWORD, userName);
+				setResult(RESULT_OK, intent);
+				Toast.makeText(UserRegisterActivity.this, R.string.register_succeed, Toast.LENGTH_SHORT).show();
 				finish();
-				
-			} else {
+				break;
+			default:
+				Toast.makeText(UserRegisterActivity.this, R.string.register_failed, Toast.LENGTH_SHORT).show();
+				break;
 			}
 		}
 	}
