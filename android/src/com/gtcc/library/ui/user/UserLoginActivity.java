@@ -2,6 +2,11 @@ package com.gtcc.library.ui.user;
 
 import java.io.IOException;
 
+import com.gtcc.library.provider.LibraryContract;
+import com.weibo.sdk.android.Weibo;
+import com.weibo.sdk.android.WeiboAuthListener;
+import com.weibo.sdk.android.WeiboDialogError;
+import com.weibo.sdk.android.WeiboException;
 import org.json.JSONException;
 
 import android.app.Activity;
@@ -81,6 +86,35 @@ public class UserLoginActivity extends SherlockActivity {
 			}
 
 		});
+
+        ViewGroup mSinaLogin = (ViewGroup) findViewById(R.id.login_sina);
+        mSinaLogin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Weibo weibo = Weibo.getInstance(LibraryContract.weiboAppKey, LibraryContract.weiboRedirectURL, LibraryContract.weiboScope);
+                weibo.anthorize(UserLoginActivity.this, new WeiboAuthListener() {
+                    @Override
+                    public void onComplete(Bundle bundle) {
+
+                    }
+
+                    @Override
+                    public void onWeiboException(WeiboException e) {
+                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(WeiboDialogError weiboDialogError) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+            }
+        });
 
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 	}

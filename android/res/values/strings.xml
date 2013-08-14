@@ -16,6 +16,7 @@
     
     <string name="user_center">User Center</string>
     <string name="book_library">Book Library</string>
+    <string name="isbn_scanner">Scan ISBN</string>
     <string name="library_technical">Technical</string>
     <string name="library_self">Self Entertainment</string>
     <string name="library_english">English</string>

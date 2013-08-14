@@ -18,6 +18,7 @@
 	
 	<string name="user_center">个人中心</string>
 	<string name="book_library">图书馆</string>
+    <string name="isbn_scanner">扫描ISBN</string>
 	
 	<string name="library_technical">技术</string>
 	<string name="library_self">个人成长</string>

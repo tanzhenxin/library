@@ -36,13 +36,15 @@ import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
 import com.gtcc.library.util.Utils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.gtcc.library.ui.zxing.CaptureActivity;
 
 public class HomeActivity extends SlidingFragmentActivity implements
 		ActionBar.TabListener, UserBookListFragment.Callbacks {
 
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
-	public static final int PAGE_SETTINGS = 2;
+    public static final int PAGE_SCANNER = 2;
+	public static final int PAGE_SETTINGS = 3;
 
 	public static final int TAB_0 = 0;
 	public static final int TAB_1 = 1;
@@ -52,7 +54,8 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
 	private int REQUEST_LOGIN = 1;
-	private int SETTINGS = 2;
+    private int SCANNER = 2;
+	private int SETTINGS = 3;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -195,7 +198,13 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				break;
 			}
 		}
-		if (requestCode == SETTINGS) {
+        else if (requestCode == SCANNER){
+            // todo
+            if (resultCode == RESULT_OK){
+                Toast.makeText(this, data.getExtras().getString("result"), Toast.LENGTH_LONG).show();
+            }
+        }
+		else if (requestCode == SETTINGS) {
 			switch (resultCode) {
 			case Activity.RESULT_FIRST_USER:
 				clearUserInfo();
@@ -222,6 +231,9 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			case PAGE_LIBRARY:
 				showLibrary();
 				break;
+            case PAGE_SCANNER:
+                showScanner();
+                break;
 			case PAGE_SETTINGS:
 				showSettings();
 				showContent = false;
@@ -305,6 +317,11 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		setTitle(R.string.book_library);
 		mViewPager.setCurrentItem(0);
 	}
+
+    private void showScanner(){
+        Intent intent = new Intent(this, CaptureActivity.class);
+        startActivityForResult(intent, SCANNER);
+    }
 	
 	private void showSettings() {
 		Intent intent = new Intent(this, SettingsActivity.class);
