@@ -1,6 +1,5 @@
 package com.gtcc.library.provider;
 
-import android.app.SearchManager;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -8,11 +7,6 @@ import android.provider.BaseColumns;
 public final class LibraryContract {
 	public final static String CONTENT_AUTHORITY = "com.gtcc.library";
 	public final static Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
-    public final static String weiboAppKey = "1860425088";
-    public final static String weiboSecretKey = "94926494891e2ac6c8bade1db428032c";
-    public final static String weiboRedirectURL = "http://www.sina.com.cn/";
-    public final static String weiboScope = "all";
 
 	private LibraryContract() {
 		

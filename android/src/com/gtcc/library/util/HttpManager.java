@@ -92,8 +92,8 @@ public class HttpManager {
 	}
 
 	public UserInfo getUserInfo() throws IOException {
-		String url = DefaultConfigs.API_URL_PREFIX
-				+ DefaultConfigs.API_USER_INFO;
+		String url = DefaultConfigs.DOUBAN_API_URL_PREFIX
+				+ DefaultConfigs.DOUBAN_API_USER_INFO;
 		return new UserInfo(doGetRequest(url, true));
 	}
 	
@@ -183,7 +183,7 @@ public class HttpManager {
 
 					id = id.substring(0, id.length() - 1);
 					id = id.substring(id.lastIndexOf("/") + 1);
-					id = DefaultConfigs.API_BOOK_INFO + id;
+					id = DefaultConfigs.DOUBAN_API_BOOK_INFO + id;
 					book.setUrl(id);
 					book.setImgUrl(img);
 					book.setTitle(contents.getChildElements().get(0)
@@ -224,7 +224,7 @@ public class HttpManager {
 			sb.append("?");
 		
 		sb.append("apikey").append("=")
-			.append(URLEncoder.encode(DefaultConfigs.API_KEY, "UTF-8"));
+			.append(URLEncoder.encode(DefaultConfigs.DOUBAN_API_KEY, "UTF-8"));
 		return url + sb.toString();
 	}
 }

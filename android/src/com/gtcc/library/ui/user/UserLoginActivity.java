@@ -1,12 +1,17 @@
 package com.gtcc.library.ui.user;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
+import com.gtcc.library.oauth2.DefaultConfigs;
 import com.gtcc.library.provider.LibraryContract;
+import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
 import com.weibo.sdk.android.WeiboDialogError;
 import com.weibo.sdk.android.WeiboException;
+import com.weibo.sdk.android.sso.SsoHandler;
+
 import org.json.JSONException;
 
 import android.app.Activity;
@@ -38,17 +43,22 @@ import com.gtcc.library.webserviceproxy.WebServiceInfo;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
 public class UserLoginActivity extends SherlockActivity {
-	private static final String TAG = LogUtils.makeLogTag(UserLoginActivity.class);
-	
+	private static final String TAG = LogUtils
+			.makeLogTag(UserLoginActivity.class);
+
 	public static final String LOGIN_TYPE = "login_type";
 	public static final int LOGIN_NORMAL = 0;
 	public static final int LOGIN_DOUBAN = 1;
+	
+	private static final String ACCESS_CODE = "code";
 
 	private EditText mUserName;
 	private EditText mUserPassword;
 
 	private int REQUEST_DOUBAN_LOGIN = 1;
 	private int REQUEST_REGISTER = 2;
+
+	private SsoHandler mSsoHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +68,10 @@ public class UserLoginActivity extends SherlockActivity {
 		mUserName = (EditText) findViewById(R.id.login_user);
 		mUserPassword = (EditText) findViewById(R.id.login_password);
 		mUserPassword.setOnEditorActionListener(new OnEditorActionListener() {
-			
+
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
 				attemptLogin();
 				return true;
 			}
@@ -68,7 +79,7 @@ public class UserLoginActivity extends SherlockActivity {
 
 		final Button mSignin = (Button) findViewById(R.id.login_signin);
 		mSignin.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				attemptLogin();
@@ -87,34 +98,17 @@ public class UserLoginActivity extends SherlockActivity {
 
 		});
 
-        ViewGroup mSinaLogin = (ViewGroup) findViewById(R.id.login_sina);
-        mSinaLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Weibo weibo = Weibo.getInstance(LibraryContract.weiboAppKey, LibraryContract.weiboRedirectURL, LibraryContract.weiboScope);
-                weibo.anthorize(UserLoginActivity.this, new WeiboAuthListener() {
-                    @Override
-                    public void onComplete(Bundle bundle) {
-
-                    }
-
-                    @Override
-                    public void onWeiboException(WeiboException e) {
-                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(WeiboDialogError weiboDialogError) {
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-
-                    }
-                });
-            }
-        });
+		ViewGroup mSinaLogin = (ViewGroup) findViewById(R.id.login_sina);
+		mSinaLogin.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Weibo weibo = Weibo.getInstance(DefaultConfigs.WEIBO_API_KEY,
+						DefaultConfigs.WEIBO_REDIRECT_URL,
+						DefaultConfigs.WEIBO_SCOPE);
+				mSsoHandler = new SsoHandler(UserLoginActivity.this, weibo);
+				mSsoHandler.authorize(new AuthDialogListener(), null);
+			}
+		});
 
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 	}
@@ -122,12 +116,14 @@ public class UserLoginActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		View view = View.inflate(this, R.layout.login_register_btn, null);
-		final Button register = (Button) view.findViewById(android.R.id.button1);
+		final Button register = (Button) view
+				.findViewById(android.R.id.button1);
 		register.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserLoginActivity.this, UserRegisterActivity.class);
+				Intent intent = new Intent(UserLoginActivity.this,
+						UserRegisterActivity.class);
 				startActivityForResult(intent, REQUEST_REGISTER);
 			}
 		});
@@ -160,13 +156,17 @@ public class UserLoginActivity extends SherlockActivity {
 				finish();
 				break;
 			}
+		} else {
+			if (mSsoHandler != null) {
+				mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+			}
 		}
 	}
-	
+
 	private void attemptLogin() {
 		final String userName = mUserName.getText().toString();
 		final String password = mUserPassword.getText().toString();
-		
+
 		if (TextUtils.isEmpty(userName)) {
 			mUserName.setError(getString(R.string.user_name_not_empty));
 			mUserName.requestFocus();
@@ -177,19 +177,19 @@ public class UserLoginActivity extends SherlockActivity {
 			new AsyncLoginTask().execute(userName, password);
 		}
 	}
-	
+
 	class AsyncLoginTask extends AsyncTask<String, Void, Integer> {
-		
+
 		String userName;
 		String password;
-		
+
 		@Override
 		protected Integer doInBackground(String... params) {
 			int ret = WebServiceInfo.OPERATION_FAILED;
-			
+
 			userName = params[0];
 			password = params[1];
-			
+
 			try {
 				ret = WebServiceUserProxy.login(userName, password);
 			} catch (JSONException e) {
@@ -197,7 +197,7 @@ public class UserLoginActivity extends SherlockActivity {
 			} catch (IOException e) {
 				LogUtils.LOGE(TAG, e.toString());
 			}
-			
+
 			return ret;
 		}
 
@@ -211,14 +211,59 @@ public class UserLoginActivity extends SherlockActivity {
 				intent.putExtra(HomeActivity.USER_NAME, userName);
 				intent.putExtra(HomeActivity.USER_PASSWORD, userName);
 				setResult(RESULT_OK, intent);
-				Toast.makeText(UserLoginActivity.this, R.string.login_succeed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(UserLoginActivity.this, R.string.login_succeed,
+						Toast.LENGTH_SHORT).show();
 				finish();
 				break;
 			default:
-				Toast.makeText(UserLoginActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(UserLoginActivity.this, R.string.login_failed,
+						Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
-		
+	}
+
+	class AuthDialogListener implements WeiboAuthListener {
+
+		@Override
+		public void onComplete(Bundle values) {
+			String code = values.getString(ACCESS_CODE);
+			if (code != null) {
+				Toast.makeText(UserLoginActivity.this, "认证code成功",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+			String token = values.getString("access_token");
+			String expires_in = values.getString("expires_in");
+			Oauth2AccessToken accessToken = new Oauth2AccessToken(token, expires_in);
+			if (accessToken.isSessionValid()) {
+				String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+						.format(new java.util.Date(accessToken
+								.getExpiresTime()));
+
+				Toast.makeText(UserLoginActivity.this, "认证成功", Toast.LENGTH_SHORT)
+						.show();
+			}
+		}
+
+		@Override
+		public void onError(WeiboDialogError e) {
+			Toast.makeText(getApplicationContext(),
+					"Auth error : " + e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		public void onCancel() {
+			Toast.makeText(getApplicationContext(), "Auth cancel",
+					Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		public void onWeiboException(WeiboException e) {
+			Toast.makeText(getApplicationContext(),
+					"Auth exception : " + e.getMessage(), Toast.LENGTH_LONG)
+					.show();
+		}
+
 	}
 }
