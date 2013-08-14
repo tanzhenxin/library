@@ -113,7 +113,7 @@ public class BookCollection {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(START, Integer.valueOf(start).toString());
 		params.put(COUNT, Integer.valueOf(count).toString());
-		params.put(DefaultConfigs.API_BOOK_SEARCH_KEY, query);
+		params.put(DefaultConfigs.DOUBAN_API_BOOK_SEARCH_KEY, query);
 
 		String response = httpManager.doGetRequest(getSearchBookUrl(), params, false);
 		try {
@@ -152,16 +152,16 @@ public class BookCollection {
 	}
 	
 	public static String getStaredBooksUrl(String uid) {
-		return DefaultConfigs.API_URL_PREFIX
-				+ String.format(DefaultConfigs.API_USER_BOOKS_COLLECTION, uid);
+		return DefaultConfigs.DOUBAN_API_URL_PREFIX
+				+ String.format(DefaultConfigs.DOUBAN_API_USER_BOOKS_COLLECTION, uid);
 	}
 	
 	public static String getStaredBookUrl(String bookId) {
-		return DefaultConfigs.API_URL_PREFIX + DefaultConfigs.API_BOOK_INFO + bookId;
+		return DefaultConfigs.DOUBAN_API_URL_PREFIX + DefaultConfigs.DOUBAN_API_BOOK_INFO + bookId;
 	}
 	
 	public static String getSearchBookUrl()
 	{
-		return DefaultConfigs.API_URL_PREFIX + DefaultConfigs.API_BOOK_SEARCH;
+		return DefaultConfigs.DOUBAN_API_URL_PREFIX + DefaultConfigs.DOUBAN_API_BOOK_SEARCH;
 	}
 }

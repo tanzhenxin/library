@@ -44,7 +44,7 @@ public class UserOAuth2LoginActivity extends SherlockActivity {
 		webview.setWebViewClient(new WebViewClient() {
         	@Override
         	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        		if ( url.startsWith(DefaultConfigs.ACCESS_TOKEN_REDIRECT_URL) ) {
+        		if ( url.startsWith(DefaultConfigs.DOUBAN_REDIRECT_URL) ) {
         			if ( url.indexOf(AUTHORIZATION_CODE) != -1 ) {
         				String accessCode = extractCode(url);
         				

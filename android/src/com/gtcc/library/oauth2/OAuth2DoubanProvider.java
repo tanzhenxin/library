@@ -12,10 +12,10 @@ import com.gtcc.library.util.HttpManager;
 
 public class OAuth2DoubanProvider {
 
-	private String apiKey = DefaultConfigs.API_KEY;
-	private String secretKey = DefaultConfigs.SECRET_KEY;
-	private String authUrl = DefaultConfigs.AUTH_URL;
-	private String redirectUrl = DefaultConfigs.ACCESS_TOKEN_REDIRECT_URL;
+	private String apiKey = DefaultConfigs.DOUBAN_API_KEY;
+	private String secretKey = DefaultConfigs.DOUBAN_SECRET_KEY;
+	private String authUrl = DefaultConfigs.DOUBAN_AUTH_URL;
+	private String redirectUrl = DefaultConfigs.DOUBAN_REDIRECT_URL;
 	private String responseType = "code";
 	private String grantType = "authorization_code";
 
@@ -149,11 +149,11 @@ public class OAuth2DoubanProvider {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("client_id", this.apiKey);
 			params.put("client_secret", this.secretKey);
-			params.put("redirect_uri", DefaultConfigs.ACCESS_TOKEN_REDIRECT_URL);
+			params.put("redirect_uri", DefaultConfigs.DOUBAN_REDIRECT_URL);
 			params.put("grant_type", "authorization_code");
 			params.put("code", code);
 			String responseStr = new HttpManager().postEncodedEntry(
-					DefaultConfigs.ACCESS_TOKEN_URL, params, false);
+					DefaultConfigs.DOUBAN_TOKEN_URL, params, false);
 			return responseStr;
 		} catch (UnsupportedEncodingException ex) {
 			throw ErrorHandler.getCustomDoubanException(100,

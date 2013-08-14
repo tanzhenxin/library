@@ -33,6 +33,11 @@ public class UserInfo implements Serializable {
 		}
 	}
 	
+	public UserInfo(String userName, String password) {
+		mUserName = userName;
+		mUserPassword = password;
+	}
+	
 	public UserInfo(String userName, String email, String password) {
 		mUserName = userName;
 		mUserEmail = email;

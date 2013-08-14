@@ -16,6 +16,7 @@
     
     <string name="user_center">User Center</string>
     <string name="book_library">Book Library</string>
+    <string name="isbn_scanner">Scan ISBN</string>
     <string name="library_technical">Technical</string>
     <string name="library_self">Self Entertainment</string>
     <string name="library_english">English</string>
@@ -56,6 +57,10 @@
     <string name="login_sina_text">Sina</string>
     <string name="login_with_sina">Login with Sina Weibo Account</string>
     <string name="login_pick_image">Pick Image</string>
+    <string name="login_succeed">Login succeesfully</string>
+    <string name="login_failed">Login failed</string>
+    <string name="register_succeed">Register succeesfully</string>
+    <string name="register_failed">Register failed</string>
     <string name="or">or</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>

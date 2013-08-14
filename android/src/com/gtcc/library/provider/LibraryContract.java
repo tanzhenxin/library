@@ -1,6 +1,5 @@
 package com.gtcc.library.provider;
 
-import android.app.SearchManager;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -8,7 +7,7 @@ import android.provider.BaseColumns;
 public final class LibraryContract {
 	public final static String CONTENT_AUTHORITY = "com.gtcc.library";
 	public final static Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-	
+
 	private LibraryContract() {
 		
 	}
