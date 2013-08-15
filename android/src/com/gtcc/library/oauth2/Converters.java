@@ -9,15 +9,15 @@ public class Converters {
 	
 	private static final String TAG = LogUtils.makeLogTag(Converters.class);
 
-	public static AccessToken stringToAccessToken(String responseStr)
-			throws DoubanException {
+	public static OAuth2AccessToken stringToAccessToken(String responseStr)
+			throws OAuth2Exception {
 		LogUtils.LOGD(TAG, "Begin to get access token. Trade code is: " + responseStr);
 		
 		if (responseStr == null) {
 			throw ErrorHandler.cannotGetAccessToken();
 		}
 		
-		AccessToken token = new AccessToken();
+		OAuth2AccessToken token = new OAuth2AccessToken();
 		try {
 			JSONObject jObj = new JSONObject(responseStr);
 			

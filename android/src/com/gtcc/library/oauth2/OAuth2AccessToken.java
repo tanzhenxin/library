@@ -2,7 +2,13 @@ package com.gtcc.library.oauth2;
 
 import java.io.Serializable;
 
-public class AccessToken implements Serializable {
+public class OAuth2AccessToken implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
+	public static final String KEY_TOKEN = "access_token";
+	public static final String KEY_EXPIRES = "expires_in";
+	public static final String KEY_REFRESHTOKEN = "refresh_token";
 
 	private String accessToken = null;
 	private Integer expiresIn = null;
@@ -78,15 +84,15 @@ public class AccessToken implements Serializable {
 		this.doubanUserName = doubanUserName;
 	}
 
-	public AccessToken() {
+	public OAuth2AccessToken() {
 
 	}
 
-	public AccessToken(String accessToken) {
+	public OAuth2AccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
 
-	public AccessToken(String accessToken, int expiresIn, String refreshToken,
+	public OAuth2AccessToken(String accessToken, int expiresIn, String refreshToken,
 			String doubanUserId) {
 		this.accessToken = accessToken;
 		this.doubanUserId = doubanUserId;

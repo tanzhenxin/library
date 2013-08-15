@@ -7,27 +7,20 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.gtcc.library.R;
 import com.gtcc.library.oauth2.DefaultConfigs;
-import com.weibo.sdk.android.Oauth2AccessToken;
-import com.weibo.sdk.android.Weibo;
-import com.weibo.sdk.android.WeiboAuthListener;
-import com.weibo.sdk.android.WeiboDialogError;
-import com.weibo.sdk.android.WeiboException;
-import com.weibo.sdk.android.sso.SsoHandler;
+import com.gtcc.library.oauth2.WeiboSsoHandler;
 
-public class WeiboOAuth2LoginActivity extends SherlockFragmentActivity {
+public class WeiboLoginActivity extends SherlockFragmentActivity {
 
 	private static final String ACCESS_CODE = "code";
 
-	private SsoHandler mSsoHandler;
+	private WeiboSsoHandler mSsoHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_empty_pane);
 
-		Weibo weibo = Weibo.getInstance(DefaultConfigs.WEIBO_API_KEY,
-				DefaultConfigs.WEIBO_REDIRECT_URL);
-		mSsoHandler = new SsoHandler(WeiboOAuth2LoginActivity.this, weibo);
+		mSsoHandler = new SsoHandler(WeiboLoginActivity.this, weibo);
 		mSsoHandler.authorize(new AuthDialogListener());
 	}
 
@@ -46,7 +39,7 @@ public class WeiboOAuth2LoginActivity extends SherlockFragmentActivity {
 		public void onComplete(Bundle values) {
 			String code = values.getString(ACCESS_CODE);
 			if (code != null) {
-				Toast.makeText(WeiboOAuth2LoginActivity.this, "code: " + code,
+				Toast.makeText(WeiboLoginActivity.this, "code: " + code,
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
@@ -55,7 +48,7 @@ public class WeiboOAuth2LoginActivity extends SherlockFragmentActivity {
 			Oauth2AccessToken accessToken = new Oauth2AccessToken(token,
 					expires_in);
 			if (accessToken.isSessionValid()) {
-				Toast.makeText(WeiboOAuth2LoginActivity.this,
+				Toast.makeText(WeiboLoginActivity.this,
 						"token: " + accessToken, Toast.LENGTH_SHORT).show();
 			}
 		}

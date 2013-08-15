@@ -76,7 +76,7 @@ public class UserLoginActivity extends SherlockActivity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(UserLoginActivity.this,
-						UserOAuth2LoginActivity.class);
+						DoubanLoginActivity.class);
 				startActivityForResult(intent, REQUEST_DOUBAN_LOGIN);
 			}
 
@@ -87,7 +87,7 @@ public class UserLoginActivity extends SherlockActivity {
 			@Override
 			public void onClick(View view) {
 				Intent intent = new Intent(UserLoginActivity.this,
-						WeiboOAuth2LoginActivity.class);
+						WeiboLoginActivity.class);
 				startActivityForResult(intent, REQUEST_WEIBO_LOGIN);
 			}
 		});

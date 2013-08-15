@@ -15,21 +15,21 @@ import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.oauth2.DefaultConfigs;
-import com.gtcc.library.oauth2.DoubanException;
-import com.gtcc.library.oauth2.OAuth2DoubanProvider;
+import com.gtcc.library.oauth2.OAuth2Exception;
+import com.gtcc.library.oauth2.OAuth2Provider;
 import com.gtcc.library.oauth2.RequestGrantScope;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
 
-public class UserOAuth2LoginActivity extends SherlockActivity {
+public class DoubanLoginActivity extends SherlockActivity {
 	private static final String TAG = LogUtils
-			.makeLogTag(UserOAuth2LoginActivity.class);
+			.makeLogTag(DoubanLoginActivity.class);
 
 	private WebView webview;
 
 	private static final String AUTHORIZATION_CODE = "code=";
-	private OAuth2DoubanProvider provider;
+	private OAuth2Provider provider;
 
 	private UserInfo userInfo;
 
@@ -38,9 +38,13 @@ public class UserOAuth2LoginActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_oauth2_login);
 
-		provider = new OAuth2DoubanProvider().addScope(
-				RequestGrantScope.BASIC_COMMON_SCOPE).addScope(
-				RequestGrantScope.BOOK_READ_SCOPE);
+		provider = new OAuth2Provider()
+				.setApiKey(DefaultConfigs.DOUBAN_API_KEY)
+				.setSecretKey(DefaultConfigs.DOUBAN_SECRET_KEY)
+				.setAuthUrl(DefaultConfigs.DOUBAN_AUTH_URL)
+				.setRedirectUrl(DefaultConfigs.DOUBAN_REDIRECT_URL)
+				.addScope(RequestGrantScope.BASIC_COMMON_SCOPE)
+				.addScope(RequestGrantScope.BOOK_READ_SCOPE);
 
 		webview = (WebView) findViewById(R.id.login_webview);
 		webview.setWebViewClient(new WebViewClient() {
@@ -106,7 +110,7 @@ public class UserOAuth2LoginActivity extends SherlockActivity {
 				HttpManager httpManager = new HttpManager(accessToken);
 				userInfo = httpManager.getUserInfo();
 
-			} catch (DoubanException e1) {
+			} catch (OAuth2Exception e1) {
 				LogUtils.LOGE(TAG, "OAuth2 login failed.");
 			} catch (IOException e2) {
 				LogUtils.LOGE(TAG, "OAuth2 login failed.");
