@@ -1,12 +1,6 @@
 package com.gtcc.library.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class Book implements Serializable, Comparable<Book> {
@@ -63,6 +57,11 @@ public class Book implements Serializable, Comparable<Book> {
 	private String type;
 	private String url;
 	private String id;
+	private String price;
+	private String ISBN;
+	private String language;
+	private String publishDate;
+	private String bianhao;
 
 	public boolean isCollection() {
 		return collection;
@@ -109,7 +108,7 @@ public class Book implements Serializable, Comparable<Book> {
 		return author;
 	}
 	
-	public void SetAuthor(String author) {
+	public void setAuthor(String author) {
 		author = author.replace("\"", "");
 		if (author.startsWith("["))
 			author = author.substring(1, author.length() - 1);
@@ -225,5 +224,45 @@ public class Book implements Serializable, Comparable<Book> {
 
 	public String getStatus() {
 		return status;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
+	public String getISBN() {
+		return ISBN;
+	}
+
+	public void setISBN(String iSBN) {
+		ISBN = iSBN;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getPublishDate() {
+		return publishDate;
+	}
+
+	public void setPublishDate(String publishDate) {
+		this.publishDate = publishDate;
+	}
+
+	public String getBianhao() {
+		return bianhao;
+	}
+
+	public void setBianhao(String bianhao) {
+		this.bianhao = bianhao;
 	}
 }

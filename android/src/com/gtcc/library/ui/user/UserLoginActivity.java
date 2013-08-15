@@ -1,22 +1,10 @@
 package com.gtcc.library.ui.user;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-
-import com.gtcc.library.oauth2.DefaultConfigs;
-import com.gtcc.library.provider.LibraryContract;
-import com.weibo.sdk.android.Oauth2AccessToken;
-import com.weibo.sdk.android.Weibo;
-import com.weibo.sdk.android.WeiboAuthListener;
-import com.weibo.sdk.android.WeiboDialogError;
-import com.weibo.sdk.android.WeiboException;
-import com.weibo.sdk.android.sso.SsoHandler;
 
 import org.json.JSONException;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,7 +24,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
-import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
@@ -49,17 +36,14 @@ public class UserLoginActivity extends SherlockActivity {
 	public static final String LOGIN_TYPE = "login_type";
 	public static final int LOGIN_NORMAL = 0;
 	public static final int LOGIN_DOUBAN = 1;
-	
-	private static final String ACCESS_CODE = "code";
 
 	private EditText mUserName;
 	private EditText mUserPassword;
 
-	private int REQUEST_DOUBAN_LOGIN = 1;
-	private int REQUEST_REGISTER = 2;
-
-	private SsoHandler mSsoHandler;
-
+	private int REQUEST_REGISTER = 1;
+	private int REQUEST_DOUBAN_LOGIN = 2;
+	private int REQUEST_WEIBO_LOGIN = 3;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,7 +76,7 @@ public class UserLoginActivity extends SherlockActivity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(UserLoginActivity.this,
-						UserOAuth2LoginActivity.class);
+						DoubanLoginActivity.class);
 				startActivityForResult(intent, REQUEST_DOUBAN_LOGIN);
 			}
 
@@ -102,11 +86,9 @@ public class UserLoginActivity extends SherlockActivity {
 		mSinaLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Weibo weibo = Weibo.getInstance(DefaultConfigs.WEIBO_API_KEY,
-						DefaultConfigs.WEIBO_REDIRECT_URL,
-						DefaultConfigs.WEIBO_SCOPE);
-				mSsoHandler = new SsoHandler(UserLoginActivity.this, weibo);
-				mSsoHandler.authorize(new AuthDialogListener(), null);
+				Intent intent = new Intent(UserLoginActivity.this,
+						WeiboLoginActivity.class);
+				startActivityForResult(intent, REQUEST_WEIBO_LOGIN);
 			}
 		});
 
@@ -156,10 +138,6 @@ public class UserLoginActivity extends SherlockActivity {
 				finish();
 				break;
 			}
-		} else {
-			if (mSsoHandler != null) {
-				mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
-			}
 		}
 	}
 
@@ -191,7 +169,7 @@ public class UserLoginActivity extends SherlockActivity {
 			password = params[1];
 
 			try {
-				ret = WebServiceUserProxy.login(userName, password);
+				ret = new WebServiceUserProxy().login(userName, password);
 			} catch (JSONException e) {
 				LogUtils.LOGE(TAG, e.toString());
 			} catch (IOException e) {
@@ -221,49 +199,5 @@ public class UserLoginActivity extends SherlockActivity {
 				break;
 			}
 		}
-	}
-
-	class AuthDialogListener implements WeiboAuthListener {
-
-		@Override
-		public void onComplete(Bundle values) {
-			String code = values.getString(ACCESS_CODE);
-			if (code != null) {
-				Toast.makeText(UserLoginActivity.this, "认证code成功",
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
-			String token = values.getString("access_token");
-			String expires_in = values.getString("expires_in");
-			Oauth2AccessToken accessToken = new Oauth2AccessToken(token, expires_in);
-			if (accessToken.isSessionValid()) {
-				String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-						.format(new java.util.Date(accessToken
-								.getExpiresTime()));
-
-				Toast.makeText(UserLoginActivity.this, "认证成功", Toast.LENGTH_SHORT)
-						.show();
-			}
-		}
-
-		@Override
-		public void onError(WeiboDialogError e) {
-			Toast.makeText(getApplicationContext(),
-					"Auth error : " + e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-
-		@Override
-		public void onCancel() {
-			Toast.makeText(getApplicationContext(), "Auth cancel",
-					Toast.LENGTH_LONG).show();
-		}
-
-		@Override
-		public void onWeiboException(WeiboException e) {
-			Toast.makeText(getApplicationContext(),
-					"Auth exception : " + e.getMessage(), Toast.LENGTH_LONG)
-					.show();
-		}
-
 	}
 }

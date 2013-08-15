@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -229,7 +228,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		book = new Book();
 		book.setId(cursor.getString(BookQuery.BOOK_ID));
 		book.setTitle(cursor.getString(BookQuery.BOOK_TITLE));
-		book.SetAuthor(cursor.getString(BookQuery.BOOK_AUTHOR));
+		book.setAuthor(cursor.getString(BookQuery.BOOK_AUTHOR));
 		book.setSummary(cursor.getString(BookQuery.BOOK_SUMMARY));
 		book.setAuthorIntro(cursor.getString(BookQuery.AUTHOR_INTRO));
 		book.setImgUrl(cursor.getString(BookQuery.BOOK_IMAGE_URL));

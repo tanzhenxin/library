@@ -19,15 +19,21 @@ import net.htmlparser.jericho.Source;
 
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.UserInfo;
-import com.gtcc.library.oauth2.AccessToken;
+import com.gtcc.library.oauth2.OAuth2AccessToken;
 import com.gtcc.library.oauth2.Converters;
 import com.gtcc.library.oauth2.DefaultConfigs;
-import com.gtcc.library.oauth2.DoubanException;
+import com.gtcc.library.oauth2.OAuth2Exception;
+import com.gtcc.library.webserviceproxy.WebServiceBookProxy;
+import com.gtcc.library.webserviceproxy.WebServiceBorrowProxy;
+import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
 public class HttpManager {
 
-	private AccessToken accessToken;
+	private OAuth2AccessToken accessToken;
 	private static final String TAG = LogUtils.makeLogTag(HttpManager.class);
+	public static WebServiceBookProxy webServiceBookProxy = new WebServiceBookProxy();
+	public static WebServiceBorrowProxy webServiceBorrowProxy = new WebServiceBorrowProxy();
+	public static WebServiceUserProxy webServiceUserProxy = new WebServiceUserProxy();
 
 	public HttpManager() {
 
@@ -36,13 +42,13 @@ public class HttpManager {
 	public HttpManager(String token) {
 		try {
 			accessToken = Converters.stringToAccessToken(token);
-		} catch (DoubanException e) {
+		} catch (OAuth2Exception e) {
 			LogUtils.LOGE(TAG, "Unable to parse access token: " + accessToken);
 		}
 	}
 
 	public String postEncodedEntry(String url, Map<String, String> params,
-			boolean needAccessToken) throws DoubanException, IOException {
+			boolean needAccessToken) throws OAuth2Exception, IOException {
 		String resultData = "";
 
 		HttpURLConnection urlConn = (HttpURLConnection) new URL(url)
@@ -188,7 +194,7 @@ public class HttpManager {
 					book.setImgUrl(img);
 					book.setTitle(contents.getChildElements().get(0)
 							.getTextExtractor().toString());
-					book.SetAuthor(contents.getChildElements().get(1)
+					book.setAuthor(contents.getChildElements().get(1)
 							.getTextExtractor().toString());
 					book.setSummary(contents.getChildElements().get(2)
 							.getTextExtractor().toString());

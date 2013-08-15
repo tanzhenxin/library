@@ -254,7 +254,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			email = params[2];
 			
 			try {
-				ret = WebServiceUserProxy.addUser(userName, password, email);
+				ret = new WebServiceUserProxy().addUser(userName, password, email);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
