@@ -1,6 +1,6 @@
 package com.gtcc.library.oauth2;
 
-public class OAuth2Exception extends Throwable {
+public class AuthException extends Throwable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -15,12 +15,12 @@ public class OAuth2Exception extends Throwable {
         return mFailingUrl;
     }
 	
-	public OAuth2Exception(String msg, int code) {
+	public AuthException(String msg, int code) {
 		super(msg);
 		this.mErrorCode = code;
 	}
 
-	public OAuth2Exception(String message, int errorCode, String failingUrl) {
+	public AuthException(String message, int errorCode, String failingUrl) {
 		this(message, errorCode);
 		
 	}

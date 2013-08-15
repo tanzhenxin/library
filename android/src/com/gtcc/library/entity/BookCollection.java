@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.gtcc.library.oauth2.DefaultConfigs;
+import com.gtcc.library.oauth2.Constants;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
 
@@ -113,7 +113,7 @@ public class BookCollection {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(START, Integer.valueOf(start).toString());
 		params.put(COUNT, Integer.valueOf(count).toString());
-		params.put(DefaultConfigs.DOUBAN_API_BOOK_SEARCH_KEY, query);
+		params.put(Constants.DOUBAN_API_BOOK_SEARCH_KEY, query);
 
 		String response = httpManager.doGetRequest(getSearchBookUrl(), params, false);
 		try {
@@ -152,16 +152,16 @@ public class BookCollection {
 	}
 	
 	public static String getStaredBooksUrl(String uid) {
-		return DefaultConfigs.DOUBAN_API_URL_PREFIX
-				+ String.format(DefaultConfigs.DOUBAN_API_USER_BOOKS_COLLECTION, uid);
+		return Constants.DOUBAN_API_URL_PREFIX
+				+ String.format(Constants.DOUBAN_API_USER_BOOKS_COLLECTION, uid);
 	}
 	
 	public static String getStaredBookUrl(String bookId) {
-		return DefaultConfigs.DOUBAN_API_URL_PREFIX + DefaultConfigs.DOUBAN_API_BOOK_INFO + bookId;
+		return Constants.DOUBAN_API_URL_PREFIX + Constants.DOUBAN_API_BOOK_INFO + bookId;
 	}
 	
 	public static String getSearchBookUrl()
 	{
-		return DefaultConfigs.DOUBAN_API_URL_PREFIX + DefaultConfigs.DOUBAN_API_BOOK_SEARCH;
+		return Constants.DOUBAN_API_URL_PREFIX + Constants.DOUBAN_API_BOOK_SEARCH;
 	}
 }

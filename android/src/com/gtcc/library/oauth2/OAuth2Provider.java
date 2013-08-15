@@ -15,108 +15,88 @@ public class OAuth2Provider {
 
 	private static final String TAG = LogUtils.makeLogTag(OAuth2Provider.class);
 
-	private String apiKey;
-	private String secretKey;
-	private String authUrl;
-	private String redirectUrl;
-	private String responseType = "code";
-	private String grantType = "authorization_code";
+	private String mApiKey;
+	private String mSecretKey;
+	private String mAuthUrl;
+	private String mRedirectUrl;
+	private String mResponseType = "code";
+	private String mGrantType = "authorization_code";
+	
+	// SSO logon
+	private String mRemoteService;
+	private String mSignature;
 
 	private ArrayList<RequestGrantScope> scopes = new ArrayList<RequestGrantScope>();
 
-	/**
-	 * @return the apiKey
-	 */
 	public String getApiKey() {
-		return apiKey;
+		return mApiKey;
 	}
 
-	/**
-	 * @param apiKey
-	 *            the apiKey to set
-	 */
 	public OAuth2Provider setApiKey(String apiKey) {
-		this.apiKey = apiKey;
+		this.mApiKey = apiKey;
 		return this;
 	}
 
-	/**
-	 * @return the secretKey
-	 */
 	public String getSecretKey() {
-		return secretKey;
+		return mSecretKey;
 	}
 
-	/**
-	 * @param secretKey
-	 *            the secretKey to set
-	 */
 	public OAuth2Provider setSecretKey(String secretKey) {
-		this.secretKey = secretKey;
+		this.mSecretKey = secretKey;
 		return this;
 	}
 
-	/**
-	 * @return the authUrl
-	 */
 	public String getAuthUrl() {
-		return authUrl;
+		return mAuthUrl;
 	}
 
-	/**
-	 * @param authUrl
-	 *            the authUrl to set
-	 */
 	public OAuth2Provider setAuthUrl(String authUrl) {
-		this.authUrl = authUrl;
+		this.mAuthUrl = authUrl;
 		return this;
 	}
 
-	/**
-	 * @return the redirectUrl
-	 */
 	public String getRedirectUrl() {
-		return redirectUrl;
+		return mRedirectUrl;
 	}
 
-	/**
-	 * @param redirectUrl
-	 *            the redirectUrl to set
-	 */
 	public OAuth2Provider setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
+		this.mRedirectUrl = redirectUrl;
 		return this;
 	}
 
-	/**
-	 * @return the type
-	 */
 	public String getResponseType() {
-		return responseType;
+		return mResponseType;
 	}
 
-	/**
-	 * @param type
-	 *            the type to set
-	 */
 	public OAuth2Provider setResponseType(String type) {
-		this.responseType = type;
+		this.mResponseType = type;
 		return this;
 	}
 
-	/**
-	 * @return the grantType
-	 */
 	public String getGrantType() {
-		return grantType;
+		return mGrantType;
 	}
 
-	/**
-	 * @param grantType
-	 *            the grantType to set
-	 */
 	public OAuth2Provider setGrantType(String grantType) {
-		this.grantType = grantType;
+		this.mGrantType = grantType;
+		return this;
+	}
+	
+	public String getRemoteSerive() {
+		return mRemoteService;
+	}
+
+	public OAuth2Provider setRemoteService(String remoteService) {
+		this.mRemoteService = remoteService;
+		return this;
+	}
+	
+	public String getSignature() {
+		return mSignature;
+	}
+
+	public OAuth2Provider setSignature(String signature) {
+		this.mSignature = signature;
 		return this;
 	}
 
@@ -126,31 +106,31 @@ public class OAuth2Provider {
 	}
 
 	public String getGetCodeRedirectUrl() {
-		if (this.redirectUrl == null || TextUtils.isEmpty(this.redirectUrl)) {
+		if (this.mRedirectUrl == null || TextUtils.isEmpty(this.mRedirectUrl)) {
 			LogUtils.LOGE(TAG,
 					"Redirect url cannot be null or empty, did you forget to set it?");
 			return null;
 		}
-		StringBuilder getCodeUrl = new StringBuilder(this.authUrl);
-		getCodeUrl.append("?client_id=").append(this.apiKey)
-				.append("&redirect_uri=").append(this.redirectUrl)
-				.append("&response_type=").append(this.responseType);
+		StringBuilder getCodeUrl = new StringBuilder(this.mAuthUrl);
+		getCodeUrl.append("?client_id=").append(this.mApiKey)
+				.append("&redirect_uri=").append(this.mRedirectUrl)
+				.append("&response_type=").append(this.mResponseType);
 		if (!this.scopes.isEmpty()) {
 			getCodeUrl.append("&scope=").append(generateScopeString());
 		}
 		return getCodeUrl.toString();
 	}
 
-	public String tradeAccessTokenWithCode(String code) throws OAuth2Exception {
+	public String tradeAccessTokenWithCode(String code) throws AuthException {
 		try {
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("client_id", this.apiKey);
-			params.put("client_secret", this.secretKey);
-			params.put("redirect_uri", DefaultConfigs.DOUBAN_REDIRECT_URL);
+			params.put("client_id", this.mApiKey);
+			params.put("client_secret", this.mSecretKey);
+			params.put("redirect_uri", Constants.DOUBAN_REDIRECT_URL);
 			params.put("grant_type", "authorization_code");
 			params.put("code", code);
 			String responseStr = new HttpManager().postEncodedEntry(
-					DefaultConfigs.DOUBAN_TOKEN_URL, params, false);
+					Constants.DOUBAN_TOKEN_URL, params, false);
 			return responseStr;
 		} catch (UnsupportedEncodingException ex) {
 			throw ErrorHandler.getCustomException(100,

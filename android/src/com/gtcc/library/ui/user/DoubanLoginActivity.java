@@ -14,8 +14,8 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
-import com.gtcc.library.oauth2.DefaultConfigs;
-import com.gtcc.library.oauth2.OAuth2Exception;
+import com.gtcc.library.oauth2.Constants;
+import com.gtcc.library.oauth2.AuthException;
 import com.gtcc.library.oauth2.OAuth2Provider;
 import com.gtcc.library.oauth2.RequestGrantScope;
 import com.gtcc.library.ui.HomeActivity;
@@ -29,7 +29,7 @@ public class DoubanLoginActivity extends SherlockActivity {
 	private WebView webview;
 
 	private static final String AUTHORIZATION_CODE = "code=";
-	private OAuth2Provider provider;
+	private OAuth2Provider mProvider;
 
 	private UserInfo userInfo;
 
@@ -38,11 +38,11 @@ public class DoubanLoginActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_oauth2_login);
 
-		provider = new OAuth2Provider()
-				.setApiKey(DefaultConfigs.DOUBAN_API_KEY)
-				.setSecretKey(DefaultConfigs.DOUBAN_SECRET_KEY)
-				.setAuthUrl(DefaultConfigs.DOUBAN_AUTH_URL)
-				.setRedirectUrl(DefaultConfigs.DOUBAN_REDIRECT_URL)
+		mProvider = new OAuth2Provider()
+				.setApiKey(Constants.DOUBAN_API_KEY)
+				.setSecretKey(Constants.DOUBAN_SECRET_KEY)
+				.setAuthUrl(Constants.DOUBAN_AUTH_URL)
+				.setRedirectUrl(Constants.DOUBAN_REDIRECT_URL)
 				.addScope(RequestGrantScope.BASIC_COMMON_SCOPE)
 				.addScope(RequestGrantScope.BOOK_READ_SCOPE);
 
@@ -50,7 +50,7 @@ public class DoubanLoginActivity extends SherlockActivity {
 		webview.setWebViewClient(new WebViewClient() {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (url.startsWith(DefaultConfigs.DOUBAN_REDIRECT_URL)) {
+				if (url.startsWith(Constants.DOUBAN_REDIRECT_URL)) {
 					if (url.indexOf(AUTHORIZATION_CODE) != -1) {
 						String accessCode = extractCode(url);
 
@@ -65,7 +65,7 @@ public class DoubanLoginActivity extends SherlockActivity {
 		});
 
 		// do OAuth2 login
-		String authorizationUri = provider.getGetCodeRedirectUrl();
+		String authorizationUri = mProvider.getGetCodeRedirectUrl();
 		webview.loadUrl(authorizationUri);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,12 +105,12 @@ public class DoubanLoginActivity extends SherlockActivity {
 		protected String doInBackground(String... params) {
 			String accessToken = null;
 			try {
-				accessToken = provider.tradeAccessTokenWithCode(params[0]);
+				accessToken = mProvider.tradeAccessTokenWithCode(params[0]);
 
 				HttpManager httpManager = new HttpManager(accessToken);
 				userInfo = httpManager.getUserInfo();
 
-			} catch (OAuth2Exception e1) {
+			} catch (AuthException e1) {
 				LogUtils.LOGE(TAG, "OAuth2 login failed.");
 			} catch (IOException e2) {
 				LogUtils.LOGE(TAG, "OAuth2 login failed.");

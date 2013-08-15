@@ -2,7 +2,6 @@ package com.gtcc.library.oauth2;
 
 public class RequestGrantScope {
 
-	private String description;
 	private String value;
 	private String name;
 
@@ -17,64 +16,42 @@ public class RequestGrantScope {
 	private static final String SCOPE_MUSIC_READ = "music_basic_r";
 	private static final String SCOPE_EVENT_READ = "event_basic_r";
 	private static final String SCOPE_EVENT_WRITE = "event_basic_w";
+	private static final String SCOPE_ALL = "all";
 
 	public static final RequestGrantScope SHUO_READ_SCOPE = new RequestGrantScope(
-			"DoubanShuoRead", RequestGrantScope.SCOPE_SHUO_READ,
-			"����˵��ȡȨ��");
+			"DoubanShuoRead", RequestGrantScope.SCOPE_SHUO_READ);
 	public static final RequestGrantScope SHUO_WRITE_SCOPE = new RequestGrantScope(
-			"DoubanShuoWrite", RequestGrantScope.SCOPE_SHUO_WRITE,
-			"����˵д��Ȩ��");
+			"DoubanShuoWrite", RequestGrantScope.SCOPE_SHUO_WRITE);
 	public static final RequestGrantScope BASIC_COMMON_SCOPE = new RequestGrantScope(
-			"BasicCommon", RequestGrantScope.SCOPE_BASIC_COMMON,
-			"�����Ȩ��");
+			"BasicCommon", RequestGrantScope.SCOPE_BASIC_COMMON);
 	public static final RequestGrantScope MAIL_READ_SCOPE = new RequestGrantScope(
-			"MailRead", RequestGrantScope.SCOPE_MAIL_READ,
-			"���ʶ�Ȩ��");
+			"MailRead", RequestGrantScope.SCOPE_MAIL_READ);
 	public static final RequestGrantScope MAIL_WRITE_SCOPE = new RequestGrantScope(
-			"DoubanShuoWrite", RequestGrantScope.SCOPE_MAIL_WRITE,
-			"����дȨ��");
+			"DoubanShuoWrite", RequestGrantScope.SCOPE_MAIL_WRITE);
 	public static final RequestGrantScope BASIC_NOTE_SCOPE = new RequestGrantScope(
-			"BasicNote", RequestGrantScope.SCOPE_BASIC_NOTE,
-			"�ռǶ�дȨ��");
+			"BasicNote", RequestGrantScope.SCOPE_BASIC_NOTE);
 	public static final RequestGrantScope BOOK_READ_SCOPE = new RequestGrantScope(
-			"BookRead", RequestGrantScope.SCOPE_BOOK_READ,
-			"�������");
+			"BookRead", RequestGrantScope.SCOPE_BOOK_READ);
 	public static final RequestGrantScope MOVIE_READ_SCOPE = new RequestGrantScope(
-			"MovieRead", RequestGrantScope.SCOPE_MOVIE_READ,
-			"�����Ӱ");
+			"MovieRead", RequestGrantScope.SCOPE_MOVIE_READ);
 	public static final RequestGrantScope MUSIC_READ_SCOPE = new RequestGrantScope(
-			"MusicRead", RequestGrantScope.SCOPE_MUSIC_READ,
-			"��������");
+			"MusicRead", RequestGrantScope.SCOPE_MUSIC_READ);
 	public static final RequestGrantScope EVENT_READ_SCOPE = new RequestGrantScope(
-			"EventRead", RequestGrantScope.SCOPE_EVENT_READ,
-			"����ͬ�Ƕ�Ȩ��");
+			"EventRead", RequestGrantScope.SCOPE_EVENT_READ);
 	public static final RequestGrantScope EVENT_WRITE_SCOPE = new RequestGrantScope(
-			"EventWrite", RequestGrantScope.SCOPE_EVENT_WRITE,
-			"����ͬ��дȨ��");
+			"EventWrite", RequestGrantScope.SCOPE_EVENT_WRITE);
+	public static final RequestGrantScope ALL_SCOPE = new RequestGrantScope(
+			"All", RequestGrantScope.SCOPE_ALL);
 
-	private RequestGrantScope(String name, String value, String description) {
-		this.description = description;
+	private RequestGrantScope(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @return the value
-	 */
 	public String getValue() {
 		return value;
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}

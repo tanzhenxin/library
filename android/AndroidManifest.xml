@@ -67,7 +67,7 @@
         </activity>
         <activity
             android:name="com.gtcc.library.ui.user.WeiboLoginActivity"
-            android:label="@string/login_with_douban"
+            android:label="@string/login_with_sina"
             android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

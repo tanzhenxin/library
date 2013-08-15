@@ -1,4 +1,4 @@
-package com.gtcc.library.oauth2;
+package com.sina.sso;
 
 interface RemoteSSO {
 	String getPackageName();

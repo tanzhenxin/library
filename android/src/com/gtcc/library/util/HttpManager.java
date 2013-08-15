@@ -20,9 +20,8 @@ import net.htmlparser.jericho.Source;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.oauth2.OAuth2AccessToken;
-import com.gtcc.library.oauth2.Converters;
-import com.gtcc.library.oauth2.DefaultConfigs;
-import com.gtcc.library.oauth2.OAuth2Exception;
+import com.gtcc.library.oauth2.Constants;
+import com.gtcc.library.oauth2.AuthException;
 import com.gtcc.library.webserviceproxy.WebServiceBookProxy;
 import com.gtcc.library.webserviceproxy.WebServiceBorrowProxy;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
@@ -41,14 +40,14 @@ public class HttpManager {
 
 	public HttpManager(String token) {
 		try {
-			accessToken = Converters.stringToAccessToken(token);
-		} catch (OAuth2Exception e) {
+			accessToken = OAuth2AccessToken.stringToAccessToken(token);
+		} catch (AuthException e) {
 			LogUtils.LOGE(TAG, "Unable to parse access token: " + accessToken);
 		}
 	}
 
 	public String postEncodedEntry(String url, Map<String, String> params,
-			boolean needAccessToken) throws OAuth2Exception, IOException {
+			boolean needAccessToken) throws AuthException, IOException {
 		String resultData = "";
 
 		HttpURLConnection urlConn = (HttpURLConnection) new URL(url)
@@ -98,8 +97,8 @@ public class HttpManager {
 	}
 
 	public UserInfo getUserInfo() throws IOException {
-		String url = DefaultConfigs.DOUBAN_API_URL_PREFIX
-				+ DefaultConfigs.DOUBAN_API_USER_INFO;
+		String url = Constants.DOUBAN_API_URL_PREFIX
+				+ Constants.DOUBAN_API_USER_INFO;
 		return new UserInfo(doGetRequest(url, true));
 	}
 	
@@ -189,7 +188,7 @@ public class HttpManager {
 
 					id = id.substring(0, id.length() - 1);
 					id = id.substring(id.lastIndexOf("/") + 1);
-					id = DefaultConfigs.DOUBAN_API_BOOK_INFO + id;
+					id = Constants.DOUBAN_API_BOOK_INFO + id;
 					book.setUrl(id);
 					book.setImgUrl(img);
 					book.setTitle(contents.getChildElements().get(0)
@@ -230,7 +229,7 @@ public class HttpManager {
 			sb.append("?");
 		
 		sb.append("apikey").append("=")
-			.append(URLEncoder.encode(DefaultConfigs.DOUBAN_API_KEY, "UTF-8"));
+			.append(URLEncoder.encode(Constants.DOUBAN_API_KEY, "UTF-8"));
 		return url + sb.toString();
 	}
 }
