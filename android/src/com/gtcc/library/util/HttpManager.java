@@ -23,11 +23,17 @@ import com.gtcc.library.oauth2.AccessToken;
 import com.gtcc.library.oauth2.Converters;
 import com.gtcc.library.oauth2.DefaultConfigs;
 import com.gtcc.library.oauth2.DoubanException;
+import com.gtcc.library.webserviceproxy.WebServiceBookProxy;
+import com.gtcc.library.webserviceproxy.WebServiceBorrowProxy;
+import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
 public class HttpManager {
 
 	private AccessToken accessToken;
 	private static final String TAG = LogUtils.makeLogTag(HttpManager.class);
+	public static WebServiceBookProxy webServiceBookProxy = new WebServiceBookProxy();
+	public static WebServiceBorrowProxy webServiceBorrowProxy = new WebServiceBorrowProxy();
+	public static WebServiceUserProxy webServiceUserProxy = new WebServiceUserProxy();
 
 	public HttpManager() {
 
@@ -188,7 +194,7 @@ public class HttpManager {
 					book.setImgUrl(img);
 					book.setTitle(contents.getChildElements().get(0)
 							.getTextExtractor().toString());
-					book.SetAuthor(contents.getChildElements().get(1)
+					book.setAuthor(contents.getChildElements().get(1)
 							.getTextExtractor().toString());
 					book.setSummary(contents.getChildElements().get(2)
 							.getTextExtractor().toString());

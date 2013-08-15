@@ -26,6 +26,7 @@
     <orderEntry type="module" module-name="slidingmenu" />
     <orderEntry type="library" name="jericho-html-3.1" level="project" />
     <orderEntry type="library" name="zxing" level="project" />
+    <orderEntry type="library" name="weiboSDK2.1_130712" level="project" />
   </component>
 </module>
 

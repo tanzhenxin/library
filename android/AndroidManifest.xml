@@ -11,9 +11,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -59,6 +59,14 @@
         </activity>
         <activity
             android:name="com.gtcc.library.ui.user.UserOAuth2LoginActivity"
+            android:label="@string/login_with_douban"
+            android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gtcc.library.ui.user.UserLoginActivity" />
+        </activity>
+        <activity
+            android:name="com.gtcc.library.ui.user.WeiboOAuth2LoginActivity"
             android:label="@string/login_with_douban"
             android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
             <meta-data
@@ -117,13 +125,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gtcc.library.ui.SettingsActivity" />
         </activity>
-
         <activity
-                android:configChanges="orientation|keyboardHidden"
-                android:name="com.gtcc.library.ui.zxing.CaptureActivity"
-                android:screenOrientation="portrait"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                android:windowSoftInputMode="stateAlwaysHidden" >
+            android:name="com.gtcc.library.ui.zxing.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
 
         <meta-data

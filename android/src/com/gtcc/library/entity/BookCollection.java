@@ -57,7 +57,7 @@ public class BookCollection {
 				JSONObject bookObj = oneObject.getJSONObject("book");
 				book.setUrl(bookObj.getString("url"));
 				book.setTitle(bookObj.getString("title"));
-				book.SetAuthor(bookObj.getString("author"));
+				book.setAuthor(bookObj.getString("author"));
 				book.setAuthorIntro(bookObj.getString("author_intro").replace(
 						"\n", "\n\n"));
 				book.setSummary(bookObj.getString("summary").replace("\n",
@@ -90,7 +90,7 @@ public class BookCollection {
 
 			book.setUrl(bookObj.getString("url"));
 			book.setTitle(bookObj.getString("title"));
-			book.SetAuthor(bookObj.getString("author"));
+			book.setAuthor(bookObj.getString("author"));
 			book.setAuthorIntro(bookObj.getString("author_intro").replace("\n",
 					"\n\n"));
 			book.setSummary(bookObj.getString("summary").replace("\n", "\n\n"));
@@ -130,7 +130,7 @@ public class BookCollection {
 				Book book = new Book();
 				book.setUrl(bookObj.getString("url"));
 				book.setTitle(bookObj.getString("title"));
-				book.SetAuthor(bookObj.getString("author"));
+				book.setAuthor(bookObj.getString("author"));
 				book.setAuthorIntro(bookObj.getString("author_intro").replace(
 						"\n", "\n\n"));
 				book.setSummary(bookObj.getString("summary").replace("\n",

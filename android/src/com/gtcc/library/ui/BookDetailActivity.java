@@ -17,7 +17,7 @@ public class BookDetailActivity extends BaseActivity {
 	@Override
 	public  void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_book_detail);
+		setContentView(R.layout.activity_empty_pane);
 
 		if (getIntent().hasExtra(Intent.EXTRA_TITLE)) {
 			setTitle(getIntent().getStringExtra(Intent.EXTRA_TITLE));

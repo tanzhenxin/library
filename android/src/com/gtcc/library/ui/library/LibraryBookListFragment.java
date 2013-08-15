@@ -114,14 +114,15 @@ public class LibraryBookListFragment extends BookListFragment {
 	}
 	
 	private interface Loader {
-		List<Book> loadBooks() throws IOException;
+		List<Book> loadBooks() throws Exception;
 	}
 	
 	private Loader newBooksLoader = new Loader() {
 
 		@Override
-		public List<Book> loadBooks() throws IOException {
-			return HttpManager.getDoubanNewBooks();
+		public List<Book> loadBooks() throws Exception {
+			return HttpManager.webServiceBookProxy.getAllBooks(0, 15); // to replace these params with valuables
+			//return HttpManager.getDoubanNewBooks();
 		}
 	
 	};
@@ -153,8 +154,8 @@ public class LibraryBookListFragment extends BookListFragment {
 			try {
 				books = loader.loadBooks();
 				return true;
-			} catch (IOException e) {
-				LogUtils.LOGE(TAG, "Unable to load books.");
+			} catch (Exception e) {
+				LogUtils.LOGE(TAG, "Unable to load books. Error: " + e.getMessage());
 			}
 			return false;
 		}
@@ -268,7 +269,8 @@ public class LibraryBookListFragment extends BookListFragment {
 			viewHolder.author.setText(author);
 
 			String imgUrl = book.getImgUrl();
-			mImageFetcher.loadImage(imgUrl, viewHolder.image);
+			if (imgUrl != null)
+				mImageFetcher.loadImage(imgUrl, viewHolder.image);
 
 			return view;
 		}
