@@ -18,6 +18,7 @@ public class Constants {
 	public final static String WEIBO_API_KEY = "1614967517";
 	public final static String WEIBO_SECRET_KEY = "d84f122c8a6ad4bf375d482a98bfe28b";
 	public static final String WEIBO_AUTH_URL = "https://open.weibo.cn/oauth2/authorize";
+	public static final String WEIBO_TOKEN_URL = "https://api.weibo.com/oauth2/access_token";
 	public final static String WEIBO_REDIRECT_URL = "http://api.weibo.com/oauth2/default.html";
 	public final static String WEIBO_SCOPE = "all";
 	

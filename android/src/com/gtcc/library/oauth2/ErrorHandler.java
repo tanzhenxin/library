@@ -10,6 +10,8 @@ public class ErrorHandler {
 	  public static final int MISSING_REQUIRED_PARAM = 728;
 	  public static final int WRONG_JSON_FORMAT = 100;
 	  
+	  public static final int SSO_LOGON_FAILED = 200;
+	  
 	  public static AuthException accessTokenNotSet () {
 	    return new AuthException("This method needs access token to gain accessability", ACCESS_TOKEN_NOT_SET);
 	  }
@@ -28,6 +30,10 @@ public class ErrorHandler {
 	  
 	  public static AuthException wrongJsonFormat (String rawString) {
 	    return new AuthException("Illegal JSON format : " + rawString, WRONG_JSON_FORMAT);
+	  }
+	  
+	  public static AuthException ssoLoginFailed() {
+		  return new AuthException("Unable to sso logon", SSO_LOGON_FAILED);
 	  }
 	 
 	  public static AuthException getCustomException (int code, String msg) {

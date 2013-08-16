@@ -39,7 +39,7 @@ public class SsoHandler {
 		conn = new ServiceConnection() {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
-				// mWeibo.startAuthDialog(mAuthActivity, mAuthDialogListener);
+				mAuthDialogListener.onError(ErrorHandler.ssoLoginFailed());
 			}
 
 			@Override
@@ -53,8 +53,7 @@ public class SsoHandler {
 							mAuthActivity, mAuthProvider.getApiKey(),
 							new String[] {}, mAuthActivityCode);
 					if (!singleSignOnStarted) {
-						// mWeibo.startAuthDialog(mAuthActivity,
-						// mAuthDialogListener);
+						mAuthDialogListener.onError(ErrorHandler.ssoLoginFailed());
 					}
 				} catch (RemoteException e) {
 					e.printStackTrace();
@@ -76,9 +75,7 @@ public class SsoHandler {
 
 		bindSucced = bindRemoteSSOService(mAuthActivity);
 		if (!bindSucced) {
-			// if(mWeibo!=null){
-			// mWeibo.startAuthDialog(mAuthActivity, mAuthDialogListener);
-			// }
+			mAuthDialogListener.onError(ErrorHandler.ssoLoginFailed());
 		}
 
 	}
@@ -191,8 +188,7 @@ public class SsoHandler {
 					} else {
 						Log.d("Weibo-authorize",
 								"Failed to receive access token by SSO");
-//						mWeibo.startAuthDialog(mAuthActivity,
-//								mAuthDialogListener);
+						mAuthDialogListener.onError(ErrorHandler.ssoLoginFailed());
 					}
 				}
 

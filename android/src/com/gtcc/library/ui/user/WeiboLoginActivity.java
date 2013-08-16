@@ -4,38 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.gtcc.library.R;
 import com.gtcc.library.oauth2.AuthException;
-import com.gtcc.library.oauth2.Constants;
 import com.gtcc.library.oauth2.AuthListener;
+import com.gtcc.library.oauth2.Constants;
 import com.gtcc.library.oauth2.OAuth2AccessToken;
 import com.gtcc.library.oauth2.OAuth2Provider;
 import com.gtcc.library.oauth2.RequestGrantScope;
 import com.gtcc.library.oauth2.SsoHandler;
+import com.gtcc.library.util.LogUtils;
 
-public class WeiboLoginActivity extends SherlockActivity {
+public class WeiboLoginActivity extends AuthLoginActivity {
+	
+	private static final String TAG = LogUtils
+			.makeLogTag(WeiboLoginActivity.class);
 
-	private static final String ACCESS_CODE = "code";
-
-	private OAuth2Provider mProvider;
 	private SsoHandler mSsoHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_empty_pane);
-
-		mProvider = new OAuth2Provider().setApiKey(Constants.WEIBO_API_KEY)
-				.setSecretKey(Constants.WEIBO_SECRET_KEY)
-				.setAuthUrl(Constants.WEIBO_AUTH_URL)
-				.setRedirectUrl(Constants.WEIBO_REDIRECT_URL)
-				.setRemoteService(Constants.WEIBO_REMOTE_SERVICE)
-				.setSignature(Constants.WEIBO_SIGNATURE)
-				.addScope(RequestGrantScope.ALL_SCOPE);
 
 		mSsoHandler = new SsoHandler(WeiboLoginActivity.this, mProvider);
-		mSsoHandler.authorize(new AuthDialogListener());
+		mSsoHandler.authorize(new SsoAuthListener());
 	}
 
 	@Override
@@ -47,16 +37,10 @@ public class WeiboLoginActivity extends SherlockActivity {
 		}
 	}
 
-	class AuthDialogListener implements AuthListener {
+	class SsoAuthListener implements AuthListener {
 
 		@Override
 		public void onComplete(Bundle values) {
-			String code = values.getString(ACCESS_CODE);
-			if (code != null) {
-				Toast.makeText(WeiboLoginActivity.this, "code: " + code,
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
 			String token = values.getString("access_token");
 			String expires_in = values.getString("expires_in");
 			OAuth2AccessToken accessToken = new OAuth2AccessToken(token,
@@ -69,14 +53,28 @@ public class WeiboLoginActivity extends SherlockActivity {
 
 		@Override
 		public void onError(AuthException e) {
-			Toast.makeText(getApplicationContext(),
-					"Auth error : " + e.getMessage(), Toast.LENGTH_LONG).show();
+			LogUtils.LOGD(TAG, "SSO logon failed. Reason: " + e.getMessage());
+			doOAuth2Login();
 		}
 
 		@Override
 		public void onCancel() {
-			Toast.makeText(getApplicationContext(), "Auth cancel",
-					Toast.LENGTH_LONG).show();
+			LogUtils.LOGD(TAG, "SSO logon cancelled.");
+			finish();
 		}
+	}
+
+	@Override
+	public OAuth2Provider GetOAuth2Provider() {
+		return new OAuth2Provider()
+			.setApiKey(Constants.WEIBO_API_KEY)
+			.setSecretKey(Constants.WEIBO_SECRET_KEY)
+			.setAuthUrl(Constants.WEIBO_AUTH_URL)
+			.setTokenUrl(Constants.WEIBO_TOKEN_URL)
+			.setRedirectUrl(Constants.WEIBO_REDIRECT_URL)
+			.setRemoteService(Constants.WEIBO_REMOTE_SERVICE)
+			.setSignature(Constants.WEIBO_SIGNATURE)
+			.addScope(RequestGrantScope.ALL_SCOPE)
+			.setAdditionalParameters("&display=mobile");
 	}
 }

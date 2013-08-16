@@ -18,6 +18,7 @@ public class OAuth2Provider {
 	private String mApiKey;
 	private String mSecretKey;
 	private String mAuthUrl;
+	private String mTokenUrl;
 	private String mRedirectUrl;
 	private String mResponseType = "code";
 	private String mGrantType = "authorization_code";
@@ -27,6 +28,8 @@ public class OAuth2Provider {
 	private String mSignature;
 
 	private ArrayList<RequestGrantScope> scopes = new ArrayList<RequestGrantScope>();
+	
+	private String mAdditionalParameters;
 
 	public String getApiKey() {
 		return mApiKey;
@@ -52,6 +55,15 @@ public class OAuth2Provider {
 
 	public OAuth2Provider setAuthUrl(String authUrl) {
 		this.mAuthUrl = authUrl;
+		return this;
+	}
+	
+	public String getTokenUrl() {
+		return mTokenUrl;
+	}
+	
+	public OAuth2Provider setTokenUrl(String tokenUrl) {
+		this.mTokenUrl = tokenUrl;
 		return this;
 	}
 
@@ -104,6 +116,11 @@ public class OAuth2Provider {
 		this.scopes.add(scope);
 		return this;
 	}
+	
+	public OAuth2Provider setAdditionalParameters(String additionalParameters) {
+		mAdditionalParameters = additionalParameters;
+		return this;
+	}
 
 	public String getGetCodeRedirectUrl() {
 		if (this.mRedirectUrl == null || TextUtils.isEmpty(this.mRedirectUrl)) {
@@ -118,6 +135,9 @@ public class OAuth2Provider {
 		if (!this.scopes.isEmpty()) {
 			getCodeUrl.append("&scope=").append(generateScopeString());
 		}
+		if (!TextUtils.isEmpty(mAdditionalParameters)) {
+			getCodeUrl.append(mAdditionalParameters);
+		}
 		return getCodeUrl.toString();
 	}
 
@@ -126,11 +146,11 @@ public class OAuth2Provider {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("client_id", this.mApiKey);
 			params.put("client_secret", this.mSecretKey);
-			params.put("redirect_uri", Constants.DOUBAN_REDIRECT_URL);
+			params.put("redirect_uri", this.mRedirectUrl);
 			params.put("grant_type", "authorization_code");
 			params.put("code", code);
 			String responseStr = new HttpManager().postEncodedEntry(
-					Constants.DOUBAN_TOKEN_URL, params, false);
+					this.mTokenUrl, params, false);
 			return responseStr;
 		} catch (UnsupportedEncodingException ex) {
 			throw ErrorHandler.getCustomException(100,

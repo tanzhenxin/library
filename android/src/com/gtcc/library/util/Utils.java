@@ -1,5 +1,8 @@
 package com.gtcc.library.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 /**
@@ -73,5 +77,28 @@ public class Utils {
 	        isValid = true;
 	    }
 	    return isValid;
+	}
+	
+	public static Bundle parseUrl(String url) {
+		try {
+			URL u = new URL(url);
+			Bundle b = decodeUrl(u.getQuery());
+			b.putAll(decodeUrl(u.getRef()));
+			return b;
+		} catch (MalformedURLException e) {
+			return new Bundle();
+		}
+	}
+
+	public static Bundle decodeUrl(String s) {
+		Bundle params = new Bundle();
+		if (s != null) {
+			String array[] = s.split("&");
+			for (String parameter : array) {
+				String v[] = parameter.split("=");
+				params.putString(URLDecoder.decode(v[0]), URLDecoder.decode(v[1]));
+			}
+		}
+		return params;
 	}
 }
