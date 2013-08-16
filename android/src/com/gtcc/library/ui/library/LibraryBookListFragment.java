@@ -30,6 +30,7 @@ import com.gtcc.library.entity.BookCollection;
 import com.gtcc.library.provider.LibraryContract.SearchSuggest;
 import com.gtcc.library.ui.BookListFragment;
 import com.gtcc.library.ui.HomeActivity;
+import com.gtcc.library.ui.customcontrol.RefreshableListView;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
 
@@ -43,6 +44,7 @@ public class LibraryBookListFragment extends BookListFragment {
 
 	private List<Book> books;
 	private ViewGroup mLoadingIndicator;
+    private RefreshableListView listView;
 	
 	private AsyncLoader mAsyncLoader;
 	
@@ -62,6 +64,14 @@ public class LibraryBookListFragment extends BookListFragment {
 			Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 		mLoadingIndicator = (ViewGroup) rootView.findViewById(R.id.loading_progress);
+
+        listView = (RefreshableListView) rootView.findViewById(android.R.id.list);
+        listView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadFromArguments(getArguments());
+            }
+        });
 		
 		reloadFromArguments(getArguments());
 		
@@ -169,12 +179,14 @@ public class LibraryBookListFragment extends BookListFragment {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
+                listView.onRefreshComplete(true);
 				if (getActivity() == null || isCancelled() || books == null) {
 					return;
 				}
 				
 				setListAdapter(new LibraryBookListAdapter(getActivity(), books));
 			} else {
+                listView.onRefreshComplete(false);
 				Toast.makeText(getActivity(),
 						getActivity().getString(R.string.load_failed),
 						Toast.LENGTH_SHORT).show();

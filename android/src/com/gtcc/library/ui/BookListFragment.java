@@ -13,6 +13,7 @@ import android.widget.AbsListView.OnScrollListener;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.gtcc.library.R;
+import com.gtcc.library.ui.customcontrol.RefreshableListView;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.ImageCache.ImageCacheParams;
 
@@ -60,8 +61,8 @@ public abstract class BookListFragment extends SherlockListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_books_list, container, false);
-		
-		ListView listView = (ListView) rootView.findViewById(android.R.id.list);
+
+        RefreshableListView listView = (RefreshableListView) rootView.findViewById(android.R.id.list);
 		listView.setOnScrollListener(new OnScrollListener() {
 
 			@Override

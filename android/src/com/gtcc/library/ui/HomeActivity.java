@@ -132,6 +132,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupSearchMenuItem(Menu menu) {
+        // set search item
 		MenuItem searchMenu = menu.findItem(R.id.menu_search);
 		if (searchMenu != null && Utils.hasHoneycomb()) {
 			SearchView searchView = (SearchView) searchMenu.getActionView();
@@ -141,6 +142,17 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				searchView.setSearchableInfo(info);
 			}
 		}
+        // set scan item
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        if (scanItem != null) {
+            scanItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
+                @Override
+                public boolean onMenuItemClick(MenuItem item){
+                    showScanner();
+                    return true;
+                }
+            });
+        }
 	}
 	
 	private void triggerRefresh() {

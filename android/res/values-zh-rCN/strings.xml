@@ -89,4 +89,10 @@
 	<string name="title_search_query">搜索 \"&lt;b>%1$s&lt;b>\"</string>
 	<string name="search_hint">搜索图书</string>
 	<string name="feedback_hint">输入你的意见</string>
+    <string name="action_scan">扫描</string>
+    <string name="pull_to_refresh">下拉刷新</string>
+    <string name="release_to_refresh">松开刷新</string>
+    <string name="refreshing">正在刷新……</string>
+    <string name="last_updated">最后更新</string>
+    <string name="update_failed">更新失败!</string>
 </resources>

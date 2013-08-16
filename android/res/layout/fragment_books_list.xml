@@ -5,8 +5,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/android:list"
+    <com.gtcc.library.ui.customcontrol.RefreshableListView
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1.0"
@@ -14,8 +14,9 @@
         android:divider="#19000000"
         android:dividerHeight="1.0dip"
         android:listSelector="@color/transparent"
+        android:scrollbars="vertical"
         android:scrollbarStyle="outsideInset" >
-    </ListView>
+    </com.gtcc.library.ui.customcontrol.RefreshableListView>
     
     <include layout="@layout/activity_loading" />
 
