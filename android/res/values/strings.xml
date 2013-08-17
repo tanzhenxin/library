@@ -59,6 +59,8 @@
     <string name="login_pick_image">Pick Image</string>
     <string name="login_succeed">Login succeesfully</string>
     <string name="login_failed">Login failed</string>
+    <string name="login_in_progress">Login in progress...</string>
+    <string name="login_set_username">Set username</string>
     <string name="register_succeed">Register succeesfully</string>
     <string name="register_failed">Register failed</string>
     <string name="or">or</string>

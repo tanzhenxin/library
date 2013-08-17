@@ -29,7 +29,6 @@ public class SsoHandler {
 
 	private OAuth2Provider mAuthProvider;
 	private AuthListener mAuthDialogListener;
-	private OAuth2AccessToken mAccessToken;
 	private Activity mAuthActivity;
 
 	public SsoHandler(Activity activity, OAuth2Provider authProvider) {
@@ -53,7 +52,8 @@ public class SsoHandler {
 							mAuthActivity, mAuthProvider.getApiKey(),
 							new String[] {}, mAuthActivityCode);
 					if (!singleSignOnStarted) {
-						mAuthDialogListener.onError(ErrorHandler.ssoLoginFailed());
+						mAuthDialogListener.onError(ErrorHandler
+								.ssoLoginFailed());
 					}
 				} catch (RemoteException e) {
 					e.printStackTrace();
@@ -62,7 +62,7 @@ public class SsoHandler {
 			}
 		};
 	}
-	
+
 	public void authorize(final AuthListener listener) {
 		authorize(DEFAULT_AUTH_ACTIVITY_CODE, listener);
 	}
@@ -125,7 +125,8 @@ public class SsoHandler {
 			PackageInfo packageInfo = activity.getPackageManager()
 					.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
 			for (Signature signature : packageInfo.signatures) {
-				if (mAuthProvider.getSignature().equals(signature.toCharsString())) {
+				if (mAuthProvider.getSignature().equals(
+						signature.toCharsString())) {
 					return true;
 				}
 			}
@@ -167,29 +168,7 @@ public class SsoHandler {
 
 					// No errors.
 				} else {
-					if (null == mAccessToken) {
-						mAccessToken = new OAuth2AccessToken();
-					}
-					mAccessToken.setAccessToken(data
-							.getStringExtra(OAuth2AccessToken.KEY_TOKEN));
-					mAccessToken.setExpiresIn(data
-							.getStringExtra(OAuth2AccessToken.KEY_EXPIRES));
-					mAccessToken
-							.setRefreshToken(data
-									.getStringExtra(OAuth2AccessToken.KEY_REFRESH_TOKEN));
-					if (mAccessToken.isSessionValid()) {
-						Log.d("Weibo-authorize",
-								"Login Success! access_token="
-										+ mAccessToken.getAccessToken() + " expires="
-										+ mAccessToken.getExpiresIn()
-										+ "refresh_token="
-										+ mAccessToken.getRefreshToken());
-						mAuthDialogListener.onComplete(data.getExtras());
-					} else {
-						Log.d("Weibo-authorize",
-								"Failed to receive access token by SSO");
-						mAuthDialogListener.onError(ErrorHandler.ssoLoginFailed());
-					}
+					mAuthDialogListener.onComplete(data.getExtras());
 				}
 
 				// An error occurred before we could be redirected.
@@ -210,5 +189,4 @@ public class SsoHandler {
 			}
 		}
 	}
-
 }

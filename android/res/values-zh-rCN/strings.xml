@@ -65,6 +65,8 @@
     <string name="login_pick_image">选择头像</string>
    	<string name="login_succeed">登陆成功</string>
     <string name="login_failed">登陆失败</string>
+    <string name="login_in_progress">登录中...</string>
+    <string name="login_set_nickname">设置用户名</string>
     <string name="register_succeed">注册成功</string>
     <string name="register_failed">注册失败</string>
     <string name="or">或</string>

@@ -6,12 +6,13 @@ import com.gtcc.library.oauth2.Constants;
 import com.gtcc.library.oauth2.OAuth2Provider;
 import com.gtcc.library.oauth2.RequestGrantScope;
 
-public class DoubanLoginActivity extends AuthLoginActivity {
-
+public class AuthDoubanLoginActivity extends AuthLoginActivity {
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		KEY_USER_ID = "douban_user_id";
 		doOAuth2Login();
 	}
 

@@ -39,11 +39,11 @@ public class HttpManager {
 	}
 
 	public HttpManager(String token) {
-		try {
-			accessToken = OAuth2AccessToken.stringToAccessToken(token);
-		} catch (AuthException e) {
-			LogUtils.LOGE(TAG, "Unable to parse access token: " + accessToken);
-		}
+//		try {
+//			accessToken = OAuth2AccessToken.stringToAccessToken(token);
+//		} catch (AuthException e) {
+//			LogUtils.LOGE(TAG, "Unable to parse access token: " + accessToken);
+//		}
 	}
 
 	public String postEncodedEntry(String url, Map<String, String> params,

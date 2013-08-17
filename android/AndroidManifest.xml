@@ -58,7 +58,7 @@
                 android:value="com.gtcc.library.ui.user.UserLoginActivity" />
         </activity>
         <activity
-            android:name="com.gtcc.library.ui.user.DoubanLoginActivity"
+            android:name="com.gtcc.library.ui.user.AuthDoubanLoginActivity"
             android:label="@string/login_with_douban"
             android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
             <meta-data
@@ -66,8 +66,16 @@
                 android:value="com.gtcc.library.ui.user.UserLoginActivity" />
         </activity>
         <activity
-            android:name="com.gtcc.library.ui.user.WeiboLoginActivity"
+            android:name="com.gtcc.library.ui.user.AuthWeiboLoginActivity"
             android:label="@string/login_with_sina"
+            android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gtcc.library.ui.user.UserLoginActivity" />
+        </activity>
+        <activity
+            android:name="com.gtcc.library.ui.user.AuthNewUserActivity"
+            android:label="@string/login_set_nickname"
             android:parentActivityName="com.gtcc.library.ui.user.UserLoginActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

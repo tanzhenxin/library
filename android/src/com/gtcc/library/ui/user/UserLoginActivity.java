@@ -5,12 +5,17 @@ import java.io.IOException;
 import org.json.JSONException;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnKeyListener;
 import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,8 +29,10 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.oauth2.OAuth2AccessToken;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.LogUtils;
+import com.gtcc.library.util.Utils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
@@ -35,15 +42,18 @@ public class UserLoginActivity extends SherlockActivity {
 
 	public static final String LOGIN_TYPE = "login_type";
 	public static final int LOGIN_NORMAL = 0;
-	public static final int LOGIN_DOUBAN = 1;
+	public static final int LOGIN_AUTH = 1;
 
 	private EditText mUserName;
 	private EditText mUserPassword;
-
-	private int REQUEST_REGISTER = 1;
-	private int REQUEST_DOUBAN_LOGIN = 2;
-	private int REQUEST_WEIBO_LOGIN = 3;
 	
+	private ProgressDialog mSpinner;
+	private AsyncLoginTask mAsyncLoginTask;
+
+	private static final int REQUEST_REGISTER = 1;
+	private static final int REQUEST_DOUBAN_LOGIN = 2;
+	private static final int REQUEST_WEIBO_LOGIN = 3;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,9 +85,11 @@ public class UserLoginActivity extends SherlockActivity {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserLoginActivity.this,
-						DoubanLoginActivity.class);
-				startActivityForResult(intent, REQUEST_DOUBAN_LOGIN);
+				if (Utils.isNetworkConnected(UserLoginActivity.this)) {
+					Intent intent = new Intent(UserLoginActivity.this,
+							AuthDoubanLoginActivity.class);
+					startActivityForResult(intent, REQUEST_DOUBAN_LOGIN);
+				}
 			}
 
 		});
@@ -86,10 +98,28 @@ public class UserLoginActivity extends SherlockActivity {
 		mSinaLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Intent intent = new Intent(UserLoginActivity.this,
-						WeiboLoginActivity.class);
-				startActivityForResult(intent, REQUEST_WEIBO_LOGIN);
+				if (Utils.isNetworkConnected(UserLoginActivity.this)) {
+					Intent intent = new Intent(UserLoginActivity.this,
+							AuthWeiboLoginActivity.class);
+					startActivityForResult(intent, REQUEST_WEIBO_LOGIN);
+				}
 			}
+		});
+		
+		mSpinner = new ProgressDialog(this);
+		mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mSpinner.setMessage(getString(R.string.login_in_progress));
+		mSpinner.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+				mSpinner.dismiss();
+				if (mAsyncLoginTask != null && mAsyncLoginTask.getStatus() != Status.FINISHED) {
+					mAsyncLoginTask.cancel(true);
+				}
+				return true;
+			}
+
 		});
 
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -122,37 +152,47 @@ public class UserLoginActivity extends SherlockActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == REQUEST_DOUBAN_LOGIN) {
-			switch (resultCode) {
-			case Activity.RESULT_OK:
-				data.putExtra(LOGIN_TYPE, LOGIN_DOUBAN);
-				setResult(RESULT_OK, data);
-				finish();
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case REQUEST_DOUBAN_LOGIN:
+			case REQUEST_WEIBO_LOGIN: {
+				OAuth2AccessToken accessToken = (OAuth2AccessToken) data.getExtras().get(HomeActivity.ACCESS_TOKEN);
+				String userId = accessToken.getUserId();
+				// data.putExtra(LOGIN_TYPE, LOGIN_AUTH);
+				// setResult(RESULT_OK, data);
+				// finish();
+
 				break;
 			}
-		} else if (requestCode == REQUEST_REGISTER) {
-			switch (resultCode) {
-			case Activity.RESULT_OK:
+			case REQUEST_REGISTER:
 				data.putExtra(LOGIN_TYPE, LOGIN_NORMAL);
 				setResult(RESULT_OK, data);
-				finish();
 				break;
 			}
+		} else if (resultCode != RESULT_CANCELED) {
+			Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT)
+					.show();
 		}
 	}
 
 	private void attemptLogin() {
-		final String userName = mUserName.getText().toString();
-		final String password = mUserPassword.getText().toString();
+		if (Utils.isNetworkConnected(this)) {
+			final String userName = mUserName.getText().toString();
+			final String password = mUserPassword.getText().toString();
 
-		if (TextUtils.isEmpty(userName)) {
-			mUserName.setError(getString(R.string.user_name_not_empty));
-			mUserName.requestFocus();
-		} else if (TextUtils.isEmpty(password)) {
-			mUserPassword.setError(getString(R.string.user_password_not_empty));
-			mUserPassword.requestFocus();
-		} else {
-			new AsyncLoginTask().execute(userName, password);
+			if (TextUtils.isEmpty(userName)) {
+				mUserName.setError(getString(R.string.user_name_not_empty));
+				mUserName.requestFocus();
+			} else if (TextUtils.isEmpty(password)) {
+				mUserPassword
+						.setError(getString(R.string.user_password_not_empty));
+				mUserPassword.requestFocus();
+			} else {
+				mSpinner.show();
+				
+				mAsyncLoginTask = new AsyncLoginTask();
+				mAsyncLoginTask.execute(userName, password);
+			}
 		}
 	}
 
@@ -181,6 +221,11 @@ public class UserLoginActivity extends SherlockActivity {
 
 		@Override
 		protected void onPostExecute(Integer result) {
+			mSpinner.dismiss();
+			
+			if (isCancelled())
+				return;
+			
 			switch (result) {
 			case WebServiceInfo.OPERATION_SUCCEED:
 				Intent intent = new Intent();

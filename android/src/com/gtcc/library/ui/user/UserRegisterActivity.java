@@ -10,21 +10,25 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.AsyncTask.Status;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,6 +52,9 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 	private TextView mPassword;
 	private ImageView mUserImage;
 
+	private ProgressDialog mSpinner;
+	private UserRegisterTask mRegisterTask;
+
 	private static final int TAKE_PHOTO = 0;
 	private static final int REQUEST_IMAGE = 1;
 	private static final int REQUEST_CROP = 2;
@@ -65,9 +72,10 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 		mEmail = (TextView) findViewById(R.id.register_email);
 		mPassword = (TextView) findViewById(R.id.register_password);
 		mPassword.setOnEditorActionListener(new OnEditorActionListener() {
-			
+
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
 				attempLogin();
 				return true;
 			}
@@ -75,7 +83,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 
 		final Button registerBtn = (Button) findViewById(R.id.login_signup);
 		registerBtn.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				attempLogin();
@@ -89,6 +97,23 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			public void onClick(View v) {
 				PickImageFragment fragment = new PickImageFragment();
 				fragment.show(getSupportFragmentManager(), "pickImage");
+			}
+		});
+
+		mSpinner = new ProgressDialog(this);
+		mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mSpinner.setMessage(getString(R.string.login_in_progress));
+		mSpinner.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode,
+					KeyEvent event) {
+				mSpinner.dismiss();
+				if (mRegisterTask != null
+						&& mRegisterTask.getStatus() != Status.FINISHED) {
+					mRegisterTask.cancel(true);
+				}
+				return true;
 			}
 		});
 
@@ -185,31 +210,35 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			startActivityForResult(i, REQUEST_CROP);
 		}
 	}
-	
-	private void attempLogin()
-	{
-		mUserName.setError(null);
-		mEmail.setError(null);
-		mPassword.setError(null);
-		
-		final String userName = mUserName.getText().toString();
-		final String email = mEmail.getText().toString();
-		final String password = mPassword.getText().toString();
-		
-		if (TextUtils.isEmpty(userName)) {
-			mUserName.setError(getString(R.string.user_name_not_empty));
-			mUserName.requestFocus();
-		} else if (TextUtils.isEmpty(email)) {
-			mEmail.setError(getString(R.string.user_email_not_empty));
-			mEmail.requestFocus();
-		} else if (!Utils.isEmailValid(email)) {
-			mEmail.setError(getString(R.string.user_email_invalid));
-			mEmail.requestFocus();
-		} else if (TextUtils.isEmpty(password)) {
-			mPassword.setError(getString(R.string.user_password_not_empty));
-			mPassword.requestFocus();
-		} else {
-			new UserRegisterTask().execute(userName, password, email);
+
+	private void attempLogin() {
+		if (Utils.isNetworkConnected(this)) {
+			mUserName.setError(null);
+			mEmail.setError(null);
+			mPassword.setError(null);
+
+			final String userName = mUserName.getText().toString();
+			final String email = mEmail.getText().toString();
+			final String password = mPassword.getText().toString();
+
+			if (TextUtils.isEmpty(userName)) {
+				mUserName.setError(getString(R.string.user_name_not_empty));
+				mUserName.requestFocus();
+			} else if (TextUtils.isEmpty(email)) {
+				mEmail.setError(getString(R.string.user_email_not_empty));
+				mEmail.requestFocus();
+			} else if (!Utils.isEmailValid(email)) {
+				mEmail.setError(getString(R.string.user_email_invalid));
+				mEmail.requestFocus();
+			} else if (TextUtils.isEmpty(password)) {
+				mPassword.setError(getString(R.string.user_password_not_empty));
+				mPassword.requestFocus();
+			} else {
+				mSpinner.show();
+
+				mRegisterTask = new UserRegisterTask();
+				mRegisterTask.execute(userName, password, email);
+			}
 		}
 	}
 
@@ -238,23 +267,24 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			return builder.create();
 		}
 	}
-	
+
 	public class UserRegisterTask extends AsyncTask<String, Void, Integer> {
-		
+
 		String userName;
 		String password;
 		String email;
-		
+
 		@Override
 		protected Integer doInBackground(String... params) {
 			int ret = WebServiceInfo.OPERATION_FAILED;
-			
+
 			userName = params[0];
 			password = params[1];
 			email = params[2];
-			
+
 			try {
-				ret = new WebServiceUserProxy().addUser(userName, password, email);
+				ret = new WebServiceUserProxy().addUser(userName, password,
+						email);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -266,6 +296,11 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 
 		@Override
 		protected void onPostExecute(final Integer result) {
+			mSpinner.dismiss();
+
+			if (isCancelled())
+				return;
+
 			switch (result) {
 			case WebServiceInfo.OPERATION_SUCCEED:
 				Intent intent = new Intent();
@@ -273,11 +308,13 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 				intent.putExtra(HomeActivity.USER_NAME, userName);
 				intent.putExtra(HomeActivity.USER_PASSWORD, userName);
 				setResult(RESULT_OK, intent);
-				Toast.makeText(UserRegisterActivity.this, R.string.register_succeed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(UserRegisterActivity.this,
+						R.string.register_succeed, Toast.LENGTH_SHORT).show();
 				finish();
 				break;
 			default:
-				Toast.makeText(UserRegisterActivity.this, R.string.register_failed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(UserRegisterActivity.this,
+						R.string.register_failed, Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
