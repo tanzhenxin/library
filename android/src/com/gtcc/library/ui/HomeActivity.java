@@ -34,6 +34,8 @@ import com.gtcc.library.ui.library.LibraryPagerAdapter;
 import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.user.UserPagerAdapter;
+import com.gtcc.library.util.CommonAsyncTask;
+import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.Utils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.gtcc.library.ui.zxing.CaptureActivity;
@@ -56,6 +58,8 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	private int REQUEST_LOGIN = 1;
     private int SCANNER = 2;
 	private int SETTINGS = 3;
+
+    private String isbnCode;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -198,7 +202,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 					mUserImageUrl = userInfo.getUserImageUrl();
 					mAccessToken = data.getExtras().getString(ACCESS_TOKEN);
 
-					new LoadBooksAsyncTask().execute();
+					new LoadBooksAsyncTask(this).execute();
 				}
 				
 				storeUserInfo();
@@ -211,9 +215,21 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			}
 		}
         else if (requestCode == SCANNER){
-            // todo
             if (resultCode == RESULT_OK){
-                Toast.makeText(this, data.getExtras().getString("result"), Toast.LENGTH_LONG).show();
+                // scan isbn code, open proper detail activity
+                isbnCode = data.getExtras().getString("result");
+                if (isbnCode != null && isbnCode != ""){
+                    CommonAsyncTask<Void, Boolean> task = new CommonAsyncTask<Void, Boolean>(this) {
+                        @Override
+                        protected Boolean doWork(Void... params) throws Exception {
+                            Book book = HttpManager.webServiceBookProxy.getBookByISBN(isbnCode);
+                            if (book != null)
+                                HomeActivity.this.OnBookSelected(book.getBianhao(), HomeActivity.PAGE_USER, HomeActivity.TAB_0);
+                            return true;
+                        }
+                    };
+                    task.execute();
+                }
             }
         }
 		else if (requestCode == SETTINGS) {
@@ -245,6 +261,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				break;
             case PAGE_SCANNER:
                 showScanner();
+				showContent = false;
                 break;
 			case PAGE_SETTINGS:
 				showSettings();
@@ -340,26 +357,26 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		startActivityForResult(intent, SETTINGS);
 	}
 
-	private class LoadBooksAsyncTask extends AsyncTask<Void, Void, Boolean> {
+	private class LoadBooksAsyncTask extends CommonAsyncTask<Void, Boolean> {
+
+        public LoadBooksAsyncTask(Context context) {
+            super(context);
+        }
 
 		@Override
-		protected Boolean doInBackground(Void... arg0) {
-			try {
-				String accessToken = getAccessToken();
-				if (accessToken != null) {
-					String uid = mUserId;
-					BookCollection bookCollection = new BookCollection();
-					while (bookCollection.hasMoreBooks()) {
-						List<Book> books = bookCollection.getBooks(
-								getAccessToken(), uid);
-						storeBooks(uid, books);
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-			return true;
+		protected Boolean doWork(Void... arg) throws IOException {
+            String accessToken = getAccessToken();
+            if (accessToken != null) {
+                String uid = mUserId;
+                BookCollection bookCollection = new BookCollection();
+                while (bookCollection.hasMoreBooks()) {
+                    List<Book> books = bookCollection.getBooks(
+                            getAccessToken(), uid);
+                    storeBooks(uid, books);
+                }
+            }
+
+            return true;
 		}
 
 		private void storeBooks(String uid, List<Book> books) {
@@ -380,19 +397,6 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				aValues.put(UserBooks.USE_TYPE, book.getStatus());
 				getContentResolver().insert(
 						Users.buildUserBooksUri(uid, book.getId()), aValues);
-			}
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-
-			if (isCancelled())
-				return;
-
-			if (!result) {
-				Toast.makeText(HomeActivity.this, R.string.load_failed,
-						Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

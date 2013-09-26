@@ -97,4 +97,11 @@
     <string name="refreshing">正在刷新……</string>
     <string name="last_updated">最后更新</string>
     <string name="update_failed">更新失败!</string>
+    <string name="foot_loading">加载中……</string>
+    <string name="foot_no_more_data">没有更多数据</string>
+
+    <string name="borrow_this_book">借阅这本书</string>
+    <string name="return_this_book">归还到图书馆</string>
+    <string name="lent_to_others">已被借给%1$s</string>
+    <string name="operation_succeed">操作成功</string>
 </resources>

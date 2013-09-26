@@ -74,7 +74,8 @@
 
     <!--
          SimpleListItems are items whose containers provides the appropriate padding, and
-         usually the container and content are a single view.
+         usually the container and content are a single view.
+
     -->
     <style name="SimpleListItem" parent="ListItemContainerBase">
         <item name="android:paddingLeft">12dp</item>
@@ -205,4 +206,9 @@
         <item name="android:layout_centerHorizontal">true</item>
     </style>
 
+    <style name="borrow_return_button" parent="@android:style/Widget.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 </resources>

@@ -20,10 +20,15 @@ public final class LibraryContract {
 	
 	interface BookColumns {
 		String BOOK_ID = "book_id";
+		String BOOK_BIANHAO = "book_bianhao";
 		String BOOK_TITLE = "book_title";
 		String BOOK_AUTHOR = "book_author";
 		String BOOK_AUTHRO_INTRO = "author_intro";
 		String BOOK_SUMMARY = "book_summary";
+		String BOOK_DESCRIPTION = "book_description";
+		String BOOK_LANGUAGE = "book_language";
+		String BOOK_PRICE = "book_price";
+		String BOOK_PUBLISH_DATE = "book_publish_date";
 		String BOOK_IMAGE_URL = "book_image_url";
 		String BOOK_CATEGORY = "book_category";
 		String BOOK_OWNER = "book_owner";

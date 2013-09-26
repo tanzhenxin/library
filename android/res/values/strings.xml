@@ -91,4 +91,11 @@
     <string name="refreshing">Refreshing...</string>
     <string name="last_updated">Last Updated</string>
     <string name="update_failed">Update Failed!</string>
+    <string name="foot_loading">Loading...</string>
+    <string name="foot_no_more_data">No more data</string>
+
+    <string name="borrow_this_book">Borrow this book</string>
+    <string name="return_this_book">Return to library</string>
+    <string name="lent_to_others">Lent to %1$s</string>
+    <string name="operation_succeed">Operation succeed!</string>
 </resources>

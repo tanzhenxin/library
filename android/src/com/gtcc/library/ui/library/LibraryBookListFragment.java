@@ -1,16 +1,14 @@
 package com.gtcc.library.ui.library;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,18 +19,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.BookCollection;
-import com.gtcc.library.provider.LibraryContract.SearchSuggest;
 import com.gtcc.library.ui.BookListFragment;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.ui.customcontrol.RefreshableListView;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
+import com.gtcc.library.webserviceproxy.WebServiceInfo;
 
 /**
  * A dummy fragment representing a section of the app, but that simply displays
@@ -50,6 +45,8 @@ public class LibraryBookListFragment extends BookListFragment {
 	
 	private SearchBooksLoader mSearchBooksLoader;
 
+    private LibraryBookListAdapter bookListAdapter;
+
 	public LibraryBookListFragment() {
 	}
 
@@ -57,6 +54,9 @@ public class LibraryBookListFragment extends BookListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+
+        bookListAdapter = new LibraryBookListAdapter(getActivity());
+        setListAdapter(bookListAdapter);
 	}
 
 	@Override
@@ -68,12 +68,19 @@ public class LibraryBookListFragment extends BookListFragment {
         listView = (RefreshableListView) rootView.findViewById(android.R.id.list);
         listView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefreshHeader() {
+                /*bookListAdapter.clear();
+                bookListAdapter.notifyDataSetChanged();
+                reloadFromArguments(getArguments());*/
+            }
+
+            @Override
+            public void onRefreshFooter(){
                 reloadFromArguments(getArguments());
             }
         });
 		
-		reloadFromArguments(getArguments());
+		listView.onRefreshFooter();
 		
 		return rootView;
 	}
@@ -131,8 +138,7 @@ public class LibraryBookListFragment extends BookListFragment {
 
 		@Override
 		public List<Book> loadBooks() throws Exception {
-			return HttpManager.webServiceBookProxy.getAllBooks(0, 15); // to replace these params with valuables
-			//return HttpManager.getDoubanNewBooks();
+			return HttpManager.webServiceBookProxy.getAllBooksInList(bookListAdapter.getCount(), WebServiceInfo.LOAD_CAPACITY);
 		}
 	
 	};
@@ -169,7 +175,7 @@ public class LibraryBookListFragment extends BookListFragment {
 			}
 			return false;
 		}
-
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -184,7 +190,7 @@ public class LibraryBookListFragment extends BookListFragment {
 					return;
 				}
 				
-				setListAdapter(new LibraryBookListAdapter(getActivity(), books));
+				bookListAdapter.addBooks(books);
 			} else {
                 listView.onRefreshComplete(false);
 				Toast.makeText(getActivity(),
@@ -200,10 +206,18 @@ public class LibraryBookListFragment extends BookListFragment {
 		private List<Book> books;
 		private LayoutInflater mInflater;
 
-		public LibraryBookListAdapter(Context context, List<Book> books) {
-			this.books = books;
+		public LibraryBookListAdapter(Context context) {
+            books = new ArrayList<Book>();
 			mInflater = LayoutInflater.from(context);
 		}
+
+        public void addBooks(List<Book> newBooks){
+            this.books.addAll(newBooks);
+        }
+
+        public void clear(){
+            this.books.clear();
+        }
 
 		@Override
 		public int getCount() {

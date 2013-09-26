@@ -1,9 +1,9 @@
 package com.gtcc.library.webserviceproxy;
 
 public class WebServiceInfo {
-	//public static final String SERVER	= "http://129.223.252.236/gtcclibrary/amfphp/index.php";
-	public static final String SERVER	= "http://192.168.1.103/gtcclibrary/amfphp/index.php";
-	//public static final String SERVER = "http://129.223.253.25/gtcclibrary/amfphp/index.php";
+	//public static final String SERVER	= "http://192.168.1.103/gtcclibrary/amfphp/index.php";
+	public static final String SERVER		= "http://129.223.252.236/gtcclibrary/amfphp/index.php";
+	public static final String SERVER_IMG	= "http://129.223.252.236/yii/gtcc/images/";
 	
 	public static final String PARAMETERS = "parameters";
 	public static final String SERVICE_NAME = "serviceName";
@@ -15,6 +15,9 @@ public class WebServiceInfo {
 	public static final String BOOK_METHOD_REMOVE_BOOKS = "RemoveBook";
 	public static final String BOOK_METHOD_EDIT_BOOKS = "EditBook";
 	public static final String BOOK_METHOD_REMOVE_ALL = "RemoveAll";
+	public static final String BOOK_METHOD_GET_BOOK_BY_BIANHAO = "GetBookByBianHao"; 
+	public static final String BOOK_METHOD_GET_BOOK_BY_ISBN = "GetBookByISBN"; 
+	public static final String BOOK_METHOD_GET_ALL_BOOKS_IN_LIST = "GetAllBooksInList"; 
 	
 	public static final String BORROW_SERVICE = "BorrowService";
 	public static final String BORROW_METHOD_GET_ALL_HISTORY = "GetAllHistory"; 
@@ -36,7 +39,17 @@ public class WebServiceInfo {
 
 	public static final int OPERATION_SUCCEED = 0;
 	public static final int OPERATION_FAILED = -1;
+	public static final int USER_INVALID = -100;
+	public static final int USER_GET_USER_LIST_FAILED = -101;
 	public static final int USER_ALREADY_EXISTS = -102;
 	public static final int USER_NOT_EXISTS = -103;
 	public static final int USER_PASSWORD_WRONG = -104;
+
+    public static final int LOAD_CAPACITY = 15; //load 15 items each time
+
+	public static final int BOOK_CANNOT_GET_BOOK_LIST = -200;
+	public static final int BOOK_BIANHAO_ALREADY_EXISTS = -201;
+	public static final int BOOK_NO_SUCH_BOOK = -202;
+	public static final int BORROW_NO_SUCH_HISTORY = -300;
+	public static final int BORROW_NOT_BORROW_ANY_BOOKS = -301;
 }
