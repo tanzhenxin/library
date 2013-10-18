@@ -40,7 +40,8 @@ public class UserPagerAdapter extends FragmentStatePagerAdapter  {
 
 	@Override
 	public int getCount() {
-		return 3;
+		//TODO currently we just show READING
+        return 1;
 	}
 
 	@Override

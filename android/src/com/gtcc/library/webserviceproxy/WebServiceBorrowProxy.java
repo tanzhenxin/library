@@ -59,7 +59,7 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
                 book.setISBN(jsonBook.getString("ISBN"));
                 book.setPlanReturnDate(jsonBook.getString("planReturnDate"));
                 book.setRealReturnDate(jsonBook.getString("realReturnDate"));
-
+                book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
                 books.add(book);
             }
         }

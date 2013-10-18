@@ -1,7 +1,5 @@
 package com.gtcc.library.ui;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -33,7 +31,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
-import com.gtcc.library.entity.BookCollection;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
@@ -50,13 +47,13 @@ public class BookDetailFragment extends SherlockFragment implements
 			.makeLogTag(BookDetailFragment.class);
 
 	private final int ADD_REVIEW = 0;
-    private final int LOAD_BORROW_RETURN = 1;
-    private final int BORROW_BOOK = 2;
-    private final int RETURN_BOOK = 3;
-    private final int CANNOT_OPERATE = 4;
-    private final int LOAD_BOOK_INFO = 5;
+	private final int LOAD_BORROW_RETURN = 1;
+	private final int BORROW_BOOK = 2;
+	private final int RETURN_BOOK = 3;
+	private final int CANNOT_OPERATE = 4;
+	private final int LOAD_BOOK_INFO = 5;
 
-    private int mCurrentBookState;
+	private int mCurrentBookState;
 
 	private ViewGroup mRootView;
 	private ViewGroup mSummaryBlock;
@@ -74,7 +71,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private Button mStatusRead;
 	private Button mStatusWish;
 	private TextView mBookStatusText;
-    private Button mBorrowReturn;
+	private Button mBorrowReturn;
 
 	private Uri mBookUri;
 	private Uri mCommentsUri;
@@ -82,8 +79,8 @@ public class BookDetailFragment extends SherlockFragment implements
 	private int mSection;
 	private String mUserId;
 	private Book book;
-    private String borrowedUserId;
-    private int borrowResult;
+	private String borrowedUserId;
+	private int borrowResult;
 
 	private ImageFetcher mImageFetcher;
 
@@ -94,8 +91,9 @@ public class BookDetailFragment extends SherlockFragment implements
 		BookDetailActivity activity = (BookDetailActivity) getActivity();
 		if (activity == null)
 			return;
-		
-		final Intent intent = activity.fragmentArgumentsToIntent(getArguments());
+
+		final Intent intent = activity
+				.fragmentArgumentsToIntent(getArguments());
 		mBookUri = intent.getData();
 		Bundle bundle = intent.getExtras();
 
@@ -158,13 +156,14 @@ public class BookDetailFragment extends SherlockFragment implements
 				.findViewById(R.id.book_status_text);
 		mLoadingIndicator = (ViewGroup) mRootView
 				.findViewById(R.id.loading_progress);
-        mBorrowReturn = (Button) mRootView.findViewById(R.id.action_borrow_return);
-        mBorrowReturn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AsyncLoader().execute(mCurrentBookState);
-            }
-        });
+		mBorrowReturn = (Button) mRootView
+				.findViewById(R.id.action_borrow_return);
+		mBorrowReturn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				new AsyncLoader().execute(mCurrentBookState);
+			}
+		});
 
 		setChangeStatusAnimation();
 		setClearStatusAnimation();
@@ -178,10 +177,9 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (mPage == HomeActivity.PAGE_USER) {
 			getLoaderManager().restartLoader(BookQuery._TOKEN, null, this);
 			getLoaderManager().restartLoader(CommentQuery._TOKEN, null, this);
-		} 
-		else {
+		} else {
 			getLoaderManager().restartLoader(BookQuery._TOKEN, null, this);
-			//new AsyncBookLoader().execute(Books.getBookId(mBookUri));
+			// new AsyncBookLoader().execute(Books.getBookId(mBookUri));
 		}
 
 		return mRootView;
@@ -265,7 +263,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		book.setStatus(getCurrentStatus());
 
 		setContentView(book);
-        new AsyncLoader().execute(LOAD_BORROW_RETURN);
+		new AsyncLoader().execute(LOAD_BORROW_RETURN);
 	}
 
 	private void onCommentQueryComplete(Cursor cursor) {
@@ -475,24 +473,24 @@ public class BookDetailFragment extends SherlockFragment implements
 		mStatusNowBlock.setOnClickListener(onclickListener);
 	}
 
-    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
+	private final ContentObserver mObserver = new ContentObserver(new Handler()) {
 
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
 
-            if (getActivity() == null) {
-                return;
-            }
+			if (getActivity() == null) {
+				return;
+			}
 
-            Loader<Cursor> loader = getLoaderManager().getLoader(
-                    CommentQuery._TOKEN);
-            if (loader != null) {
-                loader.forceLoad();
-            }
-        }
+			Loader<Cursor> loader = getLoaderManager().getLoader(
+					CommentQuery._TOKEN);
+			if (loader != null) {
+				loader.forceLoad();
+			}
+		}
 
-    };
+	};
 
 	private String getCurrentStatus() {
 		switch (mSection) {
@@ -507,140 +505,146 @@ public class BookDetailFragment extends SherlockFragment implements
 		}
 	}
 
-    private void setBorrowReturnState(){
-        if (mCurrentBookState == BORROW_BOOK){
-            mBorrowReturn.setText(R.string.borrow_this_book);
-            mBorrowReturn.setEnabled(true);
-        }
-        else if (mCurrentBookState == CANNOT_OPERATE){
-            mBorrowReturn.setText(String.format(getResources().getString(R.string.lent_to_others), borrowedUserId));
-            mBorrowReturn.setEnabled(false);
-        }
-        else if (mCurrentBookState == RETURN_BOOK) {
-            mBorrowReturn.setText(R.string.return_this_book);
-            mBorrowReturn.setEnabled(true);
-        }
-    }
+	private void setBorrowReturnState() {
+		if (mCurrentBookState == BORROW_BOOK) {
+			mBorrowReturn.setText(R.string.borrow_this_book);
+			mBorrowReturn.setEnabled(true);
+		} else if (mCurrentBookState == CANNOT_OPERATE) {
+			mBorrowReturn.setText(String.format(
+					getResources().getString(R.string.lent_to_others),
+					borrowedUserId));
+			mBorrowReturn.setEnabled(false);
+		} else if (mCurrentBookState == RETURN_BOOK) {
+			mBorrowReturn.setText(R.string.return_this_book);
+			mBorrowReturn.setEnabled(true);
+		}
+	}
 
-    private class AsyncLoader extends AsyncTask<Integer, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            int type = params[0];
-            try{
-                switch (type){
-                    case LOAD_BORROW_RETURN:
-                        borrowedUserId = HttpManager.webServiceBorrowProxy.checkWhetherBookInBorrow(book.getBianhao());
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (borrowedUserId == null){
-                                    mCurrentBookState = BORROW_BOOK;
-                                }
-                                else if (borrowedUserId.equals(mUserId)){
-                                    mCurrentBookState = RETURN_BOOK;
-                                }
-                                else {
-                                    mCurrentBookState = CANNOT_OPERATE;
-                                }
-                                setBorrowReturnState();
-                            }
-                        });
-                        break;
-                    case BORROW_BOOK:
-                        borrowResult = HttpManager.webServiceBorrowProxy.borrow(mUserId, book.getBianhao());
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (borrowResult == WebServiceInfo.OPERATION_SUCCEED){
-                                    mCurrentBookState = RETURN_BOOK;
-                                    setBorrowReturnState();
-                                    Toast.makeText(getActivity(),
-                                            getActivity().getString(R.string.operation_succeed),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                        break;
-                    case RETURN_BOOK:
-                        borrowResult = HttpManager.webServiceBorrowProxy.returnBook(mUserId, book.getBianhao());
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
-                                    mCurrentBookState = BORROW_BOOK;
-                                    setBorrowReturnState();
-                                    Toast.makeText(getActivity(),
-                                            getActivity().getString(R.string.operation_succeed),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                        break;
-                    case LOAD_BOOK_INFO:
-                    	book = HttpManager.webServiceBookProxy.getBookByBianHao(Books.getBookId(mBookUri));
-                    	if (book == null)
-                    		return false;
+	private class AsyncLoader extends AsyncTask<Integer, Void, Boolean> {
+		@Override
+		protected Boolean doInBackground(Integer... params) {
+			int type = params[0];
+			try {
+				switch (type) {
+				case LOAD_BORROW_RETURN:
+					borrowedUserId = HttpManager.webServiceBorrowProxy
+							.checkWhetherBookInBorrow(book.getBianhao());
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							if (borrowedUserId == null) {
+								mCurrentBookState = BORROW_BOOK;
+							} else if (borrowedUserId.equals(mUserId)) {
+								mCurrentBookState = RETURN_BOOK;
+							} else {
+								mCurrentBookState = CANNOT_OPERATE;
+							}
+							setBorrowReturnState();
+						}
+					});
+					break;
+				case BORROW_BOOK:
+					borrowResult = HttpManager.webServiceBorrowProxy.borrow(
+							mUserId, book.getBianhao());
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
+								mCurrentBookState = RETURN_BOOK;
+								setBorrowReturnState();
+								Toast.makeText(
+										getActivity(),
+										getActivity().getString(
+												R.string.operation_succeed),
+										Toast.LENGTH_SHORT).show();
+							}
+						}
+					});
+					break;
+				case RETURN_BOOK:
+					borrowResult = HttpManager.webServiceBorrowProxy
+							.returnBook(mUserId, book.getBianhao());
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
+								mCurrentBookState = BORROW_BOOK;
+								setBorrowReturnState();
+								Toast.makeText(
+										getActivity(),
+										getActivity().getString(
+												R.string.operation_succeed),
+										Toast.LENGTH_SHORT).show();
+							}
+						}
+					});
+					break;
+				case LOAD_BOOK_INFO:
+					book = HttpManager.webServiceBookProxy
+							.getBookByBianHao(Books.getBookId(mBookUri));
+					if (book == null)
+						return false;
 
-                    	// save the book to sqlite
-                    	ContentValues values = new ContentValues();
-        				values.put(Books.BOOK_ID, book.getId());
-        				values.put(Books.BOOK_BIANHAO, book.getBianhao());
-        				values.put(Books.BOOK_TITLE, book.getTitle());
-        				values.put(Books.BOOK_AUTHOR, book.getAuthor());
-        				values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
-        				values.put(Books.BOOK_SUMMARY, book.getSummary());
-        				values.put(Books.BOOK_DESCRIPTION, book.getDescription());
-        				values.put(Books.BOOK_LANGUAGE, book.getLanguage());
-        				values.put(Books.BOOK_PRICE, book.getPrice());
-        				values.put(Books.BOOK_PUBLISH_DATE, book.getPublishDate());
-        				values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
-                    	getActivity().getContentResolver().insert(Books.CONTENT_URI, values);
-                    	
-                    	getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                            	setContentView(book);
-                                new AsyncLoader().execute(LOAD_BORROW_RETURN);
-                            }
-                        });
-                		
-                        break;
-                }
+					// save the book to sqlite
+					ContentValues values = new ContentValues();
+					values.put(Books.BOOK_ID, book.getId());
+					values.put(Books.BOOK_BIANHAO, book.getBianhao());
+					values.put(Books.BOOK_TITLE, book.getTitle());
+					values.put(Books.BOOK_AUTHOR, book.getAuthor());
+					values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
+					values.put(Books.BOOK_SUMMARY, book.getSummary());
+					values.put(Books.BOOK_DESCRIPTION, book.getDescription());
+					values.put(Books.BOOK_LANGUAGE, book.getLanguage());
+					values.put(Books.BOOK_PRICE, book.getPrice());
+					values.put(Books.BOOK_PUBLISH_DATE, book.getPublishDate());
+					values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
+					getActivity().getContentResolver().insert(
+							Books.CONTENT_URI, values);
 
-                return true;
-            }catch (Exception e){
-                return false;
-            }
-        }
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							setContentView(book);
+							new AsyncLoader().execute(LOAD_BORROW_RETURN);
+						}
+					});
 
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
+					break;
+				}
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result){
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
 
-            }
-            else {
-                Toast.makeText(getActivity(),
-                        getActivity().getString(R.string.load_failed),
-                        Toast.LENGTH_SHORT).show();
-            }
-            mLoadingIndicator.setVisibility(View.GONE);
-        }
-    }
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mLoadingIndicator.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+
+			} else {
+				Toast.makeText(getActivity(),
+						getActivity().getString(R.string.load_failed),
+						Toast.LENGTH_SHORT).show();
+			}
+			mLoadingIndicator.setVisibility(View.GONE);
+		}
+	}
 
 	public interface BookQuery {
 		int _TOKEN = 0;
 
 		public final String[] PROJECTION = new String[] { Books._ID,
-				Books.BOOK_ID, Books.BOOK_BIANHAO, Books.BOOK_TITLE, 
-				Books.BOOK_AUTHOR, Books.BOOK_AUTHRO_INTRO, Books.BOOK_SUMMARY, 
-				Books.BOOK_DESCRIPTION, Books.BOOK_LANGUAGE, Books.BOOK_PRICE, 
+				Books.BOOK_ID, Books.BOOK_BIANHAO, Books.BOOK_TITLE,
+				Books.BOOK_AUTHOR, Books.BOOK_AUTHRO_INTRO, Books.BOOK_SUMMARY,
+				Books.BOOK_DESCRIPTION, Books.BOOK_LANGUAGE, Books.BOOK_PRICE,
 				Books.BOOK_PUBLISH_DATE, Books.BOOK_IMAGE_URL, };
 
 		public int _ID = 0;

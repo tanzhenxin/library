@@ -11,6 +11,7 @@ public class Borrow {
     private String planReturnDate;
     private String realReturnDate;
     private String ISBN;
+    private String imgUrl;
 
     public String getUserName() {
         return userName;
@@ -66,5 +67,13 @@ public class Borrow {
 
     public void setISBN(String ISBN) {
         this.ISBN = ISBN;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }
