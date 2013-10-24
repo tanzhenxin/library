@@ -28,7 +28,7 @@ import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
 public class HttpManager {
 
-	private OAuth2AccessToken accessToken;
+	private String mAccessToken;
 	private static final String TAG = LogUtils.makeLogTag(HttpManager.class);
 	public static WebServiceBookProxy webServiceBookProxy = new WebServiceBookProxy();
 	public static WebServiceBorrowProxy webServiceBorrowProxy = new WebServiceBorrowProxy();
@@ -39,11 +39,7 @@ public class HttpManager {
 	}
 
 	public HttpManager(String token) {
-//		try {
-//			accessToken = OAuth2AccessToken.stringToAccessToken(token);
-//		} catch (AuthException e) {
-//			LogUtils.LOGE(TAG, "Unable to parse access token: " + accessToken);
-//		}
+		mAccessToken = token;
 	}
 
 	public String postEncodedEntry(String url, Map<String, String> params,
@@ -121,8 +117,7 @@ public class HttpManager {
 		HttpURLConnection conn = (HttpURLConnection) new URL(appendApiKey(url))
 				.openConnection();
 		if (requireToken) {
-			conn.setRequestProperty("Authorization",
-					"Bearer " + accessToken.getAccessToken());
+			conn.setRequestProperty("Authorization", "Bearer " + mAccessToken);
 		}
 		conn.setReadTimeout(10000 /* milliseconds */);
 		conn.setConnectTimeout(15000 /* milliseconds */);

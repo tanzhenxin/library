@@ -128,7 +128,7 @@ public class SearchActivity extends BaseActivity
 		Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
 		detailIntent.putExtra(HomeActivity.ARG_PAGE_NUMBER, page);
 		detailIntent.putExtra(HomeActivity.ARG_SECTION_NUMBER, section);
-		detailIntent.putExtra(USER_ID, mUserId);
+		detailIntent.putExtra(USER_ID, mUserInfo.getUserId());
 		startActivity(detailIntent);
 		
 		return true;

@@ -31,6 +31,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
+import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
@@ -79,7 +80,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private int mSection;
 	private String mUserId;
 	private Book book;
-	private String borrowedUserId;
+	private Borrow bookBorrowInfo;
 	private int borrowResult;
 
 	private ImageFetcher mImageFetcher;
@@ -505,85 +506,79 @@ public class BookDetailFragment extends SherlockFragment implements
 		}
 	}
 
-	private void setBorrowReturnState() {
-		if (mCurrentBookState == BORROW_BOOK) {
-			mBorrowReturn.setText(R.string.borrow_this_book);
-			mBorrowReturn.setEnabled(true);
-		} else if (mCurrentBookState == CANNOT_OPERATE) {
-			mBorrowReturn.setText(String.format(
-					getResources().getString(R.string.lent_to_others),
-					borrowedUserId));
-			mBorrowReturn.setEnabled(false);
-		} else if (mCurrentBookState == RETURN_BOOK) {
-			mBorrowReturn.setText(R.string.return_this_book);
-			mBorrowReturn.setEnabled(true);
-		}
-	}
+    private void setBorrowReturnState(){
+        if (mCurrentBookState == BORROW_BOOK){
+            mBorrowReturn.setText(R.string.borrow_this_book);
+            mBorrowReturn.setEnabled(true);
+        }
+        else if (mCurrentBookState == CANNOT_OPERATE){
+            mBorrowReturn.setText(String.format(getResources().getString(R.string.lent_to_others), bookBorrowInfo.getUserName()));
+            mBorrowReturn.setEnabled(false);
+        }
+        else if (mCurrentBookState == RETURN_BOOK) {
+            mBorrowReturn.setText(R.string.return_this_book);
+            mBorrowReturn.setEnabled(true);
+        }
+    }
 
-	private class AsyncLoader extends AsyncTask<Integer, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Integer... params) {
-			int type = params[0];
-			try {
-				switch (type) {
-				case LOAD_BORROW_RETURN:
-					borrowedUserId = HttpManager.webServiceBorrowProxy
-							.checkWhetherBookInBorrow(book.getBianhao());
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (borrowedUserId == null) {
-								mCurrentBookState = BORROW_BOOK;
-							} else if (borrowedUserId.equals(mUserId)) {
-								mCurrentBookState = RETURN_BOOK;
-							} else {
-								mCurrentBookState = CANNOT_OPERATE;
-							}
-							setBorrowReturnState();
-						}
-					});
-					break;
-				case BORROW_BOOK:
-					borrowResult = HttpManager.webServiceBorrowProxy.borrow(
-							mUserId, book.getBianhao());
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
-								mCurrentBookState = RETURN_BOOK;
-								setBorrowReturnState();
-								Toast.makeText(
-										getActivity(),
-										getActivity().getString(
-												R.string.operation_succeed),
-										Toast.LENGTH_SHORT).show();
-							}
-						}
-					});
-					break;
-				case RETURN_BOOK:
-					borrowResult = HttpManager.webServiceBorrowProxy
-							.returnBook(mUserId, book.getBianhao());
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
-								mCurrentBookState = BORROW_BOOK;
-								setBorrowReturnState();
-								Toast.makeText(
-										getActivity(),
-										getActivity().getString(
-												R.string.operation_succeed),
-										Toast.LENGTH_SHORT).show();
-							}
-						}
-					});
-					break;
-				case LOAD_BOOK_INFO:
-					book = HttpManager.webServiceBookProxy
-							.getBookByBianHao(Books.getBookId(mBookUri));
-					if (book == null)
-						return false;
+    private class AsyncLoader extends AsyncTask<Integer, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            int type = params[0];
+            try{
+                switch (type){
+                    case LOAD_BORROW_RETURN:
+                    	bookBorrowInfo = HttpManager.webServiceBorrowProxy.checkWhetherBookInBorrow(book.getBianhao());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (bookBorrowInfo == null){
+                                    mCurrentBookState = BORROW_BOOK;
+                                }
+                                else if (bookBorrowInfo.getUserName().equals(mUserId)){
+                                    mCurrentBookState = RETURN_BOOK;
+                                }
+                                else {
+                                    mCurrentBookState = CANNOT_OPERATE;
+                                }
+                                setBorrowReturnState();
+                            }
+                        });
+                        break;
+                    case BORROW_BOOK:
+                        borrowResult = HttpManager.webServiceBorrowProxy.borrow(mUserId, book.getBianhao());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (borrowResult == WebServiceInfo.OPERATION_SUCCEED){
+                                    mCurrentBookState = RETURN_BOOK;
+                                    setBorrowReturnState();
+                                    Toast.makeText(getActivity(),
+                                            getActivity().getString(R.string.operation_succeed),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        break;
+                    case RETURN_BOOK:
+                        borrowResult = HttpManager.webServiceBorrowProxy.returnBook(mUserId, book.getBianhao());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
+                                    mCurrentBookState = BORROW_BOOK;
+                                    setBorrowReturnState();
+                                    Toast.makeText(getActivity(),
+                                            getActivity().getString(R.string.operation_succeed),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        break;
+                    case LOAD_BOOK_INFO:
+                    	book = HttpManager.webServiceBookProxy.getBookByBianHao(Books.getBookId(mBookUri));
+                    	if (book == null)
+                    		return false;
 
 					// save the book to sqlite
 					ContentValues values = new ContentValues();

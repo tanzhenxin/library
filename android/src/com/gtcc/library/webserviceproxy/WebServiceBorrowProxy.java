@@ -67,7 +67,7 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
         return books;
 	}
 	
-	public String checkWhetherBookInBorrow(String bookBianhao) throws Exception {
+	public Borrow checkWhetherBookInBorrow(String bookBianhao) throws Exception {
         JSONArray array = new JSONArray();
         array.put(String.valueOf(bookBianhao));
 		JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_CHECK_WHETHER_BOOK_IN_BORROW, array);
@@ -75,7 +75,16 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
             int ret = result.getInt("_returnCode");
             if (ret == WebServiceInfo.OPERATION_SUCCEED){
             	JSONObject jsonBorrowHistory = result.getJSONObject("borrowHistory");
-            	return jsonBorrowHistory.getString("username");
+            	Borrow bookBorrowInfo = new Borrow();
+                bookBorrowInfo.setUserName(jsonBorrowHistory.getString("username"));
+                bookBorrowInfo.setBookName(jsonBorrowHistory.getString("bookName"));
+                bookBorrowInfo.setBookBianhao(jsonBorrowHistory.getString("bookBianhao"));
+                bookBorrowInfo.setBorrowDate(jsonBorrowHistory.getString("borrowDate"));
+                bookBorrowInfo.setISBN(jsonBorrowHistory.getString("ISBN"));
+                bookBorrowInfo.setPlanReturnDate(jsonBorrowHistory.getString("planReturnDate"));
+                bookBorrowInfo.setRealReturnDate(jsonBorrowHistory.getString("realReturnDate"));
+                bookBorrowInfo.setImgUrl(WebServiceInfo.SERVER_IMG + bookBorrowInfo.getISBN() + ".jpg");
+            	return bookBorrowInfo;
             }
 		}
         return null;

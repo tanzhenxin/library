@@ -115,6 +115,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.books_list_menu, menu);
 		setupSearchMenuItem(menu);
+		setupScanMenuItem(menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -136,7 +137,6 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupSearchMenuItem(Menu menu) {
-        // set search item
 		MenuItem searchMenu = menu.findItem(R.id.menu_search);
 		if (searchMenu != null && Utils.hasHoneycomb()) {
 			SearchView searchView = (SearchView) searchMenu.getActionView();
@@ -146,7 +146,9 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				searchView.setSearchableInfo(info);
 			}
 		}
-        // set scan item
+	}
+	
+	private void setupScanMenuItem(Menu menu) {
         MenuItem scanItem = menu.findItem(R.id.menu_scan);
         if (scanItem != null) {
             scanItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
@@ -160,7 +162,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	}
 	
 	private void triggerRefresh() {
-		
+		// TODO
 	}
 
 	@Override
@@ -188,24 +190,9 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		if (requestCode == REQUEST_LOGIN) {
 			switch (resultCode) {
 			case Activity.RESULT_OK:
-				int loginType = data.getExtras().getInt(
-						UserLoginActivity.LOGIN_TYPE);
-				if (loginType == UserLoginActivity.LOGIN_NORMAL) {
-					mUserId = data.getExtras().getString(USER_ID);
-					mUserName = data.getExtras().getString(USER_NAME);
-					mUserPassword = data.getExtras().getString(USER_PASSWORD);
-				} else {
-					UserInfo userInfo = (UserInfo) data.getExtras()
-							.getSerializable(USER_ID);
-					mUserId = userInfo.getUserId();
-					mUserName = userInfo.getUserName();
-					mUserImageUrl = userInfo.getUserImageUrl();
-					mAccessToken = data.getExtras().getString(ACCESS_TOKEN);
-
-					new LoadBooksAsyncTask(this).execute();
-				}
-				
-				storeUserInfo();
+				int loginType = data.getExtras().getInt(UserLoginActivity.LOGIN_TYPE);
+				UserInfo userInfo = (UserInfo)data.getExtras().getSerializable(UserLoginActivity.LOGIN_USER);
+				setUserInfo(userInfo);
 
 				showPage(PAGE_USER);
 				break;
@@ -219,7 +206,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
                 // scan isbn code, open proper detail activity
                 isbnCode = data.getExtras().getString("result");
                 if (isbnCode != null && isbnCode != ""){
-                    CommonAsyncTask<Void, Boolean> task = new CommonAsyncTask<Void, Boolean>(this) {
+					CommonAsyncTask<Void, Boolean> task = new CommonAsyncTask<Void, Boolean>(this) {
                         @Override
                         protected Boolean doWork(Void... params) throws Exception {
                             Book book = HttpManager.webServiceBookProxy.getBookByISBN(isbnCode);
@@ -277,24 +264,12 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	}
 	
 	public boolean hasLogin() {
-		return mUserId != "0";
+		return mUserInfo != null && mUserInfo.getUserId() != "0";
 	}
 	
 	private void login() {
 		Intent intent = new Intent(this, UserLoginActivity.class);
 		startActivityForResult(intent, REQUEST_LOGIN);
-	}
-	
-	public String getUserId() {
-		return mUserId;
-	}
-
-	private String getAccessToken() {
-		if (mAccessToken == null) {
-			mAccessToken = getPreferences(Context.MODE_PRIVATE).getString(
-					ACCESS_TOKEN, null);
-		}
-		return mAccessToken;
 	}
 
 	private void showUserHome() {
@@ -357,57 +332,13 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		startActivityForResult(intent, SETTINGS);
 	}
 
-	private class LoadBooksAsyncTask extends CommonAsyncTask<Void, Boolean> {
-
-        public LoadBooksAsyncTask(Context context) {
-            super(context);
-        }
-
-		@Override
-		protected Boolean doWork(Void... arg) throws IOException {
-            String accessToken = getAccessToken();
-            if (accessToken != null) {
-                String uid = mUserId;
-                BookCollection bookCollection = new BookCollection();
-                while (bookCollection.hasMoreBooks()) {
-                    List<Book> books = bookCollection.getBooks(
-                            getAccessToken(), uid);
-                    storeBooks(uid, books);
-                }
-            }
-
-            return true;
-		}
-
-		private void storeBooks(String uid, List<Book> books) {
-			for (Book book : books) {
-				ContentValues values = new ContentValues();
-				values.put(Books.BOOK_ID, book.getId());
-				values.put(Books.BOOK_TITLE, book.getTitle());
-				values.put(Books.BOOK_AUTHOR, book.getAuthor());
-				values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
-				values.put(Books.BOOK_SUMMARY, book.getSummary());
-				values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
-
-				getContentResolver().insert(Books.CONTENT_URI, values);
-
-				ContentValues aValues = new ContentValues();
-				aValues.put(UserBooks.USER_ID, uid);
-				aValues.put(UserBooks.BOOK_ID, book.getId());
-				aValues.put(UserBooks.USE_TYPE, book.getStatus());
-				getContentResolver().insert(
-						Users.buildUserBooksUri(uid, book.getId()), aValues);
-			}
-		}
-	}
-
 	@Override
 	public boolean OnBookSelected(String bookId, int page, int section) {
 		Uri sessionUri = Books.buildBookUri(bookId);
 		Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
 		detailIntent.putExtra(ARG_PAGE_NUMBER, page);
 		detailIntent.putExtra(ARG_SECTION_NUMBER, section);
-		detailIntent.putExtra(USER_ID, mUserId);
+		detailIntent.putExtra(USER_ID, mUserInfo.getUserId());
 		startActivity(detailIntent);
 
 		return true;

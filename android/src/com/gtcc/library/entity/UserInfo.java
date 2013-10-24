@@ -12,6 +12,7 @@ public class UserInfo implements Serializable {
 	private String mUserEmail;
 	private String mUserPassword;
 	private String mUserImageUrl;
+	private String mAccessToken;
 
 	public UserInfo(String jsonUser) {
 		JSONObject jObj;
@@ -33,15 +34,21 @@ public class UserInfo implements Serializable {
 		}
 	}
 	
-	public UserInfo(String userName, String password) {
+	public UserInfo(String userId, String userName, String password) {
+		mUid = userId;
 		mUserName = userName;
 		mUserPassword = password;
 	}
 	
-	public UserInfo(String userName, String email, String password) {
-		mUserName = userName;
+	public UserInfo(String userId, String userName, String email, String password) {
+		this(userId, userName, password);
 		mUserEmail = email;
-		mUserPassword = password;
+	}
+	
+	public UserInfo(String userId, String userName, String password, String imageUrl, String accessToken) {
+		this(userId, userName, password);
+		mUserImageUrl = imageUrl;
+		mAccessToken = accessToken;
 	}
 
 	public String getUserId() {
@@ -62,5 +69,13 @@ public class UserInfo implements Serializable {
 
 	public String getUserImageUrl() {
 		return mUserImageUrl;
+	}
+	
+	public String getAccessToken() {
+		return mAccessToken;
+	}
+	
+	public void setAccessToken(String token) {
+		mAccessToken = token;
 	}
 }

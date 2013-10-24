@@ -29,6 +29,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.oauth2.OAuth2AccessToken;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.LogUtils;
@@ -42,7 +43,10 @@ public class UserLoginActivity extends SherlockActivity {
 
 	public static final String LOGIN_TYPE = "login_type";
 	public static final int LOGIN_NORMAL = 0;
-	public static final int LOGIN_AUTH = 1;
+	public static final int LOGIN_AUTH_DOUBAN = 1;
+	public static final int LOGIN_AUTH_WEIBO = 2;
+	
+	public static final String LOGIN_USER = "login_user";
 
 	private EditText mUserName;
 	private EditText mUserPassword;
@@ -154,14 +158,16 @@ public class UserLoginActivity extends SherlockActivity {
 
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
-			case REQUEST_DOUBAN_LOGIN:
+			case REQUEST_DOUBAN_LOGIN: {
+				data.putExtra(LOGIN_TYPE, LOGIN_AUTH_DOUBAN);
+				setResult(RESULT_OK, data);
+				finish();
+				break;
+			}
 			case REQUEST_WEIBO_LOGIN: {
-				OAuth2AccessToken accessToken = (OAuth2AccessToken) data.getExtras().get(HomeActivity.ACCESS_TOKEN);
-				String userId = accessToken.getUserId();
-				// data.putExtra(LOGIN_TYPE, LOGIN_AUTH);
-				// setResult(RESULT_OK, data);
-				// finish();
-
+				data.putExtra(LOGIN_TYPE, LOGIN_AUTH_WEIBO);
+				setResult(RESULT_OK, data);
+				finish();
 				break;
 			}
 			case REQUEST_REGISTER:
@@ -230,9 +236,7 @@ public class UserLoginActivity extends SherlockActivity {
 			case WebServiceInfo.OPERATION_SUCCEED:
 				Intent intent = new Intent();
 				intent.putExtra(LOGIN_TYPE, LOGIN_NORMAL);
-				intent.putExtra(HomeActivity.USER_ID, userName);
-				intent.putExtra(HomeActivity.USER_NAME, userName);
-				intent.putExtra(HomeActivity.USER_PASSWORD, userName);
+				intent.putExtra(LOGIN_USER, new UserInfo(userName, userName, password));
 				setResult(RESULT_OK, intent);
 				Toast.makeText(UserLoginActivity.this, R.string.login_succeed,
 						Toast.LENGTH_SHORT).show();

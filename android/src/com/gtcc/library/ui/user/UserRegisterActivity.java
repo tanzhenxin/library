@@ -304,9 +304,8 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			switch (result) {
 			case WebServiceInfo.OPERATION_SUCCEED:
 				Intent intent = new Intent();
-				intent.putExtra(HomeActivity.USER_ID, userName);
-				intent.putExtra(HomeActivity.USER_NAME, userName);
-				intent.putExtra(HomeActivity.USER_PASSWORD, userName);
+				UserInfo userInfo = new UserInfo(userName, userName, email, password);
+				intent.putExtra(UserLoginActivity.LOGIN_USER, userInfo);
 				setResult(RESULT_OK, intent);
 				Toast.makeText(UserRegisterActivity.this,
 						R.string.register_succeed, Toast.LENGTH_SHORT).show();

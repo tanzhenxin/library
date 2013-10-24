@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.provider.LibraryContract.Users;
 
 public class BaseActivity extends SherlockFragmentActivity {
@@ -27,11 +28,7 @@ public class BaseActivity extends SherlockFragmentActivity {
 	public static final String USER_PASSWORD = "user_password";
 	public static final String USER_IMAGE_URL = "user_image_url";
 	
-	protected String mAccessToken;
-	protected String mUserId;
-	protected String mUserName;
-	protected String mUserPassword;
-	protected String mUserImageUrl;
+	protected UserInfo mUserInfo;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -101,39 +98,54 @@ public class BaseActivity extends SherlockFragmentActivity {
     
 	protected void loadUserInfo() {
 		SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
-		mUserId = sharedPref.getString(USER_ID, "0");
-		mUserName = sharedPref.getString(USER_NAME, null);
-		mUserPassword = sharedPref.getString(USER_PASSWORD, null);
-		mUserImageUrl = sharedPref.getString(USER_IMAGE_URL, null);
-		mAccessToken = sharedPref.getString(ACCESS_TOKEN, null);
+		
+		final String userId = sharedPref.getString(USER_ID, "0");
+		final String userName = sharedPref.getString(USER_NAME, null);
+		final String userPassword = sharedPref.getString(USER_PASSWORD, null);
+		final String userImageUrl = sharedPref.getString(USER_IMAGE_URL, null);
+		final String accessToken = sharedPref.getString(ACCESS_TOKEN, null);
+		
+		mUserInfo = new UserInfo(userId, userName, userPassword, userImageUrl, accessToken);
 	}
 
-	protected void storeUserInfo() {
+	protected void setUserInfo(UserInfo userInfo) {
+		mUserInfo = userInfo;
+		
 		// store user info in shared preferences.
 		Editor editor = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE).edit();
 		
-		editor.putString(USER_ID, mUserId);
-		editor.putString(USER_NAME, mUserName);
-		if (mUserPassword != null && !TextUtils.isEmpty(mUserPassword)) {
-			editor.putString(USER_PASSWORD, mUserPassword);
+		editor.putString(USER_ID, mUserInfo.getUserId());
+		editor.putString(USER_NAME, mUserInfo.getUserName());
+		
+		final String password = mUserInfo.getUserPassword();
+		if (password != null && !TextUtils.isEmpty(password)) {
+			editor.putString(USER_PASSWORD, password);
 		}
-		if (mUserImageUrl != null && !TextUtils.isEmpty(mUserImageUrl)) {
-			editor.putString(USER_IMAGE_URL, mUserImageUrl);
+		
+		final String imageUrl = mUserInfo.getUserImageUrl();
+		if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
+			editor.putString(USER_IMAGE_URL, imageUrl);
 		}
-		if (mAccessToken != null && !TextUtils.isEmpty(mAccessToken)) {
-			editor.putString(ACCESS_TOKEN, mAccessToken);
+		
+		final String accessToken = mUserInfo.getAccessToken();
+		if (accessToken != null && !TextUtils.isEmpty(accessToken)) {
+			editor.putString(ACCESS_TOKEN, accessToken);
 		}
 		
 		editor.commit();
 		
 		// store user info in content provider
 		ContentValues values = new ContentValues();
-		values.put(Users.USER_ID, mUserId);
-		values.put(Users.USER_NAME, mUserName);
-		values.put(Users.USER_IMAGE_URL, mUserImageUrl);
+		values.put(Users.USER_ID, mUserInfo.getUserId());
+		values.put(Users.USER_NAME, mUserInfo.getUserName());
+		values.put(Users.USER_IMAGE_URL, imageUrl);
 		getContentResolver().insert(Users.CONTENT_URI, values);
 	}
 	
+	public String getUserId() {
+		return mUserInfo.getUserId();
+	}
+
 	protected void clearUserInfo() {
 		Editor editor = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE).edit();
 		editor.clear();
