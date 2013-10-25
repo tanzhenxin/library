@@ -48,17 +48,6 @@
                     android:layout_alignLeft="@id/book_title"
                     android:layout_below="@id/book_title" />
 
-                <Button
-                    android:id="@+id/action_borrow_return"
-                    style="@style/borrow_return_button"
-                    android:background="@drawable/btn_cyan"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignLeft="@id/book_author"
-                    android:layout_below="@id/book_author"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"/>
-
                 <include
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -150,6 +139,13 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/action_borrow_return"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" />
 
     <include layout="@layout/activity_loading" />
 

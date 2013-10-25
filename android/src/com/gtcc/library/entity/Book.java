@@ -52,7 +52,6 @@ public class Book implements Serializable, Comparable<Book> {
 	private String myTags = "";
 	private float rating;
 	private String status;
-	private String summary; 
 	private String title;
 	private String type;
 	private String url;
@@ -123,14 +122,6 @@ public class Book implements Serializable, Comparable<Book> {
 		this.description = description;
 	}
 
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
-
 	public String getImgUrl() {
 		return imgUrl;
 	}
@@ -163,7 +154,6 @@ public class Book implements Serializable, Comparable<Book> {
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		result = prime * result + ((imgUrl == null) ? 0 : imgUrl.hashCode());
-		result = prime * result + ((summary == null) ? 0 : summary.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -191,11 +181,6 @@ public class Book implements Serializable, Comparable<Book> {
 			if (other.imgUrl != null)
 				return false;
 		} else if (!imgUrl.equals(other.imgUrl))
-			return false;
-		if (summary == null) {
-			if (other.summary != null)
-				return false;
-		} else if (!summary.equals(other.summary))
 			return false;
 		if (title == null) {
 			if (other.title != null)

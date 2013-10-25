@@ -60,7 +60,7 @@ public class BookCollection {
 				book.setAuthor(bookObj.getString("author"));
 				book.setAuthorIntro(bookObj.getString("author_intro").replace(
 						"\n", "\n\n"));
-				book.setSummary(bookObj.getString("summary").replace("\n",
+				book.setDescription(bookObj.getString("summary").replace("\n",
 						"\n\n"));
 				book.setRating((float) bookObj.getJSONObject("rating")
 						.getDouble("average"));
@@ -93,7 +93,7 @@ public class BookCollection {
 			book.setAuthor(bookObj.getString("author"));
 			book.setAuthorIntro(bookObj.getString("author_intro").replace("\n",
 					"\n\n"));
-			book.setSummary(bookObj.getString("summary").replace("\n", "\n\n"));
+			book.setDescription(bookObj.getString("summary").replace("\n", "\n\n"));
 			book.setRating((float) bookObj.getJSONObject("rating").getDouble(
 					"average"));
 			book.setImgUrl(bookObj.getString("image").replace("mpic", "lpic"));
@@ -133,7 +133,7 @@ public class BookCollection {
 				book.setAuthor(bookObj.getString("author"));
 				book.setAuthorIntro(bookObj.getString("author_intro").replace(
 						"\n", "\n\n"));
-				book.setSummary(bookObj.getString("summary").replace("\n",
+				book.setDescription(bookObj.getString("summary").replace("\n",
 						"\n\n"));
 				book.setRating((float) bookObj.getJSONObject("rating")
 						.getDouble("average"));

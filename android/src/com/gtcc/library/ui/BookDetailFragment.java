@@ -57,7 +57,7 @@ public class BookDetailFragment extends SherlockFragment implements
 	private int mCurrentBookState;
 
 	private ViewGroup mRootView;
-	private ViewGroup mSummaryBlock;
+	private ViewGroup mDescriptionBlock;
 	private ViewGroup mAuthorIntroBlock;
 	private ViewGroup mStatusActionBlock;
 	private ViewGroup mStatusNowBlock;
@@ -65,7 +65,7 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	private TextView mTitleView;
 	private TextView mAuthorView;
-	private TextView mSummaryView;
+	private TextView mDescriptionView;
 	private TextView mAuthorIntroView;
 	private ImageView mImageView;
 	private Button mStatusReading;
@@ -138,10 +138,10 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		mTitleView = (TextView) mRootView.findViewById(R.id.book_title);
 		mAuthorView = (TextView) mRootView.findViewById(R.id.book_author);
-		mSummaryView = (TextView) mRootView.findViewById(R.id.book_summary);
+		mDescriptionView = (TextView) mRootView.findViewById(R.id.book_summary);
 		mImageView = (ImageView) mRootView.findViewById(R.id.book_img);
 		mAuthorIntroView = (TextView) mRootView.findViewById(R.id.author_intro);
-		mSummaryBlock = (ViewGroup) mRootView
+		mDescriptionBlock = (ViewGroup) mRootView
 				.findViewById(R.id.book_summary_block);
 		mAuthorIntroBlock = (ViewGroup) mRootView
 				.findViewById(R.id.author_intro_block);
@@ -179,8 +179,7 @@ public class BookDetailFragment extends SherlockFragment implements
 			getLoaderManager().restartLoader(BookQuery._TOKEN, null, this);
 			getLoaderManager().restartLoader(CommentQuery._TOKEN, null, this);
 		} else {
-			getLoaderManager().restartLoader(BookQuery._TOKEN, null, this);
-			// new AsyncBookLoader().execute(Books.getBookId(mBookUri));
+			new AsyncLoader().execute(LOAD_BOOK_INFO);
 		}
 
 		return mRootView;
@@ -243,11 +242,6 @@ public class BookDetailFragment extends SherlockFragment implements
 	}
 
 	private void onBookQueryComplete(Cursor cursor) {
-		if (!cursor.moveToFirst()) {
-			new AsyncLoader().execute(LOAD_BOOK_INFO);
-			return;
-		}
-
 		if (book == null)
 			book = new Book();
 		book.setId(cursor.getString(BookQuery.BOOK_ID));
@@ -255,7 +249,6 @@ public class BookDetailFragment extends SherlockFragment implements
 		book.setTitle(cursor.getString(BookQuery.BOOK_TITLE));
 		book.setAuthor(cursor.getString(BookQuery.BOOK_AUTHOR));
 		book.setAuthorIntro(cursor.getString(BookQuery.BOOK_AUTHRO_INTRO));
-		book.setSummary(cursor.getString(BookQuery.BOOK_SUMMARY));
 		book.setDescription(cursor.getString(BookQuery.BOOK_DESCRIPTION));
 		book.setLanguage(cursor.getString(BookQuery.BOOK_LANGUAGE));
 		book.setPrice(cursor.getString(BookQuery.BOOK_PRICE));
@@ -264,7 +257,6 @@ public class BookDetailFragment extends SherlockFragment implements
 		book.setStatus(getCurrentStatus());
 
 		setContentView(book);
-		new AsyncLoader().execute(LOAD_BORROW_RETURN);
 	}
 
 	private void onCommentQueryComplete(Cursor cursor) {
@@ -369,11 +361,11 @@ public class BookDetailFragment extends SherlockFragment implements
 		mTitleView.setText(book.getTitle());
 		mAuthorView.setText(book.getAuthor());
 
-		String summary = book.getSummary();
-		if (summary != null && !TextUtils.isEmpty(summary))
-			mSummaryView.setText(summary);
+		String bookDesc = book.getDescription();
+		if (bookDesc != null && !TextUtils.isEmpty(bookDesc))
+			mDescriptionView.setText(bookDesc);
 		else
-			mSummaryBlock.setVisibility(View.GONE);
+			mDescriptionBlock.setVisibility(View.GONE);
 
 		String authorIntro = book.getAuthorIntro();
 		if (authorIntro != null && !TextUtils.isEmpty(authorIntro))
@@ -587,7 +579,6 @@ public class BookDetailFragment extends SherlockFragment implements
 					values.put(Books.BOOK_TITLE, book.getTitle());
 					values.put(Books.BOOK_AUTHOR, book.getAuthor());
 					values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
-					values.put(Books.BOOK_SUMMARY, book.getSummary());
 					values.put(Books.BOOK_DESCRIPTION, book.getDescription());
 					values.put(Books.BOOK_LANGUAGE, book.getLanguage());
 					values.put(Books.BOOK_PRICE, book.getPrice());
@@ -638,7 +629,7 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		public final String[] PROJECTION = new String[] { Books._ID,
 				Books.BOOK_ID, Books.BOOK_BIANHAO, Books.BOOK_TITLE,
-				Books.BOOK_AUTHOR, Books.BOOK_AUTHRO_INTRO, Books.BOOK_SUMMARY,
+				Books.BOOK_AUTHOR, Books.BOOK_AUTHRO_INTRO, 
 				Books.BOOK_DESCRIPTION, Books.BOOK_LANGUAGE, Books.BOOK_PRICE,
 				Books.BOOK_PUBLISH_DATE, Books.BOOK_IMAGE_URL, };
 
@@ -648,12 +639,11 @@ public class BookDetailFragment extends SherlockFragment implements
 		public int BOOK_TITLE = 3;
 		public int BOOK_AUTHOR = 4;
 		public int BOOK_AUTHRO_INTRO = 5;
-		public int BOOK_SUMMARY = 6;
-		public int BOOK_DESCRIPTION = 7;
-		public int BOOK_LANGUAGE = 8;
-		public int BOOK_PRICE = 9;
-		public int BOOK_PUBLISH_DATE = 10;
-		public int BOOK_IMAGE_URL = 11;
+		public int BOOK_DESCRIPTION = 6;
+		public int BOOK_LANGUAGE = 7;
+		public int BOOK_PRICE = 8;
+		public int BOOK_PUBLISH_DATE = 9;
+		public int BOOK_IMAGE_URL = 10;
 	}
 
 	public interface CommentQuery {

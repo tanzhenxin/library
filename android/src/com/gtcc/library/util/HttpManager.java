@@ -190,7 +190,7 @@ public class HttpManager {
 							.getTextExtractor().toString());
 					book.setAuthor(contents.getChildElements().get(1)
 							.getTextExtractor().toString());
-					book.setSummary(contents.getChildElements().get(2)
+					book.setDescription(contents.getChildElements().get(2)
 							.getTextExtractor().toString());
 
 					books.add(book);
