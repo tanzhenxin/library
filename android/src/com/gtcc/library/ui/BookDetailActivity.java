@@ -31,7 +31,7 @@ public class BookDetailActivity extends BaseActivity {
 			mFragment = new BookDetailFragment();
 			mFragment.setArguments(intentToFragmentArguments(getIntent()));
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.root_container, mFragment, "single_pane")
+					.add(R.id.fragment_container, mFragment, "single_pane")
 					.commit();
 		} else {
 			mFragment = getSupportFragmentManager().findFragmentByTag(

@@ -29,7 +29,7 @@ public class SearchActivity extends BaseActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_search);
+		setContentView(R.layout.activity_empty_pane);
 		
 		FragmentManager fm = getSupportFragmentManager();
 		mBooksFragment = (LibraryBookListFragment) fm.findFragmentById(R.id.fragment_container);
@@ -123,11 +123,10 @@ public class SearchActivity extends BaseActivity
 	}
 
 	@Override
-	public boolean OnBookSelected(String bookId, int page, int section) {
+	public boolean OnBookSelected(String bookId, int page) {
 		Uri sessionUri = Books.buildBookUri(bookId);
 		Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
 		detailIntent.putExtra(HomeActivity.ARG_PAGE_NUMBER, page);
-		detailIntent.putExtra(HomeActivity.ARG_SECTION_NUMBER, section);
 		detailIntent.putExtra(USER_ID, mUserInfo.getUserId());
 		startActivity(detailIntent);
 		

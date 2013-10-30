@@ -45,6 +45,12 @@
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>
     <string name="book_category">Browse by category</string>
+    <string name="book_author">Author:</string>
+    <string name="book_publisher">Publisher:</string>
+    <string name="book_publish_date">Publish Date:</string>
+    <string name="book_price">Price:</string>
+    <string name="book_tag">Tag:</string>
+    <string name="book_due_date">Due on %1$s</string>
     
     <string name="login_signup">Sign up</string>
     <string name="login_signin">Sign in</string>

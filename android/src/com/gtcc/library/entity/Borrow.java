@@ -5,13 +5,10 @@ package com.gtcc.library.entity;
  */
 public class Borrow {
     private String userName;
-    private String bookName;
-    private String bookBianhao;
     private String borrowDate;
     private String planReturnDate;
     private String realReturnDate;
-    private String ISBN;
-    private String imgUrl;
+    private Book book;
 
     public String getUserName() {
         return userName;
@@ -19,22 +16,6 @@ public class Borrow {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public String getBookBianhao() {
-        return bookBianhao;
-    }
-
-    public void setBookBianhao(String bookBianhao) {
-        this.bookBianhao = bookBianhao;
     }
 
     public String getBorrowDate() {
@@ -61,19 +42,11 @@ public class Borrow {
         this.realReturnDate = realReturnDate;
     }
 
-    public String getISBN() {
-        return ISBN;
+    public Book getBook() {
+    	return book;
     }
-
-    public void setISBN(String ISBN) {
-        this.ISBN = ISBN;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    
+    public void setBook(Book book) {
+    	this.book = book;
     }
 }

@@ -52,18 +52,14 @@ public class BookCollection {
 				Book book = new Book();
 
 				JSONObject oneObject = jArray.getJSONObject(i);
-				book.setStatus(oneObject.getString("status"));
 
 				JSONObject bookObj = oneObject.getJSONObject("book");
-				book.setUrl(bookObj.getString("url"));
 				book.setTitle(bookObj.getString("title"));
 				book.setAuthor(bookObj.getString("author"));
 				book.setAuthorIntro(bookObj.getString("author_intro").replace(
 						"\n", "\n\n"));
 				book.setDescription(bookObj.getString("summary").replace("\n",
 						"\n\n"));
-				book.setRating((float) bookObj.getJSONObject("rating")
-						.getDouble("average"));
 				book.setImgUrl(bookObj.getString("image").replace("mpic",
 						"lpic"));
 
@@ -88,14 +84,11 @@ public class BookCollection {
 		try {
 			JSONObject bookObj = new JSONObject(response);
 
-			book.setUrl(bookObj.getString("url"));
 			book.setTitle(bookObj.getString("title"));
 			book.setAuthor(bookObj.getString("author"));
 			book.setAuthorIntro(bookObj.getString("author_intro").replace("\n",
 					"\n\n"));
 			book.setDescription(bookObj.getString("summary").replace("\n", "\n\n"));
-			book.setRating((float) bookObj.getJSONObject("rating").getDouble(
-					"average"));
 			book.setImgUrl(bookObj.getString("image").replace("mpic", "lpic"));
 		} catch (JSONException e) {
 			LogUtils.LOGE(TAG, "Unable to parse json string: " + response);
@@ -128,15 +121,12 @@ public class BookCollection {
 				JSONObject bookObj = jArray.getJSONObject(i);
 				
 				Book book = new Book();
-				book.setUrl(bookObj.getString("url"));
 				book.setTitle(bookObj.getString("title"));
 				book.setAuthor(bookObj.getString("author"));
 				book.setAuthorIntro(bookObj.getString("author_intro").replace(
 						"\n", "\n\n"));
 				book.setDescription(bookObj.getString("summary").replace("\n",
 						"\n\n"));
-				book.setRating((float) bookObj.getJSONObject("rating")
-						.getDouble("average"));
 				book.setImgUrl(bookObj.getString("image").replace("mpic",
 						"lpic"));
 

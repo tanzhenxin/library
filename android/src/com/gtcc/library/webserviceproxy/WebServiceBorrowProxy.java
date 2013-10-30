@@ -3,6 +3,7 @@ package com.gtcc.library.webserviceproxy;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,17 +51,8 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
             JSONObject jsonBooks = result.getJSONObject("borrowInfo");
             int length = jsonBooks.length();
             for (int i = 0; i < length; i++) {
-                JSONObject jsonBook = jsonBooks.getJSONObject(Integer.toString(i));
-                Borrow book = new Borrow();
-                book.setUserName(jsonBook.getString("username"));
-                book.setBookName(jsonBook.getString("bookName"));
-                book.setBookBianhao(jsonBook.getString("bookBianhao"));
-                book.setBorrowDate(jsonBook.getString("borrowDate"));
-                book.setISBN(jsonBook.getString("ISBN"));
-                book.setPlanReturnDate(jsonBook.getString("planReturnDate"));
-                book.setRealReturnDate(jsonBook.getString("realReturnDate"));
-                book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
-                books.add(book);
+                JSONObject jsonBorrow = jsonBooks.getJSONObject(Integer.toString(i));
+                books.add(parseJSONObject(jsonBorrow));
             }
         }
 
@@ -75,16 +67,7 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
             int ret = result.getInt("_returnCode");
             if (ret == WebServiceInfo.OPERATION_SUCCEED){
             	JSONObject jsonBorrowHistory = result.getJSONObject("borrowHistory");
-            	Borrow bookBorrowInfo = new Borrow();
-                bookBorrowInfo.setUserName(jsonBorrowHistory.getString("username"));
-                bookBorrowInfo.setBookName(jsonBorrowHistory.getString("bookName"));
-                bookBorrowInfo.setBookBianhao(jsonBorrowHistory.getString("bookBianhao"));
-                bookBorrowInfo.setBorrowDate(jsonBorrowHistory.getString("borrowDate"));
-                bookBorrowInfo.setISBN(jsonBorrowHistory.getString("ISBN"));
-                bookBorrowInfo.setPlanReturnDate(jsonBorrowHistory.getString("planReturnDate"));
-                bookBorrowInfo.setRealReturnDate(jsonBorrowHistory.getString("realReturnDate"));
-                bookBorrowInfo.setImgUrl(WebServiceInfo.SERVER_IMG + bookBorrowInfo.getISBN() + ".jpg");
-            	return bookBorrowInfo;
+            	return parseJSONObject(jsonBorrowHistory);
             }
 		}
         return null;
@@ -95,5 +78,31 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
 		if (result != null) {
 			
 		}
+	}
+	
+	private Borrow parseJSONObject(JSONObject jsonBorrow) throws JSONException {
+        
+        Borrow borrow = new Borrow();
+        borrow.setUserName(jsonBorrow.getString("username"));
+        borrow.setBorrowDate(jsonBorrow.getString("borrowDate"));
+        borrow.setPlanReturnDate(jsonBorrow.getString("planReturnDate"));
+        borrow.setRealReturnDate(jsonBorrow.getString("realReturnDate"));
+        
+        JSONObject jsonBook = jsonBorrow.getJSONObject("book");
+		Book book = new Book();
+		book.setAuthor(jsonBook.getString("author"));
+		book.setDescription(jsonBook.getString("bookDescription"));
+		book.setTitle(jsonBook.getString("title"));
+		book.setPrice(jsonBook.getString("price"));
+		book.setISBN(jsonBook.getString("ISBN"));
+		book.setLanguage(jsonBook.getString("language"));
+		book.setPublisher(jsonBook.getString("publisher"));
+		book.setPublishDate(jsonBook.getString("publishedDate"));
+		book.setTag(jsonBook.getString("bianhao"));
+		book.setId(jsonBook.getString("bianhao"));
+		book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
+		
+		borrow.setBook(book);
+		return borrow;
 	}
 }

@@ -1,8 +1,8 @@
 package com.gtcc.library.webserviceproxy;
 
 public class WebServiceInfo {
-//	public static final String SERVER		= "http://129.223.252.236/gtcclibrary/amfphp/index.php";
-//	public static final String SERVER_IMG	= "http://129.223.252.236/yii/gtcc/images/";
+	//public static final String SERVER		= "http://129.223.252.236/gtcclibrary/amfphp/index.php";
+	//public static final String SERVER_IMG	= "http://129.223.252.236/yii/gtcc/images/";
 	public static final String SERVER		= "http://129.223.252.139:8080/gtcclibrary/amfphp/index.php";
 	public static final String SERVER_IMG	= "http://129.223.252.139:8080/library/images/";
 	

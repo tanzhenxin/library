@@ -184,7 +184,6 @@ public class HttpManager {
 					id = id.substring(0, id.length() - 1);
 					id = id.substring(id.lastIndexOf("/") + 1);
 					id = Constants.DOUBAN_API_BOOK_INFO + id;
-					book.setUrl(id);
 					book.setImgUrl(img);
 					book.setTitle(contents.getChildElements().get(0)
 							.getTextExtractor().toString());

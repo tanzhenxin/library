@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
+
 import com.gtcc.library.entity.Book;
 
 public class WebServiceBookProxy extends WebServiceProxyBase {
@@ -36,8 +38,9 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 				book.setPrice(jsonBook.getString("price"));
 				book.setISBN(jsonBook.getString("ISBN"));
 				book.setLanguage(jsonBook.getString("language"));
+				book.setPublisher(jsonBook.getString("publisher"));
 				book.setPublishDate(jsonBook.getString("publishedDate"));
-				book.setBianhao(jsonBook.getString("bianhao"));
+				book.setTag(jsonBook.getString("bianhao"));
 				book.setId(jsonBook.getString("bianhao"));
 				book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
 				books.add(book);
@@ -59,11 +62,19 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 			for (int i = 0; i < length; i++) {
 				JSONObject jsonBook = jsonBooks.getJSONObject(Integer.toString(i));
 				Book book = new Book();
+				
 				book.setTitle(jsonBook.getString("title"));
+				book.setAuthor(jsonBook.getString("author"));
+				book.setDescription(jsonBook.getString("bookDescription"));
+				book.setPrice(jsonBook.getString("price"));
 				book.setISBN(jsonBook.getString("ISBN"));
-				book.setBianhao(jsonBook.getString("bianhao"));
+				book.setLanguage(jsonBook.getString("language"));
+				book.setPublisher(jsonBook.getString("publisher"));
+				book.setPublishDate(jsonBook.getString("publishedDate"));
+				book.setTag(jsonBook.getString("bianhao"));
 				book.setId(jsonBook.getString("bianhao"));
 				book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
+				
 				books.add(book);
 			}
 		}
@@ -86,8 +97,9 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 				book.setPrice(jsonBook.getString("price"));
 				book.setISBN(jsonBook.getString("ISBN"));
 				book.setLanguage(jsonBook.getString("language"));
+				book.setPublisher(jsonBook.getString("publisher"));
 				book.setPublishDate(jsonBook.getString("publishedDate"));
-				book.setBianhao(jsonBook.getString("bianhao"));
+				book.setTag(jsonBook.getString("bianhao"));
 				book.setId(jsonBook.getString("bianhao"));
 				book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
 				
@@ -112,8 +124,9 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 				book.setPrice(jsonBook.getString("price"));
 				book.setISBN(jsonBook.getString("ISBN"));
 				book.setLanguage(jsonBook.getString("language"));
+				book.setPublisher(jsonBook.getString("publisher"));
 				book.setPublishDate(jsonBook.getString("publishedDate"));
-				book.setBianhao(jsonBook.getString("bianhao"));
+				book.setTag(jsonBook.getString("bianhao"));
 				book.setId(jsonBook.getString("bianhao"));
 				book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
 				
@@ -121,33 +134,5 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 			}
 		}
 		return null;
-	}
-	
-	public void addBook() throws Exception {
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_ADD_BOOKS, null);
-		if (result != null) {
-			
-		}
-	}
-	
-	public void removeBook() throws Exception {
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.USER_METHOD_REMOVE_USER, null);
-		if (result != null) {
-			
-		}
-	}
-	
-	public void editBook() throws Exception {
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_EDIT_BOOKS, null);
-		if (result != null) {
-			
-		}
-	}
-	
-	public void removeAll() throws Exception {
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_REMOVE_ALL, null);
-		if (result != null) {
-			
-		}
 	}
 }
