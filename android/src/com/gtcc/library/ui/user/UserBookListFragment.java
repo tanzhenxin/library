@@ -19,6 +19,7 @@ import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.ui.BookListFragment;
 import com.gtcc.library.ui.HomeActivity;
+import com.gtcc.library.ui.customcontrol.RefreshableListView;
 import com.gtcc.library.util.HttpManager;
 
 public class UserBookListFragment extends BookListFragment {
@@ -36,6 +37,17 @@ public class UserBookListFragment extends BookListFragment {
 			Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container,
 				savedInstanceState);
+		final RefreshableListView listView = (RefreshableListView) rootView.findViewById(android.R.id.list);
+        listView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
+            @Override
+            public void onRefreshHeader() {
+            }
+
+            @Override
+            public void onRefreshFooter(){
+            	listView.onRefreshComplete(true);
+            }
+        });
 		return rootView;
 	}
 
@@ -180,15 +192,13 @@ public class UserBookListFragment extends BookListFragment {
 				String price = book.getPrice();
 				if (price != null && !TextUtils.isEmpty(price)) {
 					author += " / " + price;
-				}o
-				
-				String tag = book.getTag();
-				if (tag != null && !TextUtils.isEmpty(tag)) {
-					author += " / " + tag;
 				}
 			}
 			viewHolder.author.setText(author);
 
+			String tag = book.getTag();
+			viewHolder.tag.setText(tag);
+			
             if (i % 2 != 0)
                 view.setBackgroundResource(R.drawable.book_list_item_odd_bg);
             else

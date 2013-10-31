@@ -63,7 +63,7 @@ public class ListViewFooterBehavior extends ListViewBehaviorBase {
     @Override
     public void onScroll(int firstVisibleItem, int visibleItemCount, int totalItemCount){
         int lastVisibleItem = firstVisibleItem + visibleItemCount;
-        if (lastVisibleItem == totalItemCount && totalItemCount != 1 && !isLoading){ //item count always >=1, because there is footer
+        if (lastVisibleItem == totalItemCount && totalItemCount > 1 && !isLoading){ //item count always >=1, because there is footer
             isLoading = true;
             state = REFRESHING;
             setViewByState();

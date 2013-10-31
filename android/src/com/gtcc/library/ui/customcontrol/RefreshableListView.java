@@ -29,7 +29,7 @@ import com.gtcc.library.util.LogUtils;
  */
 
 public class RefreshableListView extends ListView {
-    private ListViewBehaviorBase headerBehavior;
+//    private ListViewBehaviorBase headerBehavior;
     private ListViewBehaviorBase footerBehavior;
 
     public OnRefreshListener refreshListener;
