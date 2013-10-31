@@ -26,6 +26,9 @@ public class UserBookListFragment extends BookListFragment {
 
 	private List<Borrow> borrowBooks;
 	private AsyncLoader mLoader;
+	
+	private RefreshableListView mListView;
+	private TextView mEmptyView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,17 +40,18 @@ public class UserBookListFragment extends BookListFragment {
 			Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container,
 				savedInstanceState);
-		final RefreshableListView listView = (RefreshableListView) rootView.findViewById(android.R.id.list);
-        listView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
+		mListView = (RefreshableListView) rootView.findViewById(android.R.id.list);
+		mListView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
             @Override
             public void onRefreshHeader() {
             }
 
             @Override
             public void onRefreshFooter(){
-            	listView.onRefreshComplete(true);
+            	mListView.onRefreshComplete(true);
             }
         });
+		mEmptyView = (TextView) rootView.findViewById(android.R.id.text1);
 		return rootView;
 	}
 
@@ -103,8 +107,19 @@ public class UserBookListFragment extends BookListFragment {
         }
 
         protected void onPostExecute(Boolean result) {
-            if(!isCancelled() && result)
-                setListAdapter(new UserBorrowAdapter(getActivity(), borrowBooks));
+            if(!isCancelled())
+            {
+            	if (result && borrowBooks.size() > 0) {
+            		mListView.setVisibility(View.VISIBLE);
+            		mEmptyView.setVisibility(View.GONE);
+            		
+            		setListAdapter(new UserBorrowAdapter(getActivity(), borrowBooks));
+            	}
+            	else {
+            		mListView.setVisibility(View.GONE);
+            		mEmptyView.setVisibility(View.VISIBLE);
+            	}
+            }
         }
     }
 

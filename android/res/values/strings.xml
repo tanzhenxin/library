@@ -104,4 +104,5 @@
     <string name="return_this_book">Return to library</string>
     <string name="lent_to_others">Lent to %1$s</string>
     <string name="operation_succeed">Operation succeed!</string>
+    <string name="no_book_borrowed">No book borrowed.</string>
 </resources>

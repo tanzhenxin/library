@@ -110,4 +110,5 @@
     <string name="return_this_book">归还到图书馆</string>
     <string name="lent_to_others">已被借给%1$s</string>
     <string name="operation_succeed">操作成功</string>
+    <string name="no_book_borrowed">没有在借的图书</string>
 </resources>
