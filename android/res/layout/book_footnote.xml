@@ -3,29 +3,27 @@
     android:id="@+id/book_item_footnote"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/book_item_from"
-        style="@style/TextFootNote"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/book_tag_block"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="left"
-        android:text="@string/book_from" />
+        android:orientation="horizontal" >
 
-    <ImageView
-        android:id="@+id/book_like"
-        android:layout_width="@dimen/image_small"
-        android:layout_height="@dimen/image_small"
-        android:src="@drawable/ic_unlike" />
+        <TextView
+            android:id="@+id/book_tag_label"
+            style="@style/TextHeaderSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/book_tag" />
 
-    <TextView
-        android:id="@+id/book_like_count"
-        style="@style/TextFootNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="@string/plus_one" />
+        <TextView
+            android:id="@+id/book_tag"
+            style="@style/TextHeaderSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/element_spacing_small" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -14,10 +14,13 @@ public abstract class CommonAsyncTask<TParam, TResult> extends AsyncTask<TParam,
     private Context mContext;
     private Exception exception;
 
+    public CommonAsyncTask(){
+    }
+
     public CommonAsyncTask(Context context){
         mContext = context;
     }
-
+    
     @Override
     protected TResult doInBackground(TParam... params){
         try{
@@ -43,10 +46,12 @@ public abstract class CommonAsyncTask<TParam, TResult> extends AsyncTask<TParam,
     }
 
     protected void onError(Exception ex){
-        // show load failed by default
-        Toast.makeText(mContext,
-                mContext.getString(R.string.load_failed),
-                Toast.LENGTH_SHORT).show();
+    	if(mContext != null) {
+    		// show load failed by default
+            Toast.makeText(mContext,
+                    mContext.getString(R.string.load_failed),
+                    Toast.LENGTH_SHORT).show();
+    	}
     }
 
     // operation successful

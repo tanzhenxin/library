@@ -2,6 +2,7 @@ package com.gtcc.library.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.AttributeSet;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.entity.UserInfo;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 
@@ -21,6 +23,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		addPreferencesFromResource(R.layout.activity_settings);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		final Preference editUserPref = findPreference("pref_key_edit_account");
+		editUserPref.setSummary(UserInfo.getCurrentUser().getUserName());
 		
 		final AlertDialogPreference logoutPreference = (AlertDialogPreference) findPreference("pref_key_log_out");
 		logoutPreference.setOnClickListener(new OnClickListener() {

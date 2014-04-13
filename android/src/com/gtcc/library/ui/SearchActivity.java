@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.widget.SearchView;
 
@@ -29,7 +30,7 @@ public class SearchActivity extends BaseActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_search);
+		setContentView(R.layout.activity_empty_pane);
 		
 		FragmentManager fm = getSupportFragmentManager();
 		mBooksFragment = (LibraryBookListFragment) fm.findFragmentById(R.id.fragment_container);
@@ -55,7 +56,7 @@ public class SearchActivity extends BaseActivity
 		String query = intent.getStringExtra(SearchManager.QUERY);
 		
 		setTitle(Html.fromHtml(getString(R.string.title_search_query, query)));
-		mBooksFragment.reloadFromArguments(intentToFragmentArguments(intent));
+		mBooksFragment.startSearch(intentToFragmentArguments(intent));
 		
 		addSearchSuggest(query);
 	}
@@ -76,6 +77,10 @@ public class SearchActivity extends BaseActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
+            NavUtils.navigateUpFromSameTask(this);
+            this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            return true;
 		case R.id.menu_search:
             if (!Utils.hasHoneycomb()) {
             	startSearch(null, false, Bundle.EMPTY, false);
@@ -123,12 +128,11 @@ public class SearchActivity extends BaseActivity
 	}
 
 	@Override
-	public boolean OnBookSelected(String bookId, int page, int section) {
+	public boolean OnBookSelected(String bookId, int page) {
 		Uri sessionUri = Books.buildBookUri(bookId);
 		Intent detailIntent = new Intent(Intent.ACTION_VIEW, sessionUri);
 		detailIntent.putExtra(HomeActivity.ARG_PAGE_NUMBER, page);
-		detailIntent.putExtra(HomeActivity.ARG_SECTION_NUMBER, section);
-		detailIntent.putExtra(USER_ID, mUserInfo.getUserId());
+		detailIntent.putExtra(USER_ID, getUserId());
 		startActivity(detailIntent);
 		
 		return true;

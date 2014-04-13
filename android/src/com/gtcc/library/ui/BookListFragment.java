@@ -19,7 +19,6 @@ import com.gtcc.library.util.ImageCache.ImageCacheParams;
 
 public abstract class BookListFragment extends SherlockListFragment {
 	private static final String IMAGE_CACHE_DIR = "images";
-	protected int section = -1;
 
 	protected ImageFetcher mImageFetcher;
 	protected Animation mApplaudAnimation;
@@ -28,12 +27,12 @@ public abstract class BookListFragment extends SherlockListFragment {
 	private int mImageHeight;
 	
     public interface Callbacks {
-        public boolean OnBookSelected(String bookId, int page, int tab);
+        public boolean OnBookSelected(String bookId, int page);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public boolean OnBookSelected(String bookId, int page, int tab) {
+        public boolean OnBookSelected(String bookId, int page) {
             return true;
         }
     };
@@ -81,19 +80,7 @@ public abstract class BookListFragment extends SherlockListFragment {
 			}
 		});
 		
-		Bundle arguments = getArguments();
-		if (arguments != null) {
-			section = arguments.getInt(HomeActivity.ARG_SECTION_NUMBER, -1);
-		}
-		
-		mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
-				R.anim.dismiss_ani);
 		return rootView;
-	}
-	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
 	}
 
 	protected abstract int getPage();
@@ -102,7 +89,7 @@ public abstract class BookListFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		String bookId = getSelectedBookId(l,v, position, id);
-		mCallbacks.OnBookSelected(bookId, getPage(), section);
+		mCallbacks.OnBookSelected(bookId, getPage());
 	}
 	
     @Override

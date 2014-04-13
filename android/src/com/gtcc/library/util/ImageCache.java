@@ -19,6 +19,7 @@ import android.os.StatFs;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 
 /**
  * This class holds our bitmap caches (memory and disk).
@@ -398,7 +399,8 @@ public class ImageCache {
         // otherwise use internal cache dir
         final String cachePath =
                 Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
-                        !isExternalStorageRemovable() ? getExternalCacheDir(context).getPath() :
+                        !isExternalStorageRemovable() ? 
+                        		getExternalCacheDir(context).getPath() :
                         context.getCacheDir().getPath();
 
         return new File(cachePath + File.separator + uniqueName);
@@ -469,13 +471,19 @@ public class ImageCache {
      */
     @TargetApi(8)
     public static File getExternalCacheDir(Context context) {
+    	File file = null;
         if (Utils.hasFroyo()) {
-            return context.getExternalCacheDir();
+            file = context.getExternalCacheDir();
+        } else {
+            // Before Froyo we need to construct the external cache dir ourselves
+            final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";
+            file = new File(Environment.getExternalStorageDirectory().getPath() + cacheDir);
         }
 
-        // Before Froyo we need to construct the external cache dir ourselves
-        final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";
-        return new File(Environment.getExternalStorageDirectory().getPath() + cacheDir);
+        if (file == null) {
+        	Log.e(TAG, "An error occur in getExternalCacheDir: The file is null! Check whether storage is currently mounted!");
+		}
+        return file;
     }
 
     /**

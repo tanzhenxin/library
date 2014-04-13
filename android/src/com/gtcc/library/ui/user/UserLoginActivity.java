@@ -173,6 +173,7 @@ public class UserLoginActivity extends SherlockActivity {
 			case REQUEST_REGISTER:
 				data.putExtra(LOGIN_TYPE, LOGIN_NORMAL);
 				setResult(RESULT_OK, data);
+				finish();
 				break;
 			}
 		} else if (resultCode != RESULT_CANCELED) {
@@ -241,6 +242,14 @@ public class UserLoginActivity extends SherlockActivity {
 				Toast.makeText(UserLoginActivity.this, R.string.login_succeed,
 						Toast.LENGTH_SHORT).show();
 				finish();
+				break;
+			case WebServiceInfo.USER_NOT_EXISTS:
+				Toast.makeText(UserLoginActivity.this, R.string.login_failed_user_invalid,
+						Toast.LENGTH_SHORT).show();
+				break;
+			case WebServiceInfo.USER_PASSWORD_WRONG:
+				Toast.makeText(UserLoginActivity.this, R.string.login_failed_password_invalid,
+						Toast.LENGTH_SHORT).show();
 				break;
 			default:
 				Toast.makeText(UserLoginActivity.this, R.string.login_failed,

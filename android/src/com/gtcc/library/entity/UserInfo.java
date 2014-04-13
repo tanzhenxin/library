@@ -13,6 +13,12 @@ public class UserInfo implements Serializable {
 	private String mUserPassword;
 	private String mUserImageUrl;
 	private String mAccessToken;
+	
+	private static UserInfo sCurrentUser;
+	
+	private UserInfo() {
+		
+	}
 
 	public UserInfo(String jsonUser) {
 		JSONObject jObj;
@@ -29,7 +35,6 @@ public class UserInfo implements Serializable {
 				mUserImageUrl = jObj.getString("avatar");
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -45,12 +50,6 @@ public class UserInfo implements Serializable {
 		mUserEmail = email;
 	}
 	
-	public UserInfo(String userId, String userName, String password, String imageUrl, String accessToken) {
-		this(userId, userName, password);
-		mUserImageUrl = imageUrl;
-		mAccessToken = accessToken;
-	}
-
 	public String getUserId() {
 		return mUid;
 	}
@@ -75,7 +74,56 @@ public class UserInfo implements Serializable {
 		return mAccessToken;
 	}
 	
+	public void setUserId(String userId) {
+		mUid = userId;
+	}
+	
+	public void setUserName(String userName) {
+		mUserName = userName;
+	}
+	
+	public void setUserEmail(String userEmail) {
+		mUserEmail = userEmail;
+	}
+	
+	public void setUserPassword(String userPassword) {
+		mUserPassword = userPassword;
+	}
+	
+	public void setUserImageUrl(String imageUrl) {
+		mUserImageUrl = imageUrl;
+	}
+	
 	public void setAccessToken(String token) {
 		mAccessToken = token;
+	}
+	
+	public void copy(UserInfo other) {
+		if (other.mUid != null) {
+			mUid = other.mUid;
+		}
+		if (other.mUserName != null) {
+			mUserName = other.mUserName;
+		}
+		if (other.mUserEmail != null) {
+			mUserEmail = other.mUserEmail;
+		}
+		if (other.mUserPassword != null) {
+			mUserPassword = other.mUserPassword;
+		}
+		if (other.mUserImageUrl != null) {
+			mUserImageUrl = other.mUserImageUrl;
+		}
+		if (other.mAccessToken != null) {
+			mAccessToken = other.mAccessToken;
+		}
+	}
+	
+	public static UserInfo getCurrentUser() {
+		if (sCurrentUser == null) {
+			sCurrentUser = new UserInfo();
+		}
+		
+		return sCurrentUser;
 	}
 }

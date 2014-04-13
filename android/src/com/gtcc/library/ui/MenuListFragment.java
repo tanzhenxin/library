@@ -14,14 +14,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MenuListFragment extends ListFragment {
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.sliding_menu_list, null);
 	}
 
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		SampleAdapter adapter = new SampleAdapter(getActivity());
 		
+		SampleAdapter adapter = new SampleAdapter(getActivity());
 		adapter.add(new SampleItem(getString(R.string.user_center), R.drawable.ic_user_center));
 		adapter.add(new SampleItem(getString(R.string.book_library), R.drawable.ic_collections));
         adapter.add(new SampleItem(getString(R.string.isbn_scanner), R.drawable.ic_scan));

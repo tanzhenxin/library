@@ -1,8 +1,12 @@
 package com.gtcc.library.webserviceproxy;
 
 public class WebServiceInfo {
-//	public static final String SERVER		= "http://129.223.252.236/gtcclibrary/amfphp/index.php";
-//	public static final String SERVER_IMG	= "http://129.223.252.236/yii/gtcc/images/";
+	
+	// official Server. Don't do any tests on this server
+	//public static final String SERVER		= "http://129.223.252.236/gtcclibrary/amfphp/index.php";
+	//public static final String SERVER_IMG	= "http://129.223.252.236/yii/gtcc/images/";
+	
+	// Test server
 	public static final String SERVER		= "http://129.223.252.139:8080/gtcclibrary/amfphp/index.php";
 	public static final String SERVER_IMG	= "http://129.223.252.139:8080/library/images/";
 	
@@ -19,6 +23,8 @@ public class WebServiceInfo {
 	public static final String BOOK_METHOD_GET_BOOK_BY_BIANHAO = "GetBookByBianHao"; 
 	public static final String BOOK_METHOD_GET_BOOK_BY_ISBN = "GetBookByISBN"; 
 	public static final String BOOK_METHOD_GET_ALL_BOOKS_IN_LIST = "GetAllBooksInList"; 
+	public static final String BOOK_METHOD_GET_ALL_BOOKS_BY_CATEGORY = "GetAllBooksByCategory";
+	public static final String BOOK_METHOD_SEARCH_BOOKS = "SearchBooks";
 	
 	public static final String BORROW_SERVICE = "BorrowService";
 	public static final String BORROW_METHOD_GET_ALL_HISTORY = "GetAllHistory"; 
@@ -37,6 +43,7 @@ public class WebServiceInfo {
 	public static final String USER_METHOD_REMOVE_USER = "RemoveUser";
 	public static final String USER_METHOD_EDIT_USER = "EditUser";
 	public static final String USER_METHOD_REMOVE_ALL_USER = "RemoveAllUser";
+	public static final String USER_METHOD_UPLOAD_IMAGE = "UploadImage";
 
 	public static final int OPERATION_SUCCEED = 0;
 	public static final int OPERATION_FAILED = -1;

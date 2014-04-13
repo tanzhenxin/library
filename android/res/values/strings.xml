@@ -45,6 +45,12 @@
     <string name="book_new_arrival">New Arrival</string>
     <string name="book_hotest">The Hotest</string>
     <string name="book_category">Browse by category</string>
+    <string name="book_author">Author:</string>
+    <string name="book_publisher">Publisher:</string>
+    <string name="book_publish_date">Publish Date:</string>
+    <string name="book_price">Price:</string>
+    <string name="book_tag">Tag:</string>
+    <string name="book_due_date">Due on %1$s</string>
     
     <string name="login_signup">Sign up</string>
     <string name="login_signin">Sign in</string>
@@ -59,10 +65,14 @@
     <string name="login_pick_image">Pick Image</string>
     <string name="login_succeed">Login succeesfully</string>
     <string name="login_failed">Login failed</string>
+    <string name="login_failed_user_invalid">Invalid user</string>
+    <string name="login_failed_password_invalid">Invalid password</string>
     <string name="login_in_progress">Login in progress...</string>
     <string name="login_set_username">Set username</string>
+    <string name="register_in_progress">Register in progress...</string>
     <string name="register_succeed">Register succeesfully</string>
     <string name="register_failed">Register failed</string>
+    <string name="register_failed_user_exists">User already exists</string>
     <string name="or">or</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
@@ -98,4 +108,9 @@
     <string name="return_this_book">Return to library</string>
     <string name="lent_to_others">Lent to %1$s</string>
     <string name="operation_succeed">Operation succeed!</string>
+    <string name="no_book_borrowed">No book borrowed.</string>
+    
+    <string name="expire_book_tile">You have some books is going to expire.</string>
+    <string name="expire_book_description">Please click here to check.</string>
+    
 </resources>

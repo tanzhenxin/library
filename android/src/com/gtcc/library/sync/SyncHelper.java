@@ -57,7 +57,6 @@ public class SyncHelper {
 			ContentValues aValues = new ContentValues();
 			aValues.put(UserBooks.USER_ID, uid);
 			aValues.put(UserBooks.BOOK_ID, book.getId());
-			aValues.put(UserBooks.USE_TYPE, book.getStatus());
 			mContext.getContentResolver().insert(
 					Users.buildUserBooksUri(uid, book.getId()), aValues);
 		}

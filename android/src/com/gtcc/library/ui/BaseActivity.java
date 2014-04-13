@@ -28,8 +28,6 @@ public class BaseActivity extends SherlockFragmentActivity {
 	public static final String USER_PASSWORD = "user_password";
 	public static final String USER_IMAGE_URL = "user_image_url";
 	
-	protected UserInfo mUserInfo;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,37 +95,36 @@ public class BaseActivity extends SherlockFragmentActivity {
     }
     
 	protected void loadUserInfo() {
+		UserInfo currentUser = UserInfo.getCurrentUser();
+		
 		SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
-		
-		final String userId = sharedPref.getString(USER_ID, "0");
-		final String userName = sharedPref.getString(USER_NAME, null);
-		final String userPassword = sharedPref.getString(USER_PASSWORD, null);
-		final String userImageUrl = sharedPref.getString(USER_IMAGE_URL, null);
-		final String accessToken = sharedPref.getString(ACCESS_TOKEN, null);
-		
-		mUserInfo = new UserInfo(userId, userName, userPassword, userImageUrl, accessToken);
+		currentUser.setUserId(sharedPref.getString(USER_ID, "0"));
+		currentUser.setUserName(sharedPref.getString(USER_NAME, null));
+		currentUser.setUserPassword(sharedPref.getString(USER_PASSWORD, null));
+		currentUser.setUserImageUrl(sharedPref.getString(USER_IMAGE_URL, null));
+		currentUser.setAccessToken(sharedPref.getString(ACCESS_TOKEN, null));
 	}
 
 	protected void setUserInfo(UserInfo userInfo) {
-		mUserInfo = userInfo;
+		UserInfo currentUser = UserInfo.getCurrentUser();
+		currentUser.copy(userInfo);
 		
 		// store user info in shared preferences.
 		Editor editor = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE).edit();
+		editor.putString(USER_ID, currentUser.getUserId());
+		editor.putString(USER_NAME, currentUser.getUserName());
 		
-		editor.putString(USER_ID, mUserInfo.getUserId());
-		editor.putString(USER_NAME, mUserInfo.getUserName());
-		
-		final String password = mUserInfo.getUserPassword();
+		final String password = currentUser.getUserPassword();
 		if (password != null && !TextUtils.isEmpty(password)) {
 			editor.putString(USER_PASSWORD, password);
 		}
 		
-		final String imageUrl = mUserInfo.getUserImageUrl();
+		final String imageUrl = currentUser.getUserImageUrl();
 		if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
 			editor.putString(USER_IMAGE_URL, imageUrl);
 		}
 		
-		final String accessToken = mUserInfo.getAccessToken();
+		final String accessToken = currentUser.getAccessToken();
 		if (accessToken != null && !TextUtils.isEmpty(accessToken)) {
 			editor.putString(ACCESS_TOKEN, accessToken);
 		}
@@ -136,14 +133,14 @@ public class BaseActivity extends SherlockFragmentActivity {
 		
 		// store user info in content provider
 		ContentValues values = new ContentValues();
-		values.put(Users.USER_ID, mUserInfo.getUserId());
-		values.put(Users.USER_NAME, mUserInfo.getUserName());
+		values.put(Users.USER_ID, currentUser.getUserId());
+		values.put(Users.USER_NAME, currentUser.getUserName());
 		values.put(Users.USER_IMAGE_URL, imageUrl);
 		getContentResolver().insert(Users.CONTENT_URI, values);
 	}
 	
 	public String getUserId() {
-		return mUserInfo.getUserId();
+		return UserInfo.getCurrentUser().getUserId();
 	}
 
 	protected void clearUserInfo() {

@@ -32,7 +32,8 @@ public class WebServiceProxyBase {
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == HttpStatus.SC_OK) {
             String retSrc = EntityUtils.toString(httpResponse.getEntity());
-            return new JSONObject(retSrc);
+            JSONObject resultJsonObject = new JSONObject(retSrc);
+            return resultJsonObject;
         }
 
         return null;

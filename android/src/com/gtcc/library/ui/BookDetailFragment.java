@@ -3,9 +3,11 @@ package com.gtcc.library.ui;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,8 +44,7 @@ import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
 
-public class BookDetailFragment extends SherlockFragment implements
-		LoaderManager.LoaderCallbacks<Cursor> {
+public class BookDetailFragment extends SherlockFragment {
 	private static final String TAG = LogUtils
 			.makeLogTag(BookDetailFragment.class);
 
@@ -58,30 +59,24 @@ public class BookDetailFragment extends SherlockFragment implements
 
 	private ViewGroup mRootView;
 	private ViewGroup mDescriptionBlock;
-	private ViewGroup mAuthorIntroBlock;
-	private ViewGroup mStatusActionBlock;
-	private ViewGroup mStatusNowBlock;
 	private ViewGroup mLoadingIndicator;
 
 	private TextView mTitleView;
 	private TextView mAuthorView;
+	private TextView mPublisherView;
+	private TextView mPublishDateView;
+	private TextView mPriceView;
 	private TextView mDescriptionView;
-	private TextView mAuthorIntroView;
 	private ImageView mImageView;
-	private Button mStatusReading;
-	private Button mStatusRead;
-	private Button mStatusWish;
-	private TextView mBookStatusText;
+	private TextView mTagView;
+	private TextView mStatusView;
 	private Button mBorrowReturn;
 
 	private Uri mBookUri;
-	private Uri mCommentsUri;
 	private int mPage;
-	private int mSection;
 	private String mUserId;
 	private Book book;
 	private Borrow bookBorrowInfo;
-	private int borrowResult;
 
 	private ImageFetcher mImageFetcher;
 
@@ -101,9 +96,7 @@ public class BookDetailFragment extends SherlockFragment implements
 		if (mBookUri == null || bundle == null)
 			return;
 
-		mCommentsUri = Books.buildCommentUri(Books.getBookId(mBookUri));
 		mPage = bundle.getInt(HomeActivity.ARG_PAGE_NUMBER);
-		mSection = bundle.getInt(HomeActivity.ARG_SECTION_NUMBER);
 		mUserId = bundle.getString(HomeActivity.USER_ID);
 
 		mImageFetcher = Utils.getImageFetcher(getActivity());
@@ -138,23 +131,15 @@ public class BookDetailFragment extends SherlockFragment implements
 
 		mTitleView = (TextView) mRootView.findViewById(R.id.book_title);
 		mAuthorView = (TextView) mRootView.findViewById(R.id.book_author);
+		mPublisherView = (TextView) mRootView.findViewById(R.id.book_publisher);
+		mPublishDateView = (TextView) mRootView.findViewById(R.id.book_publish_date);
+		mPriceView = (TextView) mRootView.findViewById(R.id.book_price);
 		mDescriptionView = (TextView) mRootView.findViewById(R.id.book_summary);
 		mImageView = (ImageView) mRootView.findViewById(R.id.book_img);
-		mAuthorIntroView = (TextView) mRootView.findViewById(R.id.author_intro);
 		mDescriptionBlock = (ViewGroup) mRootView
 				.findViewById(R.id.book_summary_block);
-		mAuthorIntroBlock = (ViewGroup) mRootView
-				.findViewById(R.id.author_intro_block);
-		mStatusActionBlock = (ViewGroup) mRootView
-				.findViewById(R.id.book_status_action);
-		mStatusNowBlock = (ViewGroup) mRootView
-				.findViewById(R.id.book_status_now);
-		mStatusReading = (Button) mRootView
-				.findViewById(R.id.book_status_reading);
-		mStatusWish = (Button) mRootView.findViewById(R.id.book_status_wish);
-		mStatusRead = (Button) mRootView.findViewById(R.id.book_status_read);
-		mBookStatusText = (TextView) mRootView
-				.findViewById(R.id.book_status_text);
+		mTagView = (TextView) mRootView.findViewById(R.id.book_tag);
+		mStatusView = (TextView) mRootView.findViewById(R.id.book_status);
 		mLoadingIndicator = (ViewGroup) mRootView
 				.findViewById(R.id.loading_progress);
 		mBorrowReturn = (Button) mRootView
@@ -166,21 +151,7 @@ public class BookDetailFragment extends SherlockFragment implements
 			}
 		});
 
-		setChangeStatusAnimation();
-		setClearStatusAnimation();
-
-		// TypefaceUtils.setTypeface(mSummaryView);
-		// TypefaceUtils.setTypeface(mAuthorIntroView);
-
-		// mApplaudAnimation = AnimationUtils.loadAnimation(getActivity(),
-		// R.anim.dismiss_ani);
-
-		if (mPage == HomeActivity.PAGE_USER) {
-			getLoaderManager().restartLoader(BookQuery._TOKEN, null, this);
-			getLoaderManager().restartLoader(CommentQuery._TOKEN, null, this);
-		} else {
-			new AsyncLoader().execute(LOAD_BOOK_INFO);
-		}
+		new AsyncLoader().execute(LOAD_BOOK_INFO);
 
 		return mRootView;
 	}
@@ -197,169 +168,20 @@ public class BookDetailFragment extends SherlockFragment implements
 		mImageFetcher.closeCache();
 	}
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		getActivity().getContentResolver().registerContentObserver(
-				Comments.CONTENT_URI, true, mObserver);
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		getActivity().getContentResolver().unregisterContentObserver(mObserver);
-	}
-
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-		CursorLoader cursor = null;
-		if (id == BookQuery._TOKEN) {
-			cursor = new CursorLoader(getActivity(), mBookUri,
-					BookQuery.PROJECTION, null, null, Books.DEFAULT_SORT_ORDER);
-		} else {
-			cursor = new CursorLoader(getActivity(), mCommentsUri,
-					CommentQuery.PROJECTION, null, null,
-					Comments.DEFAULT_SORT_ORDER);
-		}
-		return cursor;
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		if (getActivity() == null) {
-			return;
-		}
-
-		if (loader.getId() == BookQuery._TOKEN) {
-			onBookQueryComplete(cursor);
-		} else {
-			onCommentQueryComplete(cursor);
-		}
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-	}
-
-	private void onBookQueryComplete(Cursor cursor) {
-		if (book == null)
-			book = new Book();
-		book.setId(cursor.getString(BookQuery.BOOK_ID));
-		book.setBianhao(cursor.getString(BookQuery.BOOK_BIANHAO));
-		book.setTitle(cursor.getString(BookQuery.BOOK_TITLE));
-		book.setAuthor(cursor.getString(BookQuery.BOOK_AUTHOR));
-		book.setAuthorIntro(cursor.getString(BookQuery.BOOK_AUTHRO_INTRO));
-		book.setDescription(cursor.getString(BookQuery.BOOK_DESCRIPTION));
-		book.setLanguage(cursor.getString(BookQuery.BOOK_LANGUAGE));
-		book.setPrice(cursor.getString(BookQuery.BOOK_PRICE));
-		book.setPublishDate(cursor.getString(BookQuery.BOOK_PUBLISH_DATE));
-		book.setImgUrl(cursor.getString(BookQuery.BOOK_IMAGE_URL));
-		book.setStatus(getCurrentStatus());
-
-		setContentView(book);
-	}
-
-	private void onCommentQueryComplete(Cursor cursor) {
-		final ViewGroup reviewsGroup = (ViewGroup) mRootView
-				.findViewById(R.id.book_reviews_block);
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-
-		// clear all children from this view group except the first child.
-		if (reviewsGroup.getChildCount() > 1) {
-			reviewsGroup.removeViews(1, reviewsGroup.getChildCount() - 1);
-		}
-
-		boolean hasReviews = false;
-		while (cursor.moveToNext()) {
-			final String comment = cursor.getString(CommentQuery.COMMENT);
-			if (TextUtils.isEmpty(comment)) {
-				continue;
-			}
-
-			final String userName = cursor.getString(CommentQuery.USER_NAME);
-			final String userImageUrl = cursor
-					.getString(CommentQuery.USER_IMAGE_URL);
-			final String timestamp = cursor.getString(CommentQuery.TIMESTAMP);
-			final String mReplyAuthor = cursor
-					.getString(CommentQuery.REPLY_AUTHOR);
-			final String mReplyQuote = cursor
-					.getString(CommentQuery.REPLY_QUOTE);
-
-			final View commentView = inflater.inflate(R.layout.book_comment,
-					reviewsGroup, false);
-			final ImageView userImageView = (ImageView) commentView
-					.findViewById(R.id.user_image);
-			final TextView userNameView = (TextView) commentView
-					.findViewById(R.id.user_name);
-			final TextView commentDateView = (TextView) commentView
-					.findViewById(R.id.comment_date);
-			final TextView commentContentView = (TextView) commentView
-					.findViewById(R.id.comment_content);
-
-			userNameView.setText(userName);
-			commentDateView.setText(timestamp);
-			commentContentView.setText(comment);
-			mImageFetcher.loadThumbnailImage(userImageUrl, userImageView,
-					R.drawable.person_image_empty);
-
-			final ImageView replyImageView = (ImageView) commentView
-					.findViewById(R.id.comment_reply);
-			replyImageView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(getActivity(),
-							BookCommentActivity.class);
-					intent.putExtra(BookCommentActivity.USER_ID, mUserId);
-					intent.putExtra(BookCommentActivity.BOOK_ID, book.getId());
-					intent.putExtra(BookCommentActivity.REPLY_AUTHOR, userName);
-					intent.putExtra(BookCommentActivity.REPLY_COMMENT, comment);
-					getActivity().startActivityForResult(intent, ADD_REVIEW);
-				}
-			});
-
-			if (!TextUtils.isEmpty(mReplyAuthor)) {
-				final ViewGroup mCommentQuoteBlock = (ViewGroup) commentView
-						.findViewById(R.id.quote_comment_block);
-				final TextView mCommentQuoteContent = (TextView) commentView
-						.findViewById(R.id.quote_comment_content);
-				mCommentQuoteContent.setText(mReplyQuote);
-				mCommentQuoteBlock.setVisibility(View.VISIBLE);
-			}
-
-			if (cursor.isLast()) {
-				final ImageView divider = (ImageView) commentView
-						.findViewById(R.id.imgDivider);
-				divider.setVisibility(View.GONE);
-			}
-
-			hasReviews = true;
-			reviewsGroup.addView(commentView);
-		}
-
-		if (hasReviews) {
-			reviewsGroup.setVisibility(View.VISIBLE);
-		}
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-
-		if (requestCode == ADD_REVIEW) {
-			if (resultCode == Activity.RESULT_OK) {
-				Loader<Cursor> loader = getLoaderManager().getLoader(
-						CommentQuery._TOKEN);
-				if (loader != null) {
-					loader.forceLoad();
-				}
-			}
-		}
-	}
-
 	private void setContentView(Book book) {
 		mTitleView.setText(book.getTitle());
-		mAuthorView.setText(book.getAuthor());
+		
+		String author = book.getAuthor();
+		mAuthorView.setText(author);
+		
+		String publisher = book.getPublisher();
+		mPublisherView.setText(publisher);
+		
+		String publishDate = book.getPublishDate();
+		mPublishDateView.setText(publishDate);
+		
+		String price = book.getPrice();
+		mPriceView.setText(price);
 
 		String bookDesc = book.getDescription();
 		if (bookDesc != null && !TextUtils.isEmpty(bookDesc))
@@ -367,160 +189,47 @@ public class BookDetailFragment extends SherlockFragment implements
 		else
 			mDescriptionBlock.setVisibility(View.GONE);
 
-		String authorIntro = book.getAuthorIntro();
-		if (authorIntro != null && !TextUtils.isEmpty(authorIntro))
-			mAuthorIntroView.setText(authorIntro);
-		else
-			mAuthorIntroBlock.setVisibility(View.GONE);
-
 		String imgUrl = book.getImgUrl();
 		if (imgUrl != null)
 			mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
-
-		String status = book.getStatus();
-		if (status != null) {
-			mStatusActionBlock.setVisibility(View.GONE);
-			mStatusNowBlock.setVisibility(View.VISIBLE);
-			mBookStatusText.setText(status);
-		} else {
-			mStatusActionBlock.setVisibility(View.VISIBLE);
-			mStatusNowBlock.setVisibility(View.GONE);
-		}
-	}
-
-	private void setChangeStatusAnimation() {
-		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_out);
-
-		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_in_slowly);
-
-		fadeOutAnimation.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				mStatusActionBlock.setVisibility(View.GONE);
-				mBookStatusText.setText(getCurrentStatus());
-				mStatusNowBlock.setVisibility(View.VISIBLE);
-				mStatusNowBlock.startAnimation(fadeInAnimation);
-			}
-		});
-
-		mStatusReading.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = HomeActivity.TAB_0;
-			}
-		});
-		mStatusWish.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = HomeActivity.TAB_1;
-			}
-		});
-		mStatusRead.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mStatusActionBlock.startAnimation(fadeOutAnimation);
-				mSection = HomeActivity.TAB_2;
-			}
-		});
-	}
-
-	private void setClearStatusAnimation() {
-		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_out);
-
-		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
-				getActivity(), R.anim.fade_in_slowly);
-
-		fadeOutAnimation.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				mStatusNowBlock.setVisibility(View.GONE);
-				mStatusActionBlock.setVisibility(View.VISIBLE);
-				mStatusActionBlock.startAnimation(fadeInAnimation);
-			}
-		});
-
-		OnClickListener onclickListener = new OnClickListener() {
-			public void onClick(View v) {
-				mStatusNowBlock.startAnimation(fadeOutAnimation);
-			}
-		};
-
-		mStatusNowBlock.setOnClickListener(onclickListener);
-	}
-
-	private final ContentObserver mObserver = new ContentObserver(new Handler()) {
-
-		@Override
-		public void onChange(boolean selfChange) {
-			super.onChange(selfChange);
-
-			if (getActivity() == null) {
-				return;
-			}
-
-			Loader<Cursor> loader = getLoaderManager().getLoader(
-					CommentQuery._TOKEN);
-			if (loader != null) {
-				loader.forceLoad();
-			}
-		}
-
-	};
-
-	private String getCurrentStatus() {
-		switch (mSection) {
-		case HomeActivity.TAB_0:
-			return getActivity().getString(R.string.book_reading_full);
-		case HomeActivity.TAB_1:
-			return getActivity().getString(R.string.book_wish_full);
-		case HomeActivity.TAB_2:
-			return getActivity().getString(R.string.book_read_full);
-		default:
-			return null;
-		}
+		
+		mTagView.setText(book.getTag());
 	}
 
     private void setBorrowReturnState(){
         if (mCurrentBookState == BORROW_BOOK){
             mBorrowReturn.setText(R.string.borrow_this_book);
-            mBorrowReturn.setEnabled(true);
+            
+            mStatusView.setVisibility(View.GONE);
         }
         else if (mCurrentBookState == CANNOT_OPERATE){
-            mBorrowReturn.setText(String.format(getResources().getString(R.string.lent_to_others), bookBorrowInfo.getUserName()));
-            mBorrowReturn.setEnabled(false);
+        	mBorrowReturn.setVisibility(View.GONE);
+
+        	mStatusView.setVisibility(View.VISIBLE);
+        	mStatusView.setTextColor(getResources().getColor(R.color.body_text_disabled));
+            mStatusView.setText(String.format(getResources().getString(R.string.lent_to_others), bookBorrowInfo.getUserName()));
         }
         else if (mCurrentBookState == RETURN_BOOK) {
             mBorrowReturn.setText(R.string.return_this_book);
-            mBorrowReturn.setEnabled(true);
+            
+            if (bookBorrowInfo != null) {
+            	mStatusView.setVisibility(View.VISIBLE);
+            	mStatusView.setText(String.format(getResources().getString(R.string.book_due_date), bookBorrowInfo.getPlanReturnDate()));
+            	mStatusView.setTextColor(getResources().getColor(R.color.body_text_1_positive));
+            }
         }
     }
 
     private class AsyncLoader extends AsyncTask<Integer, Void, Boolean> {
+    	private int borrowResult;
+    	
         @Override
         protected Boolean doInBackground(Integer... params) {
             int type = params[0];
             try{
                 switch (type){
                     case LOAD_BORROW_RETURN:
-                    	bookBorrowInfo = HttpManager.webServiceBorrowProxy.checkWhetherBookInBorrow(book.getBianhao());
+                    	bookBorrowInfo = HttpManager.webServiceBorrowProxy.checkWhetherBookInBorrow(book.getTag());
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -538,7 +247,7 @@ public class BookDetailFragment extends SherlockFragment implements
                         });
                         break;
                     case BORROW_BOOK:
-                        borrowResult = HttpManager.webServiceBorrowProxy.borrow(mUserId, book.getBianhao());
+                        borrowResult = HttpManager.webServiceBorrowProxy.borrow(mUserId, book.getTag());
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -553,7 +262,7 @@ public class BookDetailFragment extends SherlockFragment implements
                         });
                         break;
                     case RETURN_BOOK:
-                        borrowResult = HttpManager.webServiceBorrowProxy.returnBook(mUserId, book.getBianhao());
+                        borrowResult = HttpManager.webServiceBorrowProxy.returnBook(mUserId, book.getTag());
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -571,21 +280,6 @@ public class BookDetailFragment extends SherlockFragment implements
                     	book = HttpManager.webServiceBookProxy.getBookByBianHao(Books.getBookId(mBookUri));
                     	if (book == null)
                     		return false;
-
-					// save the book to sqlite
-					ContentValues values = new ContentValues();
-					values.put(Books.BOOK_ID, book.getId());
-					values.put(Books.BOOK_BIANHAO, book.getBianhao());
-					values.put(Books.BOOK_TITLE, book.getTitle());
-					values.put(Books.BOOK_AUTHOR, book.getAuthor());
-					values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
-					values.put(Books.BOOK_DESCRIPTION, book.getDescription());
-					values.put(Books.BOOK_LANGUAGE, book.getLanguage());
-					values.put(Books.BOOK_PRICE, book.getPrice());
-					values.put(Books.BOOK_PUBLISH_DATE, book.getPublishDate());
-					values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
-					getActivity().getContentResolver().insert(
-							Books.CONTENT_URI, values);
 
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
@@ -622,56 +316,5 @@ public class BookDetailFragment extends SherlockFragment implements
 			}
 			mLoadingIndicator.setVisibility(View.GONE);
 		}
-	}
-
-	public interface BookQuery {
-		int _TOKEN = 0;
-
-		public final String[] PROJECTION = new String[] { Books._ID,
-				Books.BOOK_ID, Books.BOOK_BIANHAO, Books.BOOK_TITLE,
-				Books.BOOK_AUTHOR, Books.BOOK_AUTHRO_INTRO, 
-				Books.BOOK_DESCRIPTION, Books.BOOK_LANGUAGE, Books.BOOK_PRICE,
-				Books.BOOK_PUBLISH_DATE, Books.BOOK_IMAGE_URL, };
-
-		public int _ID = 0;
-		public int BOOK_ID = 1;
-		public int BOOK_BIANHAO = 2;
-		public int BOOK_TITLE = 3;
-		public int BOOK_AUTHOR = 4;
-		public int BOOK_AUTHRO_INTRO = 5;
-		public int BOOK_DESCRIPTION = 6;
-		public int BOOK_LANGUAGE = 7;
-		public int BOOK_PRICE = 8;
-		public int BOOK_PUBLISH_DATE = 9;
-		public int BOOK_IMAGE_URL = 10;
-	}
-
-	public interface CommentQuery {
-		int _TOKEN = 1;
-
-		public final String[] PROJECTION = new String[] { Comments._ID,
-				Comments.USER_ID, Comments.COMMENT, Comments.REPLY_AUTHOR,
-				Comments.REPLY_QUOTE, Comments.TIMESTAMP, Users.USER_NAME,
-				Users.USER_IMAGE_URL, };
-
-		public int _ID = 0;
-		public int USER_ID = 1;
-		public int COMMENT = 2;
-		public int REPLY_AUTHOR = 3;
-		public int REPLY_QUOTE = 4;
-		public int TIMESTAMP = 5;
-		public int USER_NAME = 6;
-		public int USER_IMAGE_URL = 7;
-	}
-
-	public interface UserBookQuery {
-		int _TOKEN = 1;
-
-		public final String[] PROJECTION = new String[] { UserBooks.USER_ID,
-				UserBooks.BOOK_ID, UserBooks.USE_TYPE, };
-
-		public int USER_ID = 0;
-		public int BOOK_ID = 1;
-		public int USE_TYPE = 2;
 	}
 }

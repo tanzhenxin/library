@@ -36,6 +36,7 @@
 	<string name="book_reviews">评论</string>
 	<string name="load_failed">加载数据失败</string>
 	<string name="no_network_connection_toast">没有网络连接</string>
+    <string name="plus_one">+1</string>
 	<string name="add_review">评论：</string>
 	<string name="add_review_hint">写评论...</string>
     <string name="add_comment">回复：</string>
@@ -46,7 +47,13 @@
 	<string name="cancel_comment">取消发表？</string>
 	<string name="lost_comment">已输入的内容将会丢失</string>
 	
-	<string name="book_from">来自: 豆瓣网</string>
+	<string name="book_from">来自 : 豆瓣网</string>
+	<string name="book_author">作者:</string>
+	<string name="book_publisher">出版社:</string>
+	<string name="book_publish_date">出版时间:</string>
+	<string name="book_price">价格:</string>
+	<string name="book_tag">标签:</string>
+	<string name="book_due_date">%1$s 到期</string>
 	
 	<string name="book_new_arrival">新上架</string>
    	<string name="book_hotest">最热门</string>
@@ -65,10 +72,14 @@
     <string name="login_pick_image">选择头像</string>
    	<string name="login_succeed">登陆成功</string>
     <string name="login_failed">登陆失败</string>
+    <string name="login_failed_user_invalid">该用户不存在</string>
+    <string name="login_failed_password_invalid">用户名和密码不匹配</string>
     <string name="login_in_progress">登录中...</string>
-    <string name="login_set_nickname">设置用户名</string>
+    <string name="login_set_username">设置用户名</string>
+    <string name="register_in_progress">注册中...</string>
     <string name="register_succeed">注册成功</string>
     <string name="register_failed">注册失败</string>
+    <string name="register_failed_user_exists">该用户名已存在</string>
     <string name="or">或</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
@@ -104,4 +115,8 @@
     <string name="return_this_book">归还到图书馆</string>
     <string name="lent_to_others">已被借给%1$s</string>
     <string name="operation_succeed">操作成功</string>
+    <string name="no_book_borrowed">没有在借的图书</string>
+    
+    <string name="expire_book_tile">您有一些书将要过期.</string>
+    <string name="expire_book_description">请点击这里.</string>
 </resources>

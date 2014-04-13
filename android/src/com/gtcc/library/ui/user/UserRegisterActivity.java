@@ -51,6 +51,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 	private TextView mEmail;
 	private TextView mPassword;
 	private ImageView mUserImage;
+	private Bitmap mUserImageBitmap;
 
 	private ProgressDialog mSpinner;
 	private UserRegisterTask mRegisterTask;
@@ -102,7 +103,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 
 		mSpinner = new ProgressDialog(this);
 		mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		mSpinner.setMessage(getString(R.string.login_in_progress));
+		mSpinner.setMessage(getString(R.string.register_in_progress));
 		mSpinner.setOnKeyListener(new OnKeyListener() {
 
 			@Override
@@ -139,13 +140,14 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			switch (requestCode) {
 			case REQUEST_IMAGE:
 				mPhotoUri = data.getData();
+				// fall through
 			case TAKE_PHOTO:
 				cropImage();
 				break;
 			case REQUEST_CROP:
-				Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-				if (imageBitmap != null) {
-					mUserImage.setImageBitmap(imageBitmap);
+				mUserImageBitmap = (Bitmap) data.getExtras().get("data");
+				if (mUserImageBitmap != null) {
+					mUserImage.setImageBitmap(mUserImageBitmap);
 				}
 				break;
 			}
@@ -282,9 +284,13 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			password = params[1];
 			email = params[2];
 
+			WebServiceUserProxy webServiceProxy = new WebServiceUserProxy();
 			try {
-				ret = new WebServiceUserProxy().addUser(userName, password,
+				ret = webServiceProxy.addUser(userName, password,
 						email);
+				if (ret == WebServiceInfo.OPERATION_SUCCEED && mUserImageBitmap != null) {
+					ret = webServiceProxy.uploadUserImage(userName, mUserImageBitmap);
+				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -310,6 +316,10 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 				Toast.makeText(UserRegisterActivity.this,
 						R.string.register_succeed, Toast.LENGTH_SHORT).show();
 				finish();
+				break;
+			case WebServiceInfo.USER_ALREADY_EXISTS:
+				Toast.makeText(UserRegisterActivity.this,
+						R.string.register_failed_user_exists, Toast.LENGTH_SHORT).show();
 				break;
 			default:
 				Toast.makeText(UserRegisterActivity.this,

@@ -18,7 +18,10 @@ import com.gtcc.library.ui.HomeActivity;
  */
 public class LibraryPagerAdapter extends FragmentStatePagerAdapter {
 	
+	public static final String ARG_BOOK_CATEOGRY = "book_category";
+	
 	private final Resources resources;
+	private final String[] categories = { "A", "B", "C", "D" };
 
 	public LibraryPagerAdapter(final HomeActivity activity) {
 		super(activity.getSupportFragmentManager());
@@ -29,15 +32,17 @@ public class LibraryPagerAdapter extends FragmentStatePagerAdapter {
 	@Override
 	public Fragment getItem(int position) {
 		Fragment fragment = new LibraryBookListFragment();
+		
 		Bundle args = new Bundle();
-		args.putInt(HomeActivity.ARG_SECTION_NUMBER, position);
+		args.putString(ARG_BOOK_CATEOGRY, categories[position]);
 		fragment.setArguments(args);
+		
 		return fragment;
 	}
 
 	@Override
 	public int getCount() {
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -45,11 +50,13 @@ public class LibraryPagerAdapter extends FragmentStatePagerAdapter {
 		Locale l = Locale.getDefault();
 		switch (position) {
 		case 0:
-			return resources.getString(R.string.book_new_arrival).toUpperCase(l);
+			return resources.getString(R.string.library_self).toUpperCase(l);
 		case 1:
-			return resources.getString(R.string.book_hotest).toUpperCase(l);
+			return resources.getString(R.string.library_english).toUpperCase(l);
 		case 2:
-			return resources.getString(R.string.book_category).toUpperCase(l);
+			return resources.getString(R.string.library_misc).toUpperCase(l);
+		case 3:
+			return resources.getString(R.string.library_technical).toUpperCase(l);
 		}
 		return null;
 	}
