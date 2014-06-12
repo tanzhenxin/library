@@ -23,7 +23,7 @@ import com.gtcc.library.ui.library.LibraryBookListFragment;
 import com.gtcc.library.util.Utils;
 
 public class SearchActivity extends BaseActivity
-	implements BookListFragment.Callbacks {
+	implements AbstractBookListFragment.Callbacks {
 	
 	LibraryBookListFragment mBooksFragment;
 

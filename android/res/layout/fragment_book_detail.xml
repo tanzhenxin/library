@@ -38,15 +38,41 @@
                     android:layout_below="@id/book_title"
                     android:layout_marginTop="@dimen/element_spacing_small"
                     android:scaleType="fitXY" />
+                
+                <include
+                    android:id="@+id/book_tag_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+					android:layout_alignTop="@id/book_img"
+                    android:layout_marginLeft="12dip"
+                    android:layout_toRightOf="@id/book_img"
+                    layout="@layout/book_footnote" />
+                
+                <TextView
+                    android:id="@+id/book_isbn_label"
+                    style="@style/TextHeaderSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/book_tag_label"
+                    android:layout_below="@id/book_tag_label"
+                    android:text="@string/book_isbn" />
+
+                <TextView
+                    android:id="@+id/book_isbn"
+                    style="@style/TextHeaderSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/book_isbn_label"
+                    android:layout_marginLeft="@dimen/element_spacing_small"
+                    android:layout_toRightOf="@id/book_isbn_label" />                
 
                 <TextView
                     android:id="@+id/book_author_label"
                     style="@style/TextHeaderSub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/book_img"
-                    android:layout_marginLeft="12dip"
-                    android:layout_toRightOf="@id/book_img"
+                    android:layout_alignLeft="@id/book_isbn_label"
+                    android:layout_below="@id/book_isbn_label"
                     android:text="@string/book_author" />
 
                 <TextView
@@ -56,7 +82,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/book_author_label"
                     android:layout_marginLeft="@dimen/element_spacing_small"
-                    android:layout_toRightOf="@id/book_author_label" />
+                    android:layout_toRightOf="@id/book_author_label"
+                    android:singleLine="true"
+                    android:lines="1" />
 
                 <TextView
                     android:id="@+id/book_publisher_label"
@@ -74,7 +102,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/book_publisher_label"
                     android:layout_marginLeft="@dimen/element_spacing_small"
-                    android:layout_toRightOf="@id/book_publisher_label" />
+                    android:layout_toRightOf="@id/book_publisher_label"
+                    android:singleLine="true"
+                    android:lines="1" />
 
                 <TextView
                     android:id="@+id/book_publish_date_label"
@@ -93,31 +123,6 @@
                     android:layout_alignTop="@id/book_publish_date_label"
                     android:layout_marginLeft="@dimen/element_spacing_small"
                     android:layout_toRightOf="@id/book_publish_date_label" />
-
-                <TextView
-                    android:id="@+id/book_price_label"
-                    style="@style/TextHeaderSub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/book_publish_date_label"
-                    android:layout_below="@id/book_publish_date_label"
-                    android:text="@string/book_price" />
-
-                <TextView
-                    android:id="@+id/book_price"
-                    style="@style/TextHeaderSub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/book_price_label"
-                    android:layout_marginLeft="@dimen/element_spacing_small"
-                    android:layout_toRightOf="@id/book_price_label" />
-
-                <include
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/book_price_label"
-                    android:layout_below="@id/book_price_label"
-                    layout="@layout/book_footnote" />
 
                 <TextView
                     android:id="@+id/book_status"

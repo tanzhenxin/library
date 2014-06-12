@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -33,6 +34,7 @@ import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.ui.library.LibraryFragment;
 import com.gtcc.library.ui.user.UserBookListFragment;
+import com.gtcc.library.ui.user.UserFragment;
 import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.zxing.CaptureActivity;
 import com.gtcc.library.util.CommonAsyncTask;
@@ -43,15 +45,17 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 public class HomeActivity extends SlidingFragmentActivity implements
 		UserBookListFragment.Callbacks {
 
-	private static Boolean isFirstLoad = true; // mark whether this activity is first loaded or not
-	
+	private static Boolean isFirstLoad = true; // mark whether this activity is
+												// first loaded or not
+
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
 	public static final int PAGE_SCANNER = 2;
 	public static final int PAGE_SETTINGS = 3;
 
 	public static final String ARG_PAGE_NUMBER = "page_number";
-	private static final String CURRENT_INDEX = "currentIndex";
+	public static final String CURRENT_INDEX = "currentIndex";
+	public static final String BOOK_ISBN = "isbn";
 
 	private int REQUEST_LOGIN = 1;
 	private int SCANNER = 2;
@@ -71,31 +75,36 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			int type = params[0];
 			switch (type) {
 			case GET_RETURN_DATE:
-				List<Borrow>bookBorrowInfos = HttpManager.webServiceBorrowProxy
+				List<Borrow> bookBorrowInfos = HttpManager.webServiceBorrowProxy
 						.getBorrowInfo(HomeActivity.this.getUserId());
-				for (Iterator i = bookBorrowInfos.iterator(); i.hasNext(); ) {
+				for (Iterator i = bookBorrowInfos.iterator(); i.hasNext();) {
 					Borrow bookBorrowInfo = (Borrow) i.next();
-					
+
 					Calendar today = Calendar.getInstance();
 					Calendar returnDate = Calendar.getInstance();
 					today.add(Calendar.DATE, -3);
-					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-					java.util.Date date=sdf.parse(bookBorrowInfo.getPlanReturnDate());  
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					java.util.Date date = sdf.parse(bookBorrowInfo
+							.getPlanReturnDate());
 					returnDate.setTime(date);
-					if(today.before(returnDate)) { 
+					if (today.before(returnDate)) {
 						i.remove();
 					}
-				}  
-				if(!bookBorrowInfos.isEmpty()) {
-					NotificationCompat.Builder mBuilder =
-						    new NotificationCompat.Builder(HomeActivity.this)
-						    .setSmallIcon(R.drawable.ic_user_center)
-						    .setContentTitle(getString(R.string.expire_book_tile))
-						    .setContentText(getString(R.string.expire_book_tile)
-						    		);
-					Intent resultIntent = new Intent(HomeActivity.this, HomeActivity.class);
-					resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-					PendingIntent resultPendingIntent = PendingIntent.getActivity(HomeActivity.this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+				}
+				if (!bookBorrowInfos.isEmpty()) {
+					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+							HomeActivity.this)
+							.setSmallIcon(R.drawable.ic_user_center)
+							.setContentTitle(
+									getString(R.string.expire_book_tile))
+							.setContentText(
+									getString(R.string.expire_book_tile));
+					Intent resultIntent = new Intent(HomeActivity.this,
+							HomeActivity.class);
+					resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					PendingIntent resultPendingIntent = PendingIntent
+							.getActivity(HomeActivity.this, 0, resultIntent,
+									PendingIntent.FLAG_UPDATE_CURRENT);
 					mBuilder.setContentIntent(resultPendingIntent);
 					mBuilder.setAutoCancel(true);
 					int mNotificationId = 001;
@@ -114,16 +123,17 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		setContentView(R.layout.activity_empty_pane);
 
 		getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		
+
 		if (savedInstanceState != null) {
 			mCurrentPage = savedInstanceState.getInt(CURRENT_INDEX);
 		}
-		
+
 		if (mCurrentPage == -1) {
-			SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
+			SharedPreferences sharedPref = getSharedPreferences(
+					SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
 			mCurrentPage = sharedPref.getInt(CURRENT_INDEX, -1);
 		}
-		
+
 		if (mCurrentPage == -1) {
 			mCurrentPage = PAGE_USER;
 		}
@@ -141,12 +151,13 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		super.onSaveInstanceState(outState);
 		outState.putInt(CURRENT_INDEX, mCurrentPage);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
-		Editor editor = getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE).edit();
+
+		Editor editor = getSharedPreferences(SHARED_PREFERENCE_FILE,
+				Context.MODE_PRIVATE).edit();
 		editor.putInt(CURRENT_INDEX, mCurrentPage);
 		editor.commit();
 	}
@@ -158,23 +169,23 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		setupScanMenuItem(menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_search:
-            if (!Utils.hasHoneycomb()) {
-            	startSearch(null, false, Bundle.EMPTY, false);
-                return true;
-            }
-            break;
+			if (!Utils.hasHoneycomb()) {
+				startSearch(null, false, Bundle.EMPTY, false);
+				return true;
+			}
+			break;
 		case R.id.menu_refresh:
 			triggerRefresh();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupSearchMenuItem(Menu menu) {
 		MenuItem searchMenu = menu.findItem(R.id.menu_search);
@@ -182,25 +193,26 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			SearchView searchView = (SearchView) searchMenu.getActionView();
 			if (searchView != null) {
 				SearchManager searchManager = (SearchManager) getSystemService(Activity.SEARCH_SERVICE);
-				SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
+				SearchableInfo info = searchManager
+						.getSearchableInfo(getComponentName());
 				searchView.setSearchableInfo(info);
 			}
 		}
 	}
-	
+
 	private void setupScanMenuItem(Menu menu) {
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        if (scanItem != null) {
-            scanItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
-                @Override
-                public boolean onMenuItemClick(MenuItem item){
-                    showScanner();
-                    return true;
-                }
-            });
-        }
+		MenuItem scanItem = menu.findItem(R.id.menu_scan);
+		if (scanItem != null) {
+			scanItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					showScanner();
+					return true;
+				}
+			});
+		}
 	}
-	
+
 	private void triggerRefresh() {
 		// TODO
 	}
@@ -212,8 +224,10 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		if (requestCode == REQUEST_LOGIN) {
 			switch (resultCode) {
 			case Activity.RESULT_OK:
-				int loginType = data.getExtras().getInt(UserLoginActivity.LOGIN_TYPE);
-				UserInfo userInfo = (UserInfo)data.getExtras().getSerializable(UserLoginActivity.LOGIN_USER);
+				int loginType = data.getExtras().getInt(
+						UserLoginActivity.LOGIN_TYPE);
+				UserInfo userInfo = (UserInfo) data.getExtras()
+						.getSerializable(UserLoginActivity.LOGIN_USER);
 				setUserInfo(userInfo);
 
 				showPage(PAGE_LIBRARY);
@@ -222,30 +236,50 @@ public class HomeActivity extends SlidingFragmentActivity implements
 				finish();
 				break;
 			}
-		}
-        else if (requestCode == SCANNER){
-            if (resultCode == RESULT_OK){
-                // scan isbn code, open proper detail activity
-            	final String isbnCode = data.getExtras().getString("result");
-                if (isbnCode != null && isbnCode != ""){
-					CommonAsyncTask<Void, Boolean> task = new CommonAsyncTask<Void, Boolean>(this) {
-                        @Override
-                        protected Boolean doWork(Void... params) throws Exception {
-                            Book book = HttpManager.webServiceBookProxy.getBookByISBN(isbnCode);
-                            if (book != null)
-                                HomeActivity.this.OnBookSelected(book.getTag(), HomeActivity.PAGE_USER);
-                            return true;
-                        }
-                    };
-                    task.execute();
-                }
-            }
-        }
-		else if (requestCode == SETTINGS) {
+		} else if (requestCode == SCANNER) {
+			if (resultCode == RESULT_OK) {
+				final String isbnCode = data.getExtras().getString("result");
+				if (isbnCode != null && isbnCode != "") {
+					CommonAsyncTask<Void, List<Book>> task = new CommonAsyncTask<Void, List<Book>>(
+							this) {
+						@Override
+						protected List<Book> doWork(Void... params)
+								throws Exception {
+							return HttpManager.webServiceBookProxy
+									.getBookListByISBN(isbnCode);
+						}
+
+						@Override
+						protected void onResult(List<Book> result) {
+							if (result != null && !result.isEmpty()) {
+								if (result.size() == 1) {
+									HomeActivity.this.OnBookSelected(
+											result.get(0).getTag(),
+											HomeActivity.this.mCurrentPage);
+								} else {
+									Intent intent = new Intent(
+											HomeActivity.this,
+											ScanBookListActivity.class);
+									intent.putExtra(BOOK_ISBN, isbnCode);
+									startActivity(intent);
+								}
+
+							} else {
+								Toast.makeText(HomeActivity.this,
+										R.string.no_book_found,
+										Toast.LENGTH_SHORT).show();
+							}
+						}
+					};
+					task.execute();
+				}
+			}
+		} else if (requestCode == SETTINGS) {
 			switch (resultCode) {
 			case Activity.RESULT_FIRST_USER:
 				clearUserInfo();
-				getContentResolver().delete(LibraryContract.BASE_CONTENT_URI, null, null);
+				getContentResolver().delete(LibraryContract.BASE_CONTENT_URI,
+						null, null);
 				login();
 				break;
 			}
@@ -257,7 +291,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			login();
 			return;
 		}
-		
+
 		switch (position) {
 		case PAGE_USER:
 			mCurrentPage = PAGE_USER;
@@ -269,58 +303,62 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			showLibrary();
 			showContent();
 			break;
-        case PAGE_SCANNER:
-            showScanner();
-            break;
+		case PAGE_SCANNER:
+			showScanner();
+			break;
 		case PAGE_SETTINGS:
 			showSettings();
 			break;
 		}
 	}
-	
+
 	public int getCurrentPage() {
 		return mCurrentPage;
 	}
-	
+
 	public boolean hasLogin() {
 		String userId = getUserId();
 		return userId != null && userId != "0";
 	}
-	
+
 	private void login() {
 		Intent intent = new Intent(this, UserLoginActivity.class);
 		startActivityForResult(intent, REQUEST_LOGIN);
 	}
 
 	private void showUserHome() {
-		Fragment fragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+		Fragment fragment = this.getSupportFragmentManager().findFragmentById(
+				R.id.fragment_container);
 		if (fragment == null || !(fragment instanceof UserBookListFragment)) {
-			fragment = new UserBookListFragment();
-			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+			fragment = new UserFragment();
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
 			transaction.replace(R.id.fragment_container, fragment);
 			transaction.commit();
 		}
-		
+
 		setTitle(R.string.user_center);
 	}
 
 	private void showLibrary() {
-		Fragment fragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+		Fragment fragment = this.getSupportFragmentManager().findFragmentById(
+				R.id.fragment_container);
 		if (fragment == null || !(fragment instanceof LibraryFragment)) {
 			fragment = new LibraryFragment();
-			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
 			transaction.replace(R.id.fragment_container, fragment);
 			transaction.commit();
 		}
-		
+
 		setTitle(R.string.book_library);
 	}
 
-    private void showScanner(){
-        Intent intent = new Intent(this, CaptureActivity.class);
-        startActivityForResult(intent, SCANNER);
-    }
-	
+	private void showScanner() {
+		Intent intent = new Intent(this, CaptureActivity.class);
+		startActivityForResult(intent, SCANNER);
+	}
+
 	private void showSettings() {
 		Intent intent = new Intent(this, SettingsActivity.class);
 		startActivityForResult(intent, SETTINGS);

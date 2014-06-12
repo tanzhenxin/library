@@ -70,7 +70,6 @@ public class RefreshableListView extends ListView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //headerBehavior.onTouch(event);
-
         return super.onTouchEvent(event);
     }
 

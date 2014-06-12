@@ -59,6 +59,26 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
         return books;
 	}
 	
+	public List<Borrow> getBorrowedInfo(String username) throws Exception {
+        List<Borrow> books = new ArrayList<Borrow>();
+        JSONArray array = new JSONArray();
+        array.put(username);
+        JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO, array);
+        if (result != null) {
+            JSONObject jsonBooks = result.getJSONObject("borrowInfo");
+            int length = jsonBooks.length();
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonBorrow = jsonBooks.getJSONObject(Integer.toString(i));
+                Borrow borrow = parseJSONObject(jsonBorrow);
+                if (!contains(books, borrow)) {
+                	books.add(borrow);
+                }
+            }
+        }
+
+        return books;
+	}
+	
 	public Borrow checkWhetherBookInBorrow(String bookBianhao) throws Exception {
         JSONArray array = new JSONArray();
         array.put(String.valueOf(bookBianhao));
@@ -73,11 +93,13 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
         return null;
 	}
 	
-	public void removeAll() throws Exception {
-		JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_REMOVE_ALL, null);
-		if (result != null) {
-			
+	private Boolean contains(List<Borrow> borrows, Borrow borrow) {
+		for (Borrow b : borrows) {
+			if (b.getBook().getTag().equals(borrow.getBook().getTag())) {
+				return true;
+			}
 		}
+		return false;
 	}
 	
 	private Borrow parseJSONObject(JSONObject jsonBorrow) throws JSONException {

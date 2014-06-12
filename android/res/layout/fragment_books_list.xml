@@ -24,7 +24,7 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:gravity="center"
-        android:text="@string/no_book_borrowed"
+        android:text="@string/no_book_searched"
         android:visibility="gone"/>
 
 </LinearLayout>

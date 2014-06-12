@@ -21,19 +21,16 @@
 
     <PreferenceCategory
         android:key="pref_others"
-        android:title="@string/pref_others" >
+        android:title="@string/pref_title_version" >
 
         <Preference
             android:key="pref_key_check_update"
             android:title="@string/pref_title_check_update" />
 
         <Preference
-            android:key="pref_key_feedback"
-            android:title="@string/pref_title_feedback" />
-
-        <Preference
-            android:key="pref_key_about"
-            android:title="@string/pref_title_about" />
+            android:enabled="false"
+            android:key="pref_key_version"
+            android:title="@string/app_name" />
     </PreferenceCategory>
 
 </PreferenceScreen>

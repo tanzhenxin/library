@@ -20,15 +20,15 @@
         android:text="@string/login_signin"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@android:id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/content_padding_normal"
-        android:background="@drawable/btn_green"
-        android:text="@string/login_signup"
-        android:textSize="@dimen/text_size_medium" />
+<!--     <Button -->
+<!--         android:id="@android:id/button1" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="32dp" -->
+<!--         android:layout_alignParentRight="true" -->
+<!--         android:layout_centerVertical="true" -->
+<!--         android:layout_marginRight="@dimen/content_padding_normal" -->
+<!--         android:background="@drawable/btn_green" -->
+<!--         android:text="@string/login_signup" -->
+<!--         android:textSize="@dimen/text_size_medium" /> -->
 
 </RelativeLayout>

@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Source;
 
@@ -24,6 +27,7 @@ import com.gtcc.library.oauth2.Constants;
 import com.gtcc.library.oauth2.AuthException;
 import com.gtcc.library.webserviceproxy.WebServiceBookProxy;
 import com.gtcc.library.webserviceproxy.WebServiceBorrowProxy;
+import com.gtcc.library.webserviceproxy.WebServiceInfo;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
 public class HttpManager {
@@ -226,4 +230,40 @@ public class HttpManager {
 			.append(URLEncoder.encode(Constants.DOUBAN_API_KEY, "UTF-8"));
 		return url + sb.toString();
 	}
+	
+    public static int GetServerVerCode() {  
+    	int newVerCode = -1;
+    	
+        try {  
+            String verjson = GetServerFile(WebServiceInfo.SERVER_ROOT  
+                    + WebServiceInfo.CHECK_VERSION);  
+            JSONArray array = new JSONArray(verjson);  
+            if (array.length() > 0) {  
+                JSONObject obj = array.getJSONObject(0);  
+                newVerCode = Integer.parseInt(obj.getString("verCode"));  
+            }  
+        } catch (Exception e) {  
+        	e.printStackTrace();
+        }  
+        
+        return newVerCode;
+    } 
+    
+    private static String GetServerFile(String urlString) {
+    	String result = "";
+    	try {
+    	    URL url = new URL(urlString);
+
+    	    BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+    	    String str;
+    	    while ((str = in.readLine()) != null) {
+    	    	result += str;
+    	    }
+    	    in.close();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    	return result;
+    }
 }

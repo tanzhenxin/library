@@ -132,17 +132,17 @@ public class UserLoginActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		View view = View.inflate(this, R.layout.login_register_btn, null);
-		final Button register = (Button) view
-				.findViewById(android.R.id.button1);
-		register.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(UserLoginActivity.this,
-						UserRegisterActivity.class);
-				startActivityForResult(intent, REQUEST_REGISTER);
-			}
-		});
+//		final Button register = (Button) view
+//				.findViewById(android.R.id.button1);
+//		register.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				Intent intent = new Intent(UserLoginActivity.this,
+//						UserRegisterActivity.class);
+//				startActivityForResult(intent, REQUEST_REGISTER);
+//			}
+//		});
 		getSupportActionBar().setCustomView(view);
 		return true;
 	}

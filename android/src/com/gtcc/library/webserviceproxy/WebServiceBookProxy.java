@@ -65,6 +65,27 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 		return null;
 	}
 	
+	public List<Book> getBookListByISBN(String ISBN) throws Exception {
+		List<Book> books = new ArrayList<Book>();
+		
+		JSONArray array = new JSONArray();
+		array.put(String.valueOf(ISBN));
+		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_GET_BOOK_LIST_BY_ISBN, array);
+		if (result != null) {
+			int ret = result.getInt("_returnCode");
+			if (ret == WebServiceInfo.OPERATION_SUCCEED){
+				JSONObject jsonBooks = result.getJSONObject("BookList");
+				int length = jsonBooks.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject jsonBook = jsonBooks.getJSONObject(Integer.toString(i));
+					books.add(parseJSONBook(jsonBook));
+				}
+			}
+		}
+		
+		return books;
+	}
+	
 	private List<Book> getBooks(String methodUri, int offset, int count) throws Exception {
 		return getBooks(methodUri, offset, count, null);
 	}

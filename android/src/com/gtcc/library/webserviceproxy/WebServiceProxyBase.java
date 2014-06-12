@@ -5,6 +5,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,8 +26,8 @@ public class WebServiceProxyBase {
         	jsonParams.put(WebServiceInfo.PARAMETERS, params);
 
         HttpPost request = new HttpPost(URI.create(WebServiceInfo.SERVER));
-        request.addHeader("Content-Type", "application/json");
-        request.setEntity(new StringEntity(jsonParams.toString()));
+        request.addHeader("Content-Type", "application/json;charset=utf-8");
+        request.setEntity(new StringEntity(jsonParams.toString(), HTTP.UTF_8));
         HttpResponse httpResponse = new DefaultHttpClient().execute(request);
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -37,5 +38,5 @@ public class WebServiceProxyBase {
         }
 
         return null;
-    }
+    } 
 }

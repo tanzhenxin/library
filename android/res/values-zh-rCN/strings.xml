@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-   	<string name="app_name">图书馆</string>
+   	<string name="app_name">GTCC图书馆</string>
     <string name="settings">设置</string>
-    <string name="user_borrowing">在看的</string>
-    <string name="user_borrowed">看过的</string>
+    <string name="user_borrowing">在借的</string>
+    <string name="user_borrowed">借过的</string>
     <string name="user_wanted">想看的</string>
 	<string name="user_donated">捐献的</string>
 	
@@ -20,10 +20,12 @@
 	<string name="book_library">图书馆</string>
     <string name="isbn_scanner">扫描ISBN</string>
 	
-	<string name="library_technical">技术</string>
-	<string name="library_self">个人成长</string>
-	<string name="library_english">英语学习</string>
-	<string name="library_misc">其他</string>
+    <string name="library_technical">技术</string>
+    <string name="library_self">个人成长</string>
+    <string name="library_languages">外语</string>
+    <string name="library_misc">其他</string>
+   	<string name="library_engineering">软件工程</string>
+   	<string name="library_management">管理</string>
 	
 	<string name="action_search">搜索</string>
 	<string name="action_refresh">刷新</string>
@@ -31,7 +33,7 @@
 	
 	<string name="book_info">书籍</string>
 	<string name="book_detail">图书详情</string>
-	<string name="book_summary">摘要</string>
+	<string name="book_summary">内容简介</string>
 	<string name="author_intro">作者</string>
 	<string name="book_reviews">评论</string>
 	<string name="load_failed">加载数据失败</string>
@@ -54,6 +56,9 @@
 	<string name="book_price">价格:</string>
 	<string name="book_tag">标签:</string>
 	<string name="book_due_date">%1$s 到期</string>
+	<string name="book_remaining_date">还有  %1$s天到期</string>
+    <string name="book_expired_date">已过期%1$s天</string>
+	<string name="book_isbn">ISBN:</string>
 	
 	<string name="book_new_arrival">新上架</string>
    	<string name="book_hotest">最热门</string>
@@ -96,11 +101,12 @@
 	<string name="pref_others">其他</string>
 	<string name="pref_title_check_update">检查更新</string>
 	<string name="pref_title_feedback">意见反馈</string>
-	<string name="pref_title_about">关于 GTCC图书馆</string>
+	<string name="pref_title_about">关于</string>
+	<string name="pref_title_version">版本</string>
 	
 	<string name="title_search">搜索</string>
 	<string name="title_search_query">搜索 \"&lt;b>%1$s&lt;b>\"</string>
-	<string name="search_hint">搜索图书</string>
+	<string name="search_hint">根据书名搜索图书</string>
 	<string name="feedback_hint">输入你的意见</string>
     <string name="action_scan">扫描</string>
     <string name="pull_to_refresh">下拉刷新</string>
@@ -110,13 +116,25 @@
     <string name="update_failed">更新失败!</string>
     <string name="foot_loading">加载中……</string>
     <string name="foot_no_more_data">没有更多数据</string>
+    <string name="title_scan_result">扫描到的图书</string>
 
     <string name="borrow_this_book">借阅这本书</string>
     <string name="return_this_book">归还到图书馆</string>
     <string name="lent_to_others">已被借给%1$s</string>
     <string name="operation_succeed">操作成功</string>
-    <string name="no_book_borrowed">没有在借的图书</string>
+    <string name="no_book_borrowing">没有在借的图书</string>
+    <string name="no_book_borrowed">没有借过的图书</string>
+    <string name="borrowed_book_excceed_3">每人最多只能借3本书</string>
+    <string name="no_book_found">没有找到扫描的图书</string>
+    <string name="no_book_searched">没有找到搜索的图书.</string>
+    <string name="no_more_books">没有更多的图书啦</string>
     
     <string name="expire_book_tile">您有一些书将要过期.</string>
     <string name="expire_book_description">请点击这里.</string>
+    
+    <string name="latest_version">该版本已经是最新的版本.</string>
+    <string name="checking_updates">正在检查更新....</string>
+    <string name="new_version_found">发现新版本，是否更新?</string>
+    <string name="upgrade">更新</string>
+    <string name="not_upgrade">暂不更新</string>
 </resources>

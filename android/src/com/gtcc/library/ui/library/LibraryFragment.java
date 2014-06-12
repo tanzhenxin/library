@@ -1,107 +1,77 @@
 package com.gtcc.library.ui.library;
 
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import java.util.Locale;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragment;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+
 import com.gtcc.library.R;
 import com.gtcc.library.ui.HomeActivity;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.gtcc.library.ui.ViewPagerFragment;
 
-public class LibraryFragment extends SherlockFragment {
-
-	private ViewPager mViewPager;
+public class LibraryFragment extends ViewPagerFragment {
+	
+	public static final String ARG_BOOK_CATEOGRY = "book_category";
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		if (((HomeActivity) getActivity()).getCurrentPage() == HomeActivity.PAGE_LIBRARY) {
-			buildActionBarAndViewPagerTitles();
-		}
+	protected int getPage() {
+		return HomeActivity.PAGE_LIBRARY;
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.viewpager_layout, null);
-		mViewPager = (ViewPager) view;
-		return view;
+	protected PagerAdapter getPagerAdapter(FragmentActivity activity) {
+		return new LibraryPagerAdapter(activity);
 	}
+	
+	private class LibraryPagerAdapter extends FragmentStatePagerAdapter {
+		
+		private final Resources resources;
+		private final String[] categories = { "E", "F", "M", "S", "T", "Z" };
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
-		mViewPager.setOnPageChangeListener(onPageChangeListener);
-	}
-
-	private void buildActionBarAndViewPagerTitles() {
-		final HomeActivity activity = (HomeActivity) getActivity();
-		final ActionBar actionBar = activity.getSupportActionBar();
-
-		LibraryPagerAdapter pagerAdapter = new LibraryPagerAdapter(activity);
-		mViewPager.setAdapter(pagerAdapter);
-
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.removeAllTabs();
-
-		SimpleTabListener tabListener = new SimpleTabListener(mViewPager);
-		for (int i = 0; i < pagerAdapter.getCount(); i++) {
-			actionBar.addTab(actionBar.newTab()
-					.setText(pagerAdapter.getPageTitle(i))
-					.setTabListener(tabListener));
+		public LibraryPagerAdapter(final FragmentActivity activity) {
+			super(activity.getSupportFragmentManager());
+			
+			resources = activity.getResources();
 		}
 
-		mViewPager.setCurrentItem(0);
-	}
-
-	private ViewPager.SimpleOnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
 		@Override
-		public void onPageSelected(int position) {
+		public Fragment getItem(int position) {
+			Fragment fragment = new LibraryBookListFragment();
+			
+			Bundle args = new Bundle();
+			args.putString(ARG_BOOK_CATEOGRY, categories[position]);
+			fragment.setArguments(args);
+			
+			return fragment;
+		}
 
+		@Override
+		public int getCount() {
+			return 6;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				((HomeActivity) getActivity()).getSlidingMenu()
-						.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-				break;
-			default:
-				((HomeActivity) getActivity()).getSlidingMenu()
-						.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-				break;
+				return resources.getString(R.string.library_engineering).toUpperCase(l);
+			case 1:
+				return resources.getString(R.string.library_languages).toUpperCase(l);
+			case 2:
+				return resources.getString(R.string.library_management).toUpperCase(l);
+			case 3:
+				return resources.getString(R.string.library_self).toUpperCase(l);
+			case 4:
+				return resources.getString(R.string.library_technical).toUpperCase(l);
+			case 5:
+				return resources.getString(R.string.library_misc).toUpperCase(l);
 			}
-			((HomeActivity) getActivity()).getSupportActionBar()
-					.setSelectedNavigationItem(position);
-		}
-	};
-
-	private class SimpleTabListener implements ActionBar.TabListener {
-
-		private ViewPager viewPager;
-
-		public SimpleTabListener(ViewPager viewPager) {
-			this.viewPager = viewPager;
-		}
-
-		@Override
-		public void onTabSelected(Tab tab, FragmentTransaction ft) {
-			if (viewPager != null
-					&& viewPager.getCurrentItem() != tab.getPosition())
-				viewPager.setCurrentItem(tab.getPosition());
-		}
-
-		@Override
-		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		}
-
-		@Override
-		public void onTabReselected(Tab tab, FragmentTransaction ft) {
+			return null;
 		}
 	}
 }

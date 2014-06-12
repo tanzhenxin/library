@@ -23,13 +23,15 @@ public abstract class CommonAsyncTask<TParam, TResult> extends AsyncTask<TParam,
     
     @Override
     protected TResult doInBackground(TParam... params){
-        try{
-            doWork(params);
+        TResult ret = null;
+    	try{
+            ret = doWork(params);
         }
         catch (Exception e) {
             exception = e;
         }
-        return null;
+        
+    	return ret;
     }
 
     @Override
