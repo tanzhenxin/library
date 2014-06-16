@@ -5,19 +5,24 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
@@ -32,6 +37,7 @@ import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.sync.SyncHelper;
 import com.gtcc.library.ui.library.LibraryFragment;
 import com.gtcc.library.ui.user.UserBookListFragment;
 import com.gtcc.library.ui.user.UserFragment;
@@ -39,14 +45,14 @@ import com.gtcc.library.ui.user.UserLoginActivity;
 import com.gtcc.library.ui.zxing.CaptureActivity;
 import com.gtcc.library.util.CommonAsyncTask;
 import com.gtcc.library.util.HttpManager;
+import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class HomeActivity extends SlidingFragmentActivity implements
 		UserBookListFragment.Callbacks {
-
-	private static Boolean isFirstLoad = true; // mark whether this activity is
-												// first loaded or not
+	
+	private static final String TAG = LogUtils.makeLogTag(HomeActivity.class);
 
 	public static final int PAGE_USER = 0;
 	public static final int PAGE_LIBRARY = 1;
@@ -76,7 +82,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 			switch (type) {
 			case GET_RETURN_DATE:
 				List<Borrow> bookBorrowInfos = HttpManager.webServiceBorrowProxy
-						.getBorrowInfo(HomeActivity.this.getUserId());
+						.getBorrowedInfo(HomeActivity.this.getUserId());
 				for (Iterator i = bookBorrowInfos.iterator(); i.hasNext();) {
 					Borrow bookBorrowInfo = (Borrow) i.next();
 
@@ -135,15 +141,19 @@ public class HomeActivity extends SlidingFragmentActivity implements
 		}
 
 		if (mCurrentPage == -1) {
-			mCurrentPage = PAGE_USER;
+			mCurrentPage = PAGE_LIBRARY;
 		}
 
 		showPage(mCurrentPage);
-
-		if (isFirstLoad == true && hasLogin()) {
-			new AsyncLoader().execute(GET_RETURN_DATE);
-			isFirstLoad = false;
+		
+		if (savedInstanceState == null) {
+			triggerRefresh();
 		}
+
+//		if (isFirstLoad == true && hasLogin()) {
+//			new AsyncLoader().execute(GET_RETURN_DATE);
+//			isFirstLoad = false;
+//		}
 	}
 
 	@Override
@@ -214,7 +224,31 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	}
 
 	private void triggerRefresh() {
-		// TODO
+		new AsyncTask<Void, Void, Boolean>() {
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				boolean operationSucceed = false;
+				try {
+					new SyncHelper(HomeActivity.this).performSync();
+					operationSucceed = true;
+				} catch (RemoteException e) {
+					LogUtils.LOGE(TAG, e.toString());
+				} catch (OperationApplicationException e) {
+					LogUtils.LOGE(TAG, e.toString());
+				}
+				
+				return operationSucceed;
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				if (!result) {
+					Toast.makeText(HomeActivity.this, "Failed to get books.", Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+		}.execute();
 	}
 
 	@Override
@@ -254,7 +288,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 							if (result != null && !result.isEmpty()) {
 								if (result.size() == 1) {
 									HomeActivity.this.OnBookSelected(
-											result.get(0).getTag(),
+											result.get(0).getId(),
 											HomeActivity.this.mCurrentPage);
 								} else {
 									Intent intent = new Intent(
@@ -317,8 +351,9 @@ public class HomeActivity extends SlidingFragmentActivity implements
 	}
 
 	public boolean hasLogin() {
-		String userId = getUserId();
-		return userId != null && userId != "0";
+		return true;
+//		String userId = getUserId();
+//		return userId != null && userId != "0";
 	}
 
 	private void login() {

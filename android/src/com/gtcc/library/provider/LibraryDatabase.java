@@ -1,7 +1,6 @@
 package com.gtcc.library.provider;
 
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
 
 import android.app.SearchManager;
@@ -15,33 +14,57 @@ public class LibraryDatabase extends SQLiteOpenHelper {
 	
 	private final static String DATABASE_NAME = "library.db";
 	
-	private final static int DATABASE_VERSION = 7;
+	private final static int DATABASE_VERSION = 8;
 
 	private static final String TAG = "LibraryProvider";
 	
 	interface Tables {
 		String USERS = "users";
 		String BOOKS = "books";
-		String COMMENTS = "comments";
 		String USER_BOOKS = "user_books";
+		
+		String BOOKS_SEARCH = "books_search";
 		
 		String SEARCH_SUGGEST = "search_suggest";
 		
 		String USER_BOOKS_JOIN_BOOKS = "user_books "
 				+ "LEFT OUTER JOIN books ON user_books.book_id=books.book_id";
-		String COMMENTS_JOIN_USERS = "comments "
-				+ "LEFT OUTER JOIN users ON comments.user_id=users.user_id";
+		String BOOKS_SEARCH_JOIN_BOOKS = "books_search "
+				+ "LEFT OUTER JOIN books ON books_search.book_id=books.book_id";
+	}
+	
+	interface Triggers {
+		String BOOKS_SEARCH_INSERT = "books_search_insert";
+		String BOOKS_SEARCH_UPDATE = "books_search_update";
+		String BOOKS_SEARCH_DELETE = "books_search_delete";
 	}
 	
 	public interface UserBooks {
 		String USER_ID = "user_id";
 		String BOOK_ID = "book_id";
 		String USE_TYPE = "use_type";
-		
-		String TYPE_READING = "reading";
-		String TYPE_READ = "read";
-		String TYPE_WISH = "wish";
-		String TYPE_DONATE = "donate";
+	}
+	
+	interface BooksSearchColumns {
+		String BOOK_ID = "book_id";
+		String BODY = "body";
+	}
+	
+	interface References {
+		String BOOK_ID = "REFERENCES " + Tables.BOOKS + "(" + Books.BOOK_ID + ")";
+	}
+	
+	interface Qualified {
+		String BOOKS_SEARCH = Tables.BOOKS_SEARCH + "(" + BooksSearchColumns.BOOK_ID 
+				+ "," + BooksSearchColumns.BODY + ")"; 
+		String BOOKS_SEARCH_BOOK_ID = Tables.BOOKS_SEARCH + "." + BooksSearchColumns.BOOK_ID;
+	}
+	
+	interface SubQuery {
+		String BOOKS_BODY = "(new." + Books.BOOK_TITLE
+				+ "||'; '||new." + Books.BOOK_AUTHOR
+				+ "||'; '||new." + Books.BOOK_PUBLISHER
+				+ ")";
 	}
 
 	public LibraryDatabase(Context context) {
@@ -62,20 +85,18 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + Tables.BOOKS + " ("
                 + Books._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + Books.BOOK_ID + " TEXT NOT NULL,"
-                + Books.BOOK_BIANHAO + " TEXT NOT NULL,"
                 + Books.BOOK_TITLE + " TEXT,"
                 + Books.BOOK_AUTHOR + " TEXT,"
                 + Books.BOOK_AUTHRO_INTRO + " TEXT,"
-                + Books.BOOK_SUMMARY + " TEXT,"
                 + Books.BOOK_DESCRIPTION + " TEXT,"
                 + Books.BOOK_LANGUAGE + " TEXT,"
-                + Books.BOOK_PRICE + " TEXT,"
+                + Books.BOOK_PUBLISHER + " TEXT,"
                 + Books.BOOK_PUBLISH_DATE + " TEXT,"
+                + Books.BOOK_PRICE + " TEXT,"
+                + Books.BOOK_ISBN + " TEXT,"
                 + Books.BOOK_CATEGORY + " TEXT,"
                 + Books.BOOK_IMAGE_URL + " TEXT,"
-                + Books.BOOK_OWNER + " TEXT,"
-                + Books.BOOK_USER + " TEXT,"
-                + Books.DUE_DATE + " INTEGER,"
+
                 + "UNIQUE (" + Books.BOOK_ID + ") ON CONFLICT REPLACE)");
         
         Log.w(TAG, "Creating UserBooks table");
@@ -85,22 +106,14 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         		+ UserBooks.BOOK_ID + " TEXT NOT NULL,"
         		+ UserBooks.USE_TYPE + " TEXT NOT NULL,"
         		+ "UNIQUE (" + UserBooks.USER_ID + "," + UserBooks.BOOK_ID + ") ON CONFLICT REPLACE)");
-        Log.w(TAG, "Creating Comments table");
-        db.execSQL("CREATE TABLE " + Tables.COMMENTS + " ("
-        		+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-        		+ Comments.USER_ID + " TEXT NOT NULL,"
-        		+ Comments.BOOK_ID + " TEXT NOT NULL,"
-        		+ Comments.COMMENT + " TEXT NOT NULL,"
-        		+ Comments.REPLY_AUTHOR + " TEXT NULL,"
-        		+ Comments.REPLY_QUOTE + " TEXT NULL,"
-        		+ Comments.TIMESTAMP + " TEXT NOT NULL,"
-        		+ "UNIQUE (" + BaseColumns._ID + ") ON CONFLICT REPLACE)");
         
         Log.w(TAG, "Creating search_suggest table");
         db.execSQL("CREATE TABLE " + Tables.SEARCH_SUGGEST + " ("
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + SearchManager.SUGGEST_COLUMN_TEXT_1 + " TEXT NOT NULL,"
                 + "UNIQUE (" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") ON CONFLICT REPLACE)");
+        
+        createBooksSearch(db);
         
         Log.w(TAG, "Finish creating tables");
 	}
@@ -115,11 +128,39 @@ public class LibraryDatabase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Tables.USERS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.BOOKS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.USER_BOOKS);
-        db.execSQL("DROP TABLE IF EXISTS " + Tables.COMMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + Tables.SEARCH_SUGGEST);
+        
+        db.execSQL("DROP TRIGGER IF EXISTS " + Triggers.BOOKS_SEARCH_INSERT);
+        db.execSQL("DROP TRIGGER IF EXISTS " + Triggers.BOOKS_SEARCH_DELETE);
+        db.execSQL("DROP TRIGGER IF EXISTS " + Triggers.BOOKS_SEARCH_UPDATE);
+        
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.BOOKS_SEARCH);
 
         // Recreates the database with a new version
         onCreate(db);
+	}
+	
+	private void createBooksSearch(SQLiteDatabase db) {
+		db.execSQL("CREATE VIRTUAL TABLE " + Tables.BOOKS_SEARCH + " USING fts3("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ BooksSearchColumns.BODY + " TEXT NOT NULL,"
+				+ BooksSearchColumns.BOOK_ID + " TEXT NOT NULL " + References.BOOK_ID + ","
+                + "UNIQUE (" + BooksSearchColumns.BOOK_ID + ") ON CONFLICT REPLACE,"
+                + "tokenize=porter)");
+		
+		db.execSQL("CREATE TRIGGER " + Triggers.BOOKS_SEARCH_INSERT + " AFTER INSERT ON "
+				+ Tables.BOOKS + " BEGIN INSERT INTO " + Qualified.BOOKS_SEARCH + " "
+				+ "VALUES (new." + Books.BOOK_ID + ", " + SubQuery.BOOKS_BODY + ");"
+				+ " END;");
+		db.execSQL("CREATE TRIGGER " + Triggers.BOOKS_SEARCH_DELETE + " AFTER DELETE ON " 
+				+ Tables.BOOKS + " BEGIN DELETE FROM " + Tables.BOOKS_SEARCH + " "
+				+ "WHERE " + Qualified.BOOKS_SEARCH_BOOK_ID + "=old." + Books.BOOK_ID + ";"
+				+ " END;");
+		db.execSQL("CREATE TRIGGER " + Triggers.BOOKS_SEARCH_UPDATE + " AFTER UPDATE ON "
+				+ Tables.BOOKS + " BEGIN UPDATE " + Tables.BOOKS_SEARCH + " "
+				+ "SET " + BooksSearchColumns.BODY + "=" + SubQuery.BOOKS_BODY + " "
+				+ "WHERE " + BooksSearchColumns.BOOK_ID + "=old." + Books.BOOK_ID + ";"
+				+ " END;");
 	}
 
     public static void deleteDatabase(Context context) {

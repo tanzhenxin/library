@@ -17,6 +17,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
+import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.provider.LibraryContract.SearchSuggest;
 import com.gtcc.library.ui.library.LibraryBookListFragment;
@@ -56,7 +57,8 @@ public class SearchActivity extends BaseActivity
 		String query = intent.getStringExtra(SearchManager.QUERY);
 		
 		setTitle(Html.fromHtml(getString(R.string.title_search_query, query)));
-		mBooksFragment.startSearch(intentToFragmentArguments(intent));
+		intent.setData(LibraryContract.Books.buildSearchUri(query));
+		mBooksFragment.reloadFromArguments(intentToFragmentArguments(intent));
 		
 		addSearchSuggest(query);
 	}

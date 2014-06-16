@@ -2,6 +2,7 @@ package com.gtcc.library.ui.library;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
 import com.gtcc.library.R;
+import com.gtcc.library.provider.LibraryContract;
+import com.gtcc.library.ui.BaseActivity;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.ui.ViewPagerFragment;
 
@@ -41,10 +44,10 @@ public class LibraryFragment extends ViewPagerFragment {
 		@Override
 		public Fragment getItem(int position) {
 			Fragment fragment = new LibraryBookListFragment();
-			
-			Bundle args = new Bundle();
-			args.putString(ARG_BOOK_CATEOGRY, categories[position]);
-			fragment.setArguments(args);
+
+			Intent intent = new Intent();
+			intent.setData(LibraryContract.Books.buildCategoryUri(categories[position]));
+			fragment.setArguments(BaseActivity.intentToFragmentArguments(intent));
 			
 			return fragment;
 		}

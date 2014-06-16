@@ -37,7 +37,7 @@ public class UserBookListFragment extends AbstractBookListFragment {
 	private List<Borrow> borrowBooks;
 	private AsyncLoader mLoader;
 
-	private RefreshableListView mListView;
+	private ListView mListView;
 	private TextView mEmptyView;
 	private ViewGroup mLoadingIndicator;
 
@@ -46,80 +46,20 @@ public class UserBookListFragment extends AbstractBookListFragment {
 			Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container,
 				savedInstanceState);
-		mListView = (RefreshableListView) rootView
-				.findViewById(android.R.id.list);
-		mListView
-				.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
-					@Override
-					public void onRefreshHeader() {
-					}
 
-					@Override
-					public void onRefreshFooter() {
-						mListView.onRefreshComplete(true);
-					}
-				});
-
+		mListView = (ListView) rootView.findViewById(android.R.id.list);
 		mEmptyView = (TextView) rootView.findViewById(android.R.id.text1);
-		Bundle arguments = getArguments();
-		if (arguments != null) {
-			final String category = arguments
-					.getString(UserFragment.ARG_USER_CATEOGRY);
-			if (category == WebServiceInfo.BORROW_METHOD_GET_BORROW_INFO) {
-				mEmptyView.setText(getResources().getText(
-						R.string.no_book_borrowing));
-			} else if (category == WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO) {
-				mEmptyView.setText(getResources().getText(
-						R.string.no_book_borrowed));
-			}
-		}
 		mLoadingIndicator = (ViewGroup) rootView
 				.findViewById(R.id.loading_progress);
+
 		return rootView;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		Bundle arguments = getArguments();
-		if (arguments != null) {
-			final String category = arguments
-					.getString(UserFragment.ARG_USER_CATEOGRY);
-			if (category == WebServiceInfo.BORROW_METHOD_GET_BORROW_INFO) {
-				new AsyncLoader().execute(new BorrowLoader() {
-
-					@Override
-					public List<Borrow> loadBooks() throws Exception {
-						return HttpManager.webServiceBorrowProxy
-								.getBorrowInfo(((HomeActivity) getActivity())
-										.getUserId());
-					}
-
-				});
-			} else if (category == WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO) {
-				new AsyncLoader().execute(new BorrowLoader() {
-
-					@Override
-					public List<Borrow> loadBooks() throws Exception {
-						return HttpManager.webServiceBorrowProxy
-								.getBorrowedInfo(((HomeActivity) getActivity())
-										.getUserId());
-					}
-
-				});
-			}
-		}
+		reloadFromArguments(getArguments());
 	}
 
 	@Override
@@ -131,6 +71,27 @@ public class UserBookListFragment extends AbstractBookListFragment {
 		}
 	}
 
+	private void reloadFromArguments(Bundle arguments) {
+		if (mLoader != null) {
+			mLoader.cancel(true);
+		}
+		mLoader = new AsyncLoader();
+
+		if (arguments != null) {
+			final String category = arguments
+					.getString(UserFragment.ARG_USER_CATEOGRY);
+			if (category == WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO) {
+				mEmptyView.setText(getResources().getText(
+						R.string.no_book_borrowing));
+				mLoader.execute(mBorrowedLoader);
+			} else if (category == WebServiceInfo.BORROW_METHOD_GET_RETURNED_INFO) {
+				mEmptyView.setText(getResources().getText(
+						R.string.no_book_borrowed));
+				mLoader.execute(mReturnedLoader);
+			}
+		}
+	}
+
 	@Override
 	protected int getPage() {
 		return HomeActivity.PAGE_USER;
@@ -139,12 +100,32 @@ public class UserBookListFragment extends AbstractBookListFragment {
 	@Override
 	public String getSelectedBookId(ListView l, View v, int position, long id) {
 		Borrow borrowHistory = borrowBooks.get(position);
-		return borrowHistory.getBook().getTag();
+		return borrowHistory.getBook().getId();
 	}
 
 	private interface BorrowLoader {
 		List<Borrow> loadBooks() throws Exception;
 	}
+
+	private BorrowLoader mBorrowedLoader = new BorrowLoader() {
+
+		@Override
+		public List<Borrow> loadBooks() throws Exception {
+			return HttpManager.webServiceBorrowProxy
+					.getBorrowedInfo(((HomeActivity) getActivity()).getUserId());
+		}
+
+	};
+
+	private BorrowLoader mReturnedLoader = new BorrowLoader() {
+
+		@Override
+		public List<Borrow> loadBooks() throws Exception {
+			return HttpManager.webServiceBorrowProxy
+					.getReturnedInfo(((HomeActivity) getActivity()).getUserId());
+		}
+
+	};
 
 	private class AsyncLoader extends AsyncTask<BorrowLoader, Void, Boolean> {
 		protected Boolean doInBackground(BorrowLoader... params) {
@@ -276,7 +257,7 @@ public class UserBookListFragment extends AbstractBookListFragment {
 			}
 			viewHolder.author.setText(author);
 
-			String tag = book.getTag();
+			String tag = book.getId();
 			viewHolder.tag.setText(tag);
 
 			if (borrow.getRealReturnDate().equals("-1")) {

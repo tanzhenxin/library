@@ -36,9 +36,9 @@ public class WebServiceInfo {
 	public static final String BORROW_METHOD_BORROW = "Borrow";
 	public static final String BORROW_METHOD_RETURN_BOOK = "ReturnBook";
 	public static final String BORROW_METHOD_CHECK_WHETHER_BOOK_IN_BORROW = "checkWhetherBookInBorrow";
-	public static final String BORROW_METHOD_GET_BORROW_INFO = "getBorrowInfo";
+	public static final String BORROW_METHOD_GET_BORROWED_INFO = "getBorrowInfo";
 	public static final String BORROW_METHOD_REMOVE_ALL = "RemoveAll";
-	public static final String BORROW_METHOD_GET_BORROWED_INFO = "getBorrowedInfo";
+	public static final String BORROW_METHOD_GET_RETURNED_INFO = "getBorrowedInfo";
 	
 	public static final String LOGIN_SERVICE = "LoginService";
 	public static final String LOGIN_METHOD_LOGIN = "Login";

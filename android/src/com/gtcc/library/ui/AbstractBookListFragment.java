@@ -61,7 +61,7 @@ public abstract class AbstractBookListFragment extends SherlockListFragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_books_list, container, false);
 
-        RefreshableListView listView = (RefreshableListView) rootView.findViewById(android.R.id.list);
+       ListView listView = (ListView) rootView.findViewById(android.R.id.list);
 		listView.setOnScrollListener(new OnScrollListener() {
 
 			@Override

@@ -31,8 +31,8 @@ public class UserFragment extends ViewPagerFragment {
 	private class UserPagerAdapter extends FragmentStatePagerAdapter {
 		private final Resources resources;
 		private final String[] categories = {
-				WebServiceInfo.BORROW_METHOD_GET_BORROW_INFO,
-				WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO };
+				WebServiceInfo.BORROW_METHOD_GET_RETURNED_INFO,
+				WebServiceInfo.BORROW_METHOD_GET_RETURNED_INFO };
 
 		public UserPagerAdapter(final FragmentActivity activity) {
 			super(activity.getSupportFragmentManager());

@@ -56,7 +56,7 @@ public class BaseActivity extends SherlockFragmentActivity {
     /**
      * Converts an intent into a {@link Bundle} suitable for use as fragment arguments.
      */
-    public Bundle intentToFragmentArguments(Intent intent) {
+    public static Bundle intentToFragmentArguments(Intent intent) {
         Bundle arguments = new Bundle();
         if (intent == null) {
             return arguments;
@@ -78,7 +78,7 @@ public class BaseActivity extends SherlockFragmentActivity {
     /**
      * Converts a fragment arguments bundle into an intent.
      */
-    public Intent fragmentArgumentsToIntent(Bundle arguments) {
+    public static Intent fragmentArgumentsToIntent(Bundle arguments) {
         Intent intent = new Intent();
         if (arguments == null) {
             return intent;

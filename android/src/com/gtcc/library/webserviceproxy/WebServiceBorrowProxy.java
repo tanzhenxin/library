@@ -42,11 +42,11 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
 		return WebServiceInfo.OPERATION_FAILED;
 	}
 	
-	public List<Borrow> getBorrowInfo(String userName) throws Exception {
+	public List<Borrow> getBorrowedInfo(String userName) throws Exception {
         List<Borrow> books = new ArrayList<Borrow>();
         JSONArray array = new JSONArray();
         array.put(userName);
-        JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_GET_BORROW_INFO, array);
+        JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_GET_RETURNED_INFO, array);
         if (result != null) {
             JSONObject jsonBooks = result.getJSONObject("borrowInfo");
             int length = jsonBooks.length();
@@ -59,11 +59,11 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
         return books;
 	}
 	
-	public List<Borrow> getBorrowedInfo(String username) throws Exception {
+	public List<Borrow> getReturnedInfo(String username) throws Exception {
         List<Borrow> books = new ArrayList<Borrow>();
         JSONArray array = new JSONArray();
         array.put(username);
-        JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO, array);
+        JSONObject result = super.callService(WebServiceInfo.BORROW_SERVICE, WebServiceInfo.BORROW_METHOD_GET_RETURNED_INFO, array);
         if (result != null) {
             JSONObject jsonBooks = result.getJSONObject("borrowInfo");
             int length = jsonBooks.length();
@@ -95,7 +95,7 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
 	
 	private Boolean contains(List<Borrow> borrows, Borrow borrow) {
 		for (Borrow b : borrows) {
-			if (b.getBook().getTag().equals(borrow.getBook().getTag())) {
+			if (b.getBook().equals(borrow.getBook())) {
 				return true;
 			}
 		}
@@ -112,6 +112,8 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
         
         JSONObject jsonBook = jsonBorrow.getJSONObject("book");
 		Book book = new Book();
+		
+		book.setId(jsonBook.getString("bianhao"));
 		book.setAuthor(jsonBook.getString("author"));
 		book.setDescription(jsonBook.getString("bookDescription"));
 		book.setTitle(jsonBook.getString("title"));
@@ -119,10 +121,9 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
 		book.setISBN(jsonBook.getString("ISBN"));
 		book.setLanguage(jsonBook.getString("language"));
 		book.setPublisher(jsonBook.getString("publisher"));
-		book.setPublishDate(jsonBook.getString("publishedDate"));
-		book.setTag(jsonBook.getString("bianhao"));
-		book.setId(jsonBook.getString("bianhao"));
+		book.setPublishDate(jsonBook.getString("publishedDate"));;
 		book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
+		book.setCategory(book.getId().substring(0, 1));
 		
 		borrow.setBook(book);
 		return borrow;

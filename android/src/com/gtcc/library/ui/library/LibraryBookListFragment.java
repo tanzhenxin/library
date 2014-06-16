@@ -1,49 +1,45 @@
 package com.gtcc.library.ui.library;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.SearchManager;
+import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.AsyncTask.Status;
+import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
-import com.gtcc.library.entity.BookCollection;
+import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.ui.AbstractBookListFragment;
+import com.gtcc.library.ui.BaseActivity;
 import com.gtcc.library.ui.HomeActivity;
-import com.gtcc.library.ui.customcontrol.RefreshableListView;
-import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
-import com.gtcc.library.webserviceproxy.WebServiceInfo;
 
-public class LibraryBookListFragment extends AbstractBookListFragment {
+public class LibraryBookListFragment extends AbstractBookListFragment implements
+		LoaderManager.LoaderCallbacks<Cursor> {
 	public static final String TAG = LogUtils
 			.makeLogTag(LibraryBookListFragment.class);
 
-	private List<Book> booksToAppend;
-	private int mLoadedCount = 0;
-
 	private ViewGroup mLoadingIndicator;
-	private RefreshableListView listView;
+	private ListView listView;
 	private TextView mTextView;
 
-	private AsyncLoader mAsyncLoader;
-
-	private LibraryBookListAdapter bookListAdapter;
+	private CursorAdapter mAdapter;
+	private int mBookQueryToken;
 
 	public LibraryBookListFragment() {
 	}
@@ -52,10 +48,6 @@ public class LibraryBookListFragment extends AbstractBookListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-
-		booksToAppend = new ArrayList<Book>();
-		bookListAdapter = new LibraryBookListAdapter(getActivity());
-		setListAdapter(bookListAdapter);
 	}
 
 	@Override
@@ -63,232 +55,117 @@ public class LibraryBookListFragment extends AbstractBookListFragment {
 			Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container,
 				savedInstanceState);
+
 		mLoadingIndicator = (ViewGroup) rootView
 				.findViewById(R.id.loading_progress);
 		mTextView = (TextView) rootView.findViewById(android.R.id.text1);
-
-		listView = (RefreshableListView) rootView
-				.findViewById(android.R.id.list);
-		listView.setOnRefreshListener(new RefreshableListView.OnRefreshListener() {
-			@Override
-			public void onRefreshHeader() {
-			}
-
-			@Override
-			public void onRefreshFooter() {
-				reloadFromArguments(getArguments());
-			}
-		});
-
-		listView.onRefreshFooter();
+		listView = (ListView) rootView.findViewById(android.R.id.list);
 
 		return rootView;
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		reloadFromArguments(getArguments());
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
+        activity.getContentResolver().registerContentObserver(
+                LibraryContract.Books.CONTENT_URI, true, mObserver);
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		
+		getActivity().getContentResolver().unregisterContentObserver(mObserver);
 	}
 
 	public void reloadFromArguments(Bundle arguments) {
-		if (mAsyncLoader != null) {
-			mAsyncLoader.cancel(true);
+		setListAdapter(null);
+
+		final Intent intent = BaseActivity
+				.fragmentArgumentsToIntent(arguments);
+		final Uri uri = intent.getData();
+
+		if (uri == null) {
+			return;
 		}
-		mAsyncLoader = new AsyncLoader();
+		
+		mAdapter = new BooksAdapter(getActivity());
+		setListAdapter(mAdapter);
 
-		if (arguments != null) {
-			final String category = arguments
-					.getString(LibraryFragment.ARG_BOOK_CATEOGRY);
-			if (category != null) {
-				mAsyncLoader.execute(new Loader() {
-					@Override
-					public List<Book> loadBooks() throws Exception {
-						return HttpManager.webServiceBookProxy
-								.getAllBooksByCategory(category, mLoadedCount,
-										WebServiceInfo.LOAD_CAPACITY);
-					}
-				});
-			} else {
-				final String isbn = arguments.getString(HomeActivity.BOOK_ISBN);
-				if (isbn != null) {
-					mAsyncLoader.execute(new Loader() {
-						@Override
-						public List<Book> loadBooks() throws Exception {
-							return HttpManager.webServiceBookProxy
-									.getBookListByISBN(isbn);
-						}
-					});
-				} else {
-					final String query = arguments.getString(
-							SearchManager.QUERY).trim();
-					if (query != null) {
-						mAsyncLoader.execute(new Loader() {
-							@Override
-							public List<Book> loadBooks() throws Exception {
-								return HttpManager.webServiceBookProxy
-										.searchBooks(query, mLoadedCount,
-												WebServiceInfo.LOAD_CAPACITY);
-							}
-						});
-					}
-				}
-			}
-		}
-	}
-
-	public void startSearch(Bundle arguments) {
-		if (mAsyncLoader != null) {
-			mAsyncLoader.cancel(true);
-		}
-		mAsyncLoader = new AsyncLoader();
-
-		mLoadedCount = 0;
-		bookListAdapter.clear();
-		setListAdapter(bookListAdapter);
-
-		final String query = arguments.getString(SearchManager.QUERY).trim();
-		mAsyncLoader.execute(new Loader() {
-			@Override
-			public List<Book> loadBooks() throws Exception {
-				return HttpManager.webServiceBookProxy.searchBooks(query, 0,
-						WebServiceInfo.LOAD_CAPACITY);
-			}
-		});
+		getLoaderManager().restartLoader(BooksQuery._TOKEN, arguments, this);
 	}
 
 	@Override
 	protected String getSelectedBookId(ListView l, View v, int position, long id) {
-		Book book = (Book) bookListAdapter.getItem(position);
-		return book.getId();
+		Cursor cursor = (Cursor) mAdapter.getItem(position);
+		return cursor.getString(cursor
+				.getColumnIndex(LibraryContract.BookColumns.BOOK_ID));
 	}
 
 	@Override
 	protected int getPage() {
 		return HomeActivity.PAGE_LIBRARY;
 	}
+	
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle data) {
+		final Intent intent = BaseActivity.fragmentArgumentsToIntent(data);
+		final Uri uri = intent.getData();
+		
+		return new CursorLoader(getActivity(), uri, BooksQuery.PROJECTION, null, null, LibraryContract.Books.DEFAULT_SORT_ORDER);
+	}
 
 	@Override
-	public void onDetach() {
-		super.onDetach();
-
-		if (mAsyncLoader != null && mAsyncLoader.getStatus() != Status.FINISHED) {
-			mAsyncLoader.cancel(true);
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		if (getActivity() == null) {
+			return;
 		}
+		
+		mAdapter.changeCursor(cursor);
 	}
 
-	private interface Loader {
-		List<Book> loadBooks() throws Exception;
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
 	}
+	
+    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            if (getActivity() == null) {
+                return;
+            }
 
-	private class AsyncLoader extends AsyncTask<Loader, Void, Boolean> {
+            Loader<Cursor> loader = getLoaderManager().getLoader(BooksQuery._TOKEN);
+            if (loader != null) {
+                loader.forceLoad();
+            }
+        }
+    };
 
-		@Override
-		protected Boolean doInBackground(Loader... params) {
-			Loader loader = params[0];
-			try {
-				booksToAppend = loader.loadBooks();
-				return true;
-			} catch (Exception e) {
-				LogUtils.LOGE(TAG,
-						"Unable to load books. Error: " + e.getMessage());
-			}
-			return false;
+	public class BooksAdapter extends CursorAdapter {
+		public BooksAdapter(Context context) {
+			super(context, null, false);
 		}
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-
-			if (mLoadedCount == 0) {
-				mLoadingIndicator.setVisibility(View.VISIBLE);
-				listView.setVisibility(View.GONE);
-				mTextView.setVisibility(View.GONE);
-			}
+		public View newView(Context context, Cursor cursor, ViewGroup parent) {
+			return getActivity().getLayoutInflater().inflate(
+					R.layout.list_item_book, parent, false);
 		}
 
 		@Override
-		protected void onPostExecute(Boolean result) {
-			listView.onRefreshComplete(true);
-
-			if (result) {
-				if (getActivity() == null || isCancelled()
-						|| booksToAppend == null) {
-					return;
-				}
-
-				if (booksToAppend.size() == 0) {
-					if (mLoadedCount > 0) {
-						Toast.makeText(
-								getActivity(),
-								getActivity().getString(R.string.no_more_books),
-								Toast.LENGTH_SHORT).show();
-					}
-				} else {
-					mLoadedCount += booksToAppend.size();
-					bookListAdapter.addBooks(booksToAppend);
-					bookListAdapter.notifyDataSetChanged();
-				}
-			} else {
-				Toast.makeText(getActivity(),
-						getActivity().getString(R.string.load_failed),
-						Toast.LENGTH_SHORT).show();
-			}
-
-			mLoadingIndicator.setVisibility(View.GONE);
-			if (mLoadedCount == 0) {
-				mTextView.setVisibility(View.VISIBLE);
-			} else {
-				listView.setVisibility(View.VISIBLE);
-			}
-		}
-	}
-
-	public class LibraryBookListAdapter extends BaseAdapter {
-		private List<Book> books;
-		private LayoutInflater mInflater;
-
-		public LibraryBookListAdapter(Context context) {
-			books = new ArrayList<Book>();
-			mInflater = LayoutInflater.from(context);
-		}
-
-		public void addBooks(List<Book> newBooks) {
-			// ingore those books without title.
-			for (Book book : newBooks) {
-				String title = book.getTitle();
-				if (title != null && !TextUtils.isEmpty(title)
-						&& title != "null") {
-					this.books.add(book);
-				}
-			}
-		}
-
-		public void clear() {
-			this.books.clear();
-		}
-
-		@Override
-		public int getCount() {
-			return books.size();
-		}
-
-		@Override
-		public Object getItem(int i) {
-			return books.get(i);
-		}
-
-		@Override
-		public long getItemId(int i) {
-			return i;
-		}
-
-		@Override
-		public View getView(int i, View view, ViewGroup vg) {
+		public void bindView(View view, Context context, Cursor cursor) {
 			ViewHolder viewHolder = new ViewHolder();
 
-			if (view == null) {
-				view = mInflater.inflate(R.layout.list_item_book, null);
-
+			if (view.getTag() == null) {
 				final TextView title = (TextView) view
 						.findViewById(R.id.book_title);
 				final TextView author = (TextView) view
@@ -298,7 +175,7 @@ public class LibraryBookListFragment extends AbstractBookListFragment {
 				final TextView tag = (TextView) view
 						.findViewById(R.id.book_tag);
 
-				if (i % 2 != 0)
+				if (cursor.getPosition() % 2 != 0)
 					view.setBackgroundResource(R.drawable.book_list_item_odd_bg);
 				else
 					view.setBackgroundResource(R.drawable.book_list_item_even_bg);
@@ -313,15 +190,13 @@ public class LibraryBookListFragment extends AbstractBookListFragment {
 				viewHolder = (ViewHolder) view.getTag();
 			}
 
-			Book book = books.get(i);
-			String title = book.getTitle();
+			String title = cursor.getString(BooksQuery.BOOK_TITLE);
 			viewHolder.title.setText(title);
 
-			String author = book.getAuthor();
-			String publisher = book.getPublisher();
-			String publishDate = book.getPublishDate();
-			String price = book.getPrice();
-
+			String author = cursor.getString(BooksQuery.BOOK_AUTHOR);
+			String publisher = cursor.getString(BooksQuery.BOOK_PUBLISHER);
+			String publishDate = cursor.getString(BooksQuery.BOOK_PUBLISH_DATE);
+			String price = cursor.getString(BooksQuery.BOOK_PRICE);
 			if (author != null && !TextUtils.isEmpty(author)) {
 				if (publisher != null && !TextUtils.isEmpty(publisher)) {
 					author += " / " + publisher;
@@ -337,14 +212,12 @@ public class LibraryBookListFragment extends AbstractBookListFragment {
 			}
 			viewHolder.author.setText(author);
 
-			String imgUrl = book.getImgUrl();
+			String imgUrl = cursor.getString(BooksQuery.BOOK_IMAGE_URL);
 			if (imgUrl != null)
 				mImageFetcher.loadImage(imgUrl, viewHolder.image);
 
-			String tag = book.getTag();
+			String tag = cursor.getString(BooksQuery.BOOK_ID);
 			viewHolder.tag.setText(tag);
-
-			return view;
 		}
 
 		class ViewHolder {
@@ -353,5 +226,27 @@ public class LibraryBookListFragment extends AbstractBookListFragment {
 			ImageView image;
 			TextView tag;
 		}
+	}
+
+	private interface BooksQuery {
+		int _TOKEN = 0x1;
+
+		String[] PROJECTION = { BaseColumns._ID,
+				LibraryContract.BookColumns.BOOK_ID,
+				LibraryContract.BookColumns.BOOK_TITLE,
+				LibraryContract.BookColumns.BOOK_AUTHOR,
+				LibraryContract.BookColumns.BOOK_PUBLISHER,
+				LibraryContract.BookColumns.BOOK_PUBLISH_DATE,
+				LibraryContract.BookColumns.BOOK_PRICE,
+				LibraryContract.BookColumns.BOOK_IMAGE_URL };
+
+		int _ID = 0;
+		int BOOK_ID = 1;
+		int BOOK_TITLE = 2;
+		int BOOK_AUTHOR = 3;
+		int BOOK_PUBLISHER = 4;
+		int BOOK_PUBLISH_DATE = 5;
+		int BOOK_PRICE = 6;
+		int BOOK_IMAGE_URL = 7;
 	}
 }

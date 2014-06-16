@@ -18,7 +18,7 @@ public class Book implements Serializable {
 	private String language;
 	private String publisher;
 	private String publishDate;
-	private String tag;
+	private String category;
 
 	public String getId() {
 		return id;
@@ -71,44 +71,6 @@ public class Book implements Serializable {
 		this.authorIntro = authorIntro;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((imgUrl == null) ? 0 : imgUrl.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Book other = (Book) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (imgUrl == null) {
-			if (other.imgUrl != null)
-				return false;
-		} else if (!imgUrl.equals(other.imgUrl))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		return true;
-	}
-	
 	public String getPrice() {
 		return price;
 	}
@@ -148,12 +110,35 @@ public class Book implements Serializable {
 	public void setPublishDate(String publishDate) {
 		this.publishDate = publishDate;
 	}
-
-	public String getTag() {
-		return tag;
+	
+	public String getCategory() {
+		return category;
 	}
 
-	public void setTag(String bianhao) {
-		this.tag = bianhao;
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((imgUrl == null) ? 0 : imgUrl.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Book other = (Book) obj;
+		return getId().equals(other.getId());
 	}
 }

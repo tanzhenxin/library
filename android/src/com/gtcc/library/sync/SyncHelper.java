@@ -1,75 +1,66 @@
 package com.gtcc.library.sync;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ContentValues;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.OperationApplicationException;
+import android.content.SyncResult;
+import android.os.RemoteException;
 
 import com.gtcc.library.entity.Book;
-import com.gtcc.library.entity.BookCollection;
-import com.gtcc.library.entity.Borrow;
-import com.gtcc.library.entity.UserInfo;
+import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.provider.LibraryContract.Users;
-import com.gtcc.library.provider.LibraryDatabase.UserBooks;
-import com.gtcc.library.util.CommonAsyncTask;
 import com.gtcc.library.util.HttpManager;
+import com.gtcc.library.util.LogUtils;
 
 public class SyncHelper {
-	
+
+	private static final String TAG = LogUtils.makeLogTag(SyncHelper.class);
+
 	private Context mContext;
-	
+
 	public SyncHelper(Context context) {
 		mContext = context;
 	}
-	
-	public void loadBooks(UserInfo user) {
-		new AsyncTask<String, Void, Void>() {
 
-			@Override
-			protected Void doInBackground(String... params) {
-				try {
-					List<Borrow> borrows = HttpManager.webServiceBorrowProxy.getBorrowInfo(params[0]);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
+	public void performSync() throws RemoteException, OperationApplicationException {
+		final ContentResolver resolver = mContext.getContentResolver();
+		final ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
+		
+		batch.addAll(loadBooks());
+
+		resolver.applyBatch(LibraryContract.CONTENT_AUTHORITY, batch);
+	}
+
+	public ArrayList<ContentProviderOperation> loadBooks() {
+		final ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
+		try {
+			List<Book> books = HttpManager.webServiceBookProxy.getAllBooks(0, 0);
+			for (int i = 0; i < books.size(); ++i) {
+				Book book = books.get(i);
+				
+				ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(Books.CONTENT_URI);
+				builder.withValue(Books.BOOK_ID, book.getId());
+				builder.withValue(Books.BOOK_TITLE, book.getTitle());
+				builder.withValue(Books.BOOK_AUTHOR, book.getAuthor());
+				builder.withValue(Books.BOOK_DESCRIPTION, book.getDescription());
+				builder.withValue(Books.BOOK_LANGUAGE, book.getLanguage());
+				builder.withValue(Books.BOOK_PUBLISHER, book.getPublisher());
+				builder.withValue(Books.BOOK_PUBLISH_DATE, book.getPublishDate());
+				builder.withValue(Books.BOOK_PRICE, book.getPrice());
+				builder.withValue(Books.BOOK_ISBN, book.getISBN());
+				builder.withValue(Books.BOOK_IMAGE_URL, book.getImgUrl());
+				builder.withValue(Books.BOOK_CATEGORY, book.getCategory());
+				
+				batch.add(builder.build());
 			}
-			
-		}.execute(user.getUserId());
-	}
-	
-	private void storeBooks(String uid, List<Book> books) {
-		for (Book book : books) {
-			ContentValues values = new ContentValues();
-			values.put(Books.BOOK_ID, book.getId());
-			values.put(Books.BOOK_TITLE, book.getTitle());
-			values.put(Books.BOOK_AUTHOR, book.getAuthor());
-			values.put(Books.BOOK_AUTHRO_INTRO, book.getAuthorIntro());
-			values.put(Books.BOOK_SUMMARY, book.getDescription());
-			values.put(Books.BOOK_IMAGE_URL, book.getImgUrl());
-
-			mContext.getContentResolver().insert(Books.CONTENT_URI, values);
-
-			ContentValues aValues = new ContentValues();
-			aValues.put(UserBooks.USER_ID, uid);
-			aValues.put(UserBooks.BOOK_ID, book.getId());
-			mContext.getContentResolver().insert(
-					Users.buildUserBooksUri(uid, book.getId()), aValues);
+		} catch (Exception e) {
+			LogUtils.LOGE(TAG, e.toString());
 		}
+		
+		return batch;
 	}
-	
-//	private List<Book> getDoubanBooks(UserInfo user) {
-//        String accessToken = user.getgetAccessToken();
-//        if (accessToken != null) {
-//            String uid = mUserId;
-//            BookCollection bookCollection = new BookCollection();
-//            while (bookCollection.hasMoreBooks()) {
-//               return bookCollection.getBooks(getAccessToken(), uid);
-//            }
-//        }
-//	}
 }

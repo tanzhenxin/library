@@ -21,7 +21,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
-import com.gtcc.library.provider.LibraryContract.Comments;
 
 public class BookCommentActivity extends SherlockFragmentActivity {
 
@@ -119,18 +118,18 @@ public class BookCommentActivity extends SherlockFragmentActivity {
 	}
 
 	private void sendReview(String review) {
-		ContentValues values = new ContentValues();
-		values.put(Comments.USER_ID, mUserId);
-		values.put(Comments.BOOK_ID, mBookId);
-		values.put(Comments.COMMENT, review);
-		values.put(Comments.TIMESTAMP, getCurrentTime());
-
-		if (!TextUtils.isEmpty(mReplyAuthor)) {
-			values.put(Comments.REPLY_AUTHOR, mReplyAuthor);
-			values.put(Comments.REPLY_QUOTE, mReplyQuote);
-		}
-
-		getContentResolver().insert(Comments.CONTENT_URI, values);
+//		ContentValues values = new ContentValues();
+//		values.put(Comments.USER_ID, mUserId);
+//		values.put(Comments.BOOK_ID, mBookId);
+//		values.put(Comments.COMMENT, review);
+//		values.put(Comments.TIMESTAMP, getCurrentTime());
+//
+//		if (!TextUtils.isEmpty(mReplyAuthor)) {
+//			values.put(Comments.REPLY_AUTHOR, mReplyAuthor);
+//			values.put(Comments.REPLY_QUOTE, mReplyQuote);
+//		}
+//
+//		getContentResolver().insert(Comments.CONTENT_URI, values);
 	}
 
 	private String getCurrentTime() {

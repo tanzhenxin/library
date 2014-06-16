@@ -12,12 +12,14 @@ import android.text.TextUtils;
 import com.gtcc.library.entity.Book;
 
 public class WebServiceBookProxy extends WebServiceProxyBase {
-	
+
 	/**
 	 * Get all books from GTCCLibrary server
 	 * 
-	 * @param offset start point of a query
-	 * @param count	how many records to return
+	 * @param offset
+	 *            start point of a query
+	 * @param count
+	 *            how many records to return
 	 * @return
 	 * @throws Exception
 	 */
@@ -26,101 +28,119 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 	}
 
 	public List<Book> getAllBooksInList(int offset, int count) throws Exception {
-		return getBooks(WebServiceInfo.BOOK_METHOD_GET_ALL_BOOKS_IN_LIST, offset, count);
+		return getBooks(WebServiceInfo.BOOK_METHOD_GET_ALL_BOOKS_IN_LIST,
+				offset, count);
 	}
-	
-	public List<Book> getAllBooksByCategory(String category, int offset, int count) throws Exception {
-		return getBooks(WebServiceInfo.BOOK_METHOD_GET_ALL_BOOKS_BY_CATEGORY, offset, count, category);
+
+	public List<Book> getAllBooksByCategory(String category, int offset,
+			int count) throws Exception {
+		return getBooks(WebServiceInfo.BOOK_METHOD_GET_ALL_BOOKS_BY_CATEGORY,
+				offset, count, category);
 	}
-	
-	public List<Book> searchBooks(String keyword, int offset, int count) throws Exception {
-		return getBooks(WebServiceInfo.BOOK_METHOD_SEARCH_BOOKS, offset, count, keyword);
+
+	public List<Book> searchBooks(String keyword, int offset, int count)
+			throws Exception {
+		return getBooks(WebServiceInfo.BOOK_METHOD_SEARCH_BOOKS, offset, count,
+				keyword);
 	}
-	
+
 	public Book getBookByBianHao(String bianHao) throws Exception {
 		JSONArray array = new JSONArray();
 		array.put(String.valueOf(bianHao));
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_GET_BOOK_BY_BIANHAO, array);
+		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE,
+				WebServiceInfo.BOOK_METHOD_GET_BOOK_BY_BIANHAO, array);
 		if (result != null) {
 			int ret = result.getInt("_returnCode");
-			if (ret == WebServiceInfo.OPERATION_SUCCEED){
-				JSONObject jsonBook = result.getJSONObject("book");			
+			if (ret == WebServiceInfo.OPERATION_SUCCEED) {
+				JSONObject jsonBook = result.getJSONObject("book");
 				return parseJSONBook(jsonBook);
 			}
 		}
 		return null;
 	}
-	
+
 	public Book getBookByISBN(String ISBN) throws Exception {
 		JSONArray array = new JSONArray();
 		array.put(String.valueOf(ISBN));
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_GET_BOOK_BY_ISBN, array);
+		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE,
+				WebServiceInfo.BOOK_METHOD_GET_BOOK_BY_ISBN, array);
 		if (result != null) {
 			int ret = result.getInt("_returnCode");
-			if (ret == WebServiceInfo.OPERATION_SUCCEED){
-				JSONObject jsonBook = result.getJSONObject("book");	
+			if (ret == WebServiceInfo.OPERATION_SUCCEED) {
+				JSONObject jsonBook = result.getJSONObject("book");
 				return parseJSONBook(jsonBook);
 			}
 		}
 		return null;
 	}
-	
+
 	public List<Book> getBookListByISBN(String ISBN) throws Exception {
 		List<Book> books = new ArrayList<Book>();
-		
+
 		JSONArray array = new JSONArray();
 		array.put(String.valueOf(ISBN));
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, WebServiceInfo.BOOK_METHOD_GET_BOOK_LIST_BY_ISBN, array);
+		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE,
+				WebServiceInfo.BOOK_METHOD_GET_BOOK_LIST_BY_ISBN, array);
 		if (result != null) {
 			int ret = result.getInt("_returnCode");
-			if (ret == WebServiceInfo.OPERATION_SUCCEED){
+			if (ret == WebServiceInfo.OPERATION_SUCCEED) {
 				JSONObject jsonBooks = result.getJSONObject("BookList");
 				int length = jsonBooks.length();
 				for (int i = 0; i < length; i++) {
-					JSONObject jsonBook = jsonBooks.getJSONObject(Integer.toString(i));
+					JSONObject jsonBook = jsonBooks.getJSONObject(Integer
+							.toString(i));
 					books.add(parseJSONBook(jsonBook));
 				}
 			}
 		}
-		
+
 		return books;
 	}
-	
-	private List<Book> getBooks(String methodUri, int offset, int count) throws Exception {
+
+	private List<Book> getBooks(String methodUri, int offset, int count)
+			throws Exception {
 		return getBooks(methodUri, offset, count, null);
 	}
-	
-	private List<Book> getBooks(String methodUri, int offset, int count, String category) throws Exception {
+
+	private List<Book> getBooks(String methodUri, int offset, int count,
+			String category) throws Exception {
 		List<Book> books = new ArrayList<Book>();
-		
+
 		// set parameters.
 		JSONArray array = new JSONArray();
 		if (category != null) {
 			array.put(category);
 		}
-		array.put(String.valueOf(offset));
-		array.put(String.valueOf(count));
-		
-		// parse json result.
-		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE, methodUri, array);
+		if (count != 0) {
+			array.put(String.valueOf(offset));
+			array.put(String.valueOf(count));
+		} else {
+			array.put("");
+			array.put("");
+		}
+
+		JSONObject result = super.callService(WebServiceInfo.BOOK_SERVICE,
+				methodUri, array);
 		if (result != null) {
 			int returnCode = result.getInt("_returnCode");
 			if (returnCode == WebServiceInfo.OPERATION_SUCCEED) {
 				JSONObject jsonBooks = result.getJSONObject("Books");
 				int length = jsonBooks.length();
 				for (int i = 0; i < length; i++) {
-					JSONObject jsonBook = jsonBooks.getJSONObject(Integer.toString(i));
+					JSONObject jsonBook = jsonBooks.getJSONObject(Integer
+							.toString(i));
 					books.add(parseJSONBook(jsonBook));
 				}
 			}
 		}
-		
+
 		return books;
 	}
-	
+
 	private Book parseJSONBook(JSONObject jsonBook) throws JSONException {
 		Book book = new Book();
-		
+
+		book.setId(jsonBook.getString("bianhao"));
 		book.setTitle(jsonBook.getString("title"));
 		book.setAuthor(jsonBook.getString("author"));
 		book.setDescription(jsonBook.getString("bookDescription"));
@@ -129,10 +149,9 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 		book.setLanguage(jsonBook.getString("language"));
 		book.setPublisher(jsonBook.getString("publisher"));
 		book.setPublishDate(jsonBook.getString("publishedDate"));
-		book.setTag(jsonBook.getString("bianhao"));
-		book.setId(jsonBook.getString("bianhao"));
 		book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
-		
+		book.setCategory(book.getId().substring(0, 1));
+
 		return book;
 	}
 }

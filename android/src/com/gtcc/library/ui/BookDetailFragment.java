@@ -41,7 +41,6 @@ import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.provider.LibraryContract.Comments;
 import com.gtcc.library.provider.LibraryContract.Users;
 import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.util.HttpManager;
@@ -200,7 +199,7 @@ public class BookDetailFragment extends SherlockFragment {
 		if (imgUrl != null)
 			mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
 
-		mTagView.setText(book.getTag());
+		mTagView.setText(book.getId());
 	}
 
 	private void setBorrowReturnState() {
@@ -270,7 +269,7 @@ public class BookDetailFragment extends SherlockFragment {
 				switch (type) {
 				case LOAD_BORROW_RETURN:
 					bookBorrowInfo = HttpManager.webServiceBorrowProxy
-							.checkWhetherBookInBorrow(book.getTag());
+							.checkWhetherBookInBorrow(book.getId());
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -288,7 +287,7 @@ public class BookDetailFragment extends SherlockFragment {
 					break;
 				case BORROW_BOOK:
 					borrowResult = HttpManager.webServiceBorrowProxy.borrow(
-							mUserId, book.getTag());
+							mUserId, book.getId());
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -312,7 +311,7 @@ public class BookDetailFragment extends SherlockFragment {
 					break;
 				case RETURN_BOOK:
 					borrowResult = HttpManager.webServiceBorrowProxy
-							.returnBook(mUserId, book.getTag());
+							.returnBook(mUserId, book.getId());
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
