@@ -71,21 +71,6 @@ public class LibraryBookListFragment extends AbstractBookListFragment implements
 		reloadFromArguments(getArguments());
 	}
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
-        activity.getContentResolver().registerContentObserver(
-                LibraryContract.Books.CONTENT_URI, true, mObserver);
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		
-		getActivity().getContentResolver().unregisterContentObserver(mObserver);
-	}
-
 	public void reloadFromArguments(Bundle arguments) {
 		setListAdapter(null);
 
@@ -135,20 +120,6 @@ public class LibraryBookListFragment extends AbstractBookListFragment implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 	}
-	
-    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            if (getActivity() == null) {
-                return;
-            }
-
-            Loader<Cursor> loader = getLoaderManager().getLoader(BooksQuery._TOKEN);
-            if (loader != null) {
-                loader.forceLoad();
-            }
-        }
-    };
 
 	public class BooksAdapter extends CursorAdapter {
 		public BooksAdapter(Context context) {

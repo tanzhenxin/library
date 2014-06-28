@@ -2,12 +2,17 @@ package com.gtcc.library.ui.library;
 
 import java.util.Locale;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.Loader;
 import android.support.v4.view.PagerAdapter;
 
 import com.gtcc.library.R;
@@ -15,11 +20,10 @@ import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.ui.BaseActivity;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.ui.ViewPagerFragment;
+import com.gtcc.library.ui.library.LibraryBookListFragment.BooksQuery;
 
 public class LibraryFragment extends ViewPagerFragment {
 	
-	public static final String ARG_BOOK_CATEOGRY = "book_category";
-
 	@Override
 	protected int getPage() {
 		return HomeActivity.PAGE_LIBRARY;
@@ -30,6 +34,40 @@ public class LibraryFragment extends ViewPagerFragment {
 		return new LibraryPagerAdapter(activity);
 	}
 	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
+        activity.getContentResolver().registerContentObserver(
+                LibraryContract.Books.CONTENT_URI, true, mObserver);
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		
+		getActivity().getContentResolver().unregisterContentObserver(mObserver);
+	}
+	
+    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            if (getActivity() == null) {
+                return;
+            }
+
+            Loader<Cursor> loader = getLoaderManager().getLoader(BooksQuery._TOKEN);
+            if (loader != null) {
+                loader.forceLoad();
+            }
+        }
+    };
+
 	private class LibraryPagerAdapter extends FragmentStatePagerAdapter {
 		
 		private final Resources resources;

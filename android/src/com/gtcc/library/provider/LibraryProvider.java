@@ -263,7 +263,10 @@ public class LibraryProvider extends ContentProvider {
 			return queryBuilder.table(Tables.BOOKS_SEARCH_JOIN_BOOKS)
 					.mapToTable(Books._ID, Tables.BOOKS)
 					.mapToTable(Books.BOOK_ID, Tables.BOOKS)
-					.where(BooksSearchColumns.BODY + " MATCH ?", searchQuery);
+					.where(
+						BooksSearchColumns.BODY + " LIKE ?", 
+						searchQuery + "%");
+//					.where(BooksSearchColumns.BODY + " MATCH ?", searchQuery);
 		}
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
