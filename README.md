@@ -1,24 +1,24 @@
-library
+Book Library
 =======
 
 Book library in Android.
 
 Sliding menu for navigation
 --------------
-<img src="screenshots/Screenshot_2014-10-17-09-25-13.png" alt="sliding menu for navigation" width="30%" height="30%"> 
+<img src="screenshots/Screenshot_slidingmenu.png" alt="sliding menu for navigation" width="50%" height="50%"> 
 
 Personal page
 --------------
-<img src="screenshots/Screenshot_2014-10-17-09-25-01.png" alt="sliding menu for navigation" width="30%" height="30%">
+<img src="screenshots/Screenshot_peronal.png" alt="personal page" width="50%" height="50%">
 
 Library page
 --------------
-<img src="screenshots/Screenshot_2014-10-17-09-25-31.png" alt="sliding menu for navigation" width="30%" height="30%">
+<img src="screenshots/Screenshot_library.png" alt="library page" width="50%" height="50%">
 
 Book detail page
 --------------
-<img src="screenshots/Screenshot_2014-10-17-09-28-33.png" alt="sliding menu for navigation" width="30%" height="30%">
+<img src="screenshots/Screenshot_book_detail.png" alt="book detail page" width="50%" height="50%">
 
 Scanner page
 --------------
-<img src="screenshots/Screenshot_2014-10-17-09-28-47.png" alt="sliding menu for navigation" width="30%" height="30%">
+<img src="screenshots/Screenshot_bar_scanner.png" alt="scanner page" width="50%" height="50%">
