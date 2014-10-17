@@ -5,7 +5,7 @@ Book library in Android.
 
 Sliding menu for navigation
 --------------
-<img src="screenshots/Screenshot_2014-10-17-09-25-13.png" alt="sliding menu for navigation" width="30%" height="30%">
+<img src="screenshots/Screenshot_2014-10-17-09-25-13.png" alt="sliding menu for navigation" width="30%" height="30%"> 
 
 Personal page
 --------------
