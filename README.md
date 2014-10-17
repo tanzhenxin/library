@@ -5,7 +5,7 @@ Book library in Android.
 
 Sliding menu for navigation:
 
-.. image:: screenshots/Screenshot_2014-10-17-09-25-13.png
+.. image:: https://github.com/tanzhenxin/library/tree/master/screenshots/Screenshot_2014-10-17-09-25-13.png
     :width: 180
     :height: 320
     :align: center
