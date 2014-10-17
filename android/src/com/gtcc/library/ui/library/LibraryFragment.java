@@ -20,7 +20,6 @@ import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.ui.BaseActivity;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.ui.ViewPagerFragment;
-import com.gtcc.library.ui.library.LibraryBookListFragment.BooksQuery;
 
 public class LibraryFragment extends ViewPagerFragment {
 	
@@ -61,7 +60,7 @@ public class LibraryFragment extends ViewPagerFragment {
                 return;
             }
 
-            Loader<Cursor> loader = getLoaderManager().getLoader(BooksQuery._TOKEN);
+            Loader<Cursor> loader = getLoaderManager().getLoader(LibraryBookListFragment.BooksQuery._TOKEN);
             if (loader != null) {
                 loader.forceLoad();
             }

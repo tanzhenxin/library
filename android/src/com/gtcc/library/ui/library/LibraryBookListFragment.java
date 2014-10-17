@@ -199,7 +199,7 @@ public class LibraryBookListFragment extends AbstractBookListFragment implements
 		}
 	}
 
-	private interface BooksQuery {
+	public interface BooksQuery {
 		int _TOKEN = 0x1;
 
 		String[] PROJECTION = { BaseColumns._ID,

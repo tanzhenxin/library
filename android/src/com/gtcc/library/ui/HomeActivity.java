@@ -115,7 +115,7 @@ public class HomeActivity extends SlidingFragmentActivity implements
 					mBuilder.setAutoCancel(true);
 					int mNotificationId = 001;
 					NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-					mNotifyMgr.notify(mNotificationId, mBuilder.build());
+					//mNotifyMgr.notify(mNotificationId, mBuilder.build());
 				}
 				break;
 			}
