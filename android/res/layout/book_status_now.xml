@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/book_status_now"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/add_to_schedule_button_height"
+    android:background="@drawable/book_status_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/book_status_icon"
+        android:layout_width="38.0dip"
+        android:layout_height="fill_parent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_pin_status" />
+
+    <TextView
+        android:id="@+id/book_status_text"
+        style="@style/TextBody"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:layout_gravity="center"
+        android:duplicateParentState="true"
+        android:gravity="center"
+        android:text="@string/book_reading" />
+
+</LinearLayout>
