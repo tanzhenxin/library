@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/book_status_action"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/add_to_schedule_button_height"
+    android:orientation="horizontal" >
+
+    <Button
+        android:id="@+id/book_status_reading"
+        style="@style/TextBody"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/book_reading" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4.0dip"
+        android:layout_marginTop="4.0dip"
+        android:background="?android:attr/dividerVertical" />
+
+    <Button
+        android:id="@+id/book_status_wish"
+        style="@style/TextBody"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/book_wish" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4.0dip"
+        android:layout_marginTop="4.0dip"
+        android:background="?android:attr/dividerVertical" />
+
+    <Button
+        android:id="@+id/book_status_read"
+        style="@style/TextBody"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/book_read" />
+
+</LinearLayout>
