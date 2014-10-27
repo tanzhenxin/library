@@ -1,26 +1,26 @@
 package com.gtcc.library.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 
-public class FeedbackActivity extends SherlockActivity{
+public class FeedbackActivity extends Activity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_feedback);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.book_comment_menu, menu);
+		getMenuInflater().inflate(R.menu.book_comment_menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 

@@ -1,43 +1,40 @@
 package com.gtcc.library.ui.user;
 
-import java.io.IOException;
-
-import org.json.JSONException;
-
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
-import com.gtcc.library.oauth2.OAuth2AccessToken;
-import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
-public class UserLoginActivity extends SherlockActivity {
+import org.json.JSONException;
+
+import java.io.IOException;
+
+public class UserLoginActivity extends Activity {
 	private static final String TAG = LogUtils
 			.makeLogTag(UserLoginActivity.class);
 
@@ -126,7 +123,7 @@ public class UserLoginActivity extends SherlockActivity {
 
 		});
 
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 	}
 
 	@Override
@@ -143,7 +140,7 @@ public class UserLoginActivity extends SherlockActivity {
 //				startActivityForResult(intent, REQUEST_REGISTER);
 //			}
 //		});
-		getSupportActionBar().setCustomView(view);
+		getActionBar().setCustomView(view);
 		return true;
 	}
 

@@ -1,14 +1,14 @@
 package com.gtcc.library.ui.library;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.BaseColumns;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +17,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 
 import com.gtcc.library.R;
-import com.gtcc.library.entity.Book;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.ui.AbstractBookListFragment;
 import com.gtcc.library.ui.BaseActivity;

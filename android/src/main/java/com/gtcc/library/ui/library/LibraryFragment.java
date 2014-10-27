@@ -1,7 +1,5 @@
 package com.gtcc.library.ui.library;
 
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -20,6 +18,8 @@ import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.ui.BaseActivity;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.ui.ViewPagerFragment;
+
+import java.util.Locale;
 
 public class LibraryFragment extends ViewPagerFragment {
 	

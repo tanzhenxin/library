@@ -1,5 +1,17 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <style name="FrameworkRoot.Theme" parent="android:Theme.Holo.Light" />
+    <style name="FrameworkRoot.ActionBar" parent="android:Widget.Holo.ActionBar" />
+    <style name="FrameworkRoot.ActionBar.TitleText" parent="android:TextAppearance.Holo.Widget.ActionBar.Title" />
+    <style name="FrameworkRoot.ActionBar.TabBar" parent="android:Widget.Holo.ActionBar.TabBar" />
+    <style name="FrameworkRoot.EditText" parent="android:Widget.Holo.Light.EditText" />
+    <style name="FrameworkRoot.Widget" parent="android:Theme.Holo" />
+    <style name="FrameworkRoot.Widget.ActionButton.Overflow" parent="android:Widget.Holo.ActionButton.Overflow" />
+    <style name="FrameworkRoot.Widget.Spinner" parent="android:Widget.Holo.Light.Spinner" />
+    <style name="FrameworkRoot.Widget.ListView.DropDown" parent="android:Widget.Holo.Light.ListView.DropDown" />
+    <style name="FrameworkRoot.Widget.PopupMenu" parent="android:Widget.Holo.Light.PopupMenu" />
+    <style name="FrameworkRoot.TextAppearance.Widget.PopupMenu.Large" parent="android:TextAppearance.Holo.Widget.PopupMenu.Large" />
+
     <style name="navigation_menu_style">
         <item name="android:alwaysDrawnWithCache">true</item>
         <item name="android:drawSelectorOnTop">false</item>
@@ -7,64 +19,43 @@
         <item name="android:divider">@drawable/main_tab_divider</item>
     </style>
 
-    <style name="Theme.Library" parent="@style/Theme.Sherlock.Light">
-        <item name="actionBarItemBackground">@drawable/selectable_background_library</item>
-        <item name="popupMenuStyle">@style/PopupMenu.Library</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Library</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Library</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Library</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.Library</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_library</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_library</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Library</item>
+    <style name="Theme.Library" parent="FrameworkRoot.Theme">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_library</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Library</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Library</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Library</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Library</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Library</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_library</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_library</item>
     </style>
 
     <style name="Theme.library.White" parent="@style/Theme.Library">
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
-    <style name="ActionBar.Solid.Library" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
-        <item name="background">@drawable/actionbar_background</item>
-        <item name="backgroundStacked">@drawable/actionbar_stacked_background</item>
-        <item name="backgroundSplit">@drawable/actionbar_split_background</item>
-        <item name="progressBarStyle">@style/ProgressBar.Library</item>
+    <style name="ActionBar.Library" parent="FrameworkRoot.ActionBar">
+        <item name="android:background">@drawable/actionbar_background</item>
+        <item name="android:backgroundStacked">@drawable/actionbar_stacked_background</item>
+        <item name="android:backgroundSplit">@drawable/actionbar_split_background</item>
     </style>
 
-    <style name="ActionBar.Transparent.Library" parent="@style/Widget.Sherlock.Light.ActionBar">
-        <item name="background">@drawable/ab_transparent_library</item>
-        <item name="progressBarStyle">@style/ProgressBar.Library</item>
-    </style>
-
-    <style name="PopupMenu.Library" parent="@style/Widget.Sherlock.Light.ListPopupWindow">
+    <style name="PopupMenu.Library" parent="FrameworkRoot.Widget.PopupMenu">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_library</item>
     </style>
 
-    <style name="DropDownListView.Library" parent="@style/Widget.Sherlock.Light.ListView.DropDown">
+    <style name="DropDownListView.Library" parent="FrameworkRoot.Widget.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_library</item>
     </style>
 
-    <style name="ActionBarTabStyle.Library" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
+    <style name="ActionBarTabStyle.Library" parent="FrameworkRoot.ActionBar.TabBar">
         <item name="android:background">@drawable/tab_indicator_ab_library</item>
     </style>
 
-    <style name="DropDownNav.Library" parent="@style/Widget.Sherlock.Light.Spinner.DropDown.ActionBar">
+    <style name="DropDownNav.Library" parent="FrameworkRoot.Widget.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_library</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_library</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_library</item>
-    </style>
-
-    <style name="ProgressBar.Library" parent="@style/Widget.Sherlock.Light.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_library</item>
-    </style>
-
-    <style name="ActionButton.CloseMode.Library" parent="@style/Widget.Sherlock.Light.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_library</item>
-    </style>
-
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Library.Widget" parent="@style/Theme.Sherlock">
-        <item name="popupMenuStyle">@style/PopupMenu.Library</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Library</item>
     </style>
 
     <!-- List views and list items -->
@@ -92,8 +83,6 @@
     <style name="ComplexListItem" parent="ListItemContainerBase" />
 
     <style name="ComplexListItemContent">
-        <item name="android:paddingLeft">?listPreferredItemPaddingLeft</item>
-        <item name="android:paddingRight">?listPreferredItemPaddingRight</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
     </style>

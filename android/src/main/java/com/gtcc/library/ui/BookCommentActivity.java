@@ -1,28 +1,27 @@
 package com.gtcc.library.ui;
 
-import java.util.Calendar;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 
-public class BookCommentActivity extends SherlockFragmentActivity {
+import java.util.Calendar;
+
+public class BookCommentActivity extends FragmentActivity {
 
 	public static final String USER_ID = "user_id";
 	public static final String BOOK_ID = "book_id";
@@ -61,12 +60,12 @@ public class BookCommentActivity extends SherlockFragmentActivity {
 					+ getString(R.string.quote) + mReplyQuote);
 			quoteCommentContent.setVisibility(View.VISIBLE);
 		}
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.book_comment_menu, menu);
+		getMenuInflater().inflate(R.menu.book_comment_menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -150,7 +149,7 @@ public class BookCommentActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	class CancelDialogFragment extends DialogFragment implements
+	public static class CancelDialogFragment extends DialogFragment implements
 			DialogInterface.OnClickListener {
 
 		@Override

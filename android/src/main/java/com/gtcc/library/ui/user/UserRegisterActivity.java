@@ -1,51 +1,48 @@
 package com.gtcc.library.ui.user;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.AsyncTask.Status;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
-import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.Utils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
 import com.gtcc.library.webserviceproxy.WebServiceUserProxy;
 
-public class UserRegisterActivity extends SherlockFragmentActivity {
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+public class UserRegisterActivity extends FragmentActivity {
 
 	private TextView mUserName;
 	private TextView mEmail;
@@ -118,7 +115,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 			}
 		});
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -244,7 +241,7 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	class PickImageFragment extends DialogFragment {
+	public static class PickImageFragment extends DialogFragment {
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -257,10 +254,10 @@ public class UserRegisterActivity extends SherlockFragmentActivity {
 						public void onClick(DialogInterface dialog, int which) {
 							switch (which) {
 							case 0:
-								pickImageFromCamera();
+								//pickImageFromCamera();
 								break;
 							case 1:
-								pickImageFromGallery();
+								//pickImageFromGallery();
 								break;
 							}
 						}

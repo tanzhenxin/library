@@ -1,13 +1,12 @@
 package com.gtcc.library.ui;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 
 public class BookDetailActivity extends BaseActivity {
@@ -38,7 +37,7 @@ public class BookDetailActivity extends BaseActivity {
 					"single_pane");
 		}
 		
-		ActionBar actionBar = getSupportActionBar();
+		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}

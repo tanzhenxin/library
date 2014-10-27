@@ -1,18 +1,18 @@
 package com.gtcc.library.ui.user;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.gtcc.library.R;
 
-public class AuthCreateUserActivity extends SherlockActivity {
+public class AuthCreateUserActivity extends Activity {
 	
 	private ProgressDialog mSpinner;
 	private CreateUserAsyncTask mCreateUserTask;

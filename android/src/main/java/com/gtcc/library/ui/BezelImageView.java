@@ -1,9 +1,5 @@
 package com.gtcc.library.ui;
 
-import com.gtcc.library.R;
-import com.gtcc.library.util.LogUtils;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -16,6 +12,9 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.gtcc.library.R;
+import com.gtcc.library.util.LogUtils;
 
 public class BezelImageView extends ImageView {
 

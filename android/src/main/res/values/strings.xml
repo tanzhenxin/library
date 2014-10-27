@@ -130,4 +130,6 @@
     <string name="new_version_found">New version found. Do you want to upgrade?</string>
     <string name="upgrade">Yes</string>
     <string name="not_upgrade">No</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

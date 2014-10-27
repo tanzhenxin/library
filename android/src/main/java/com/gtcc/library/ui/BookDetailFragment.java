@@ -1,55 +1,39 @@
 package com.gtcc.library.ui;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.database.ContentObserver;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.provider.LibraryContract.Users;
-import com.gtcc.library.provider.LibraryDatabase.UserBooks;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
 
-public class BookDetailFragment extends SherlockFragment {
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class BookDetailFragment extends Fragment {
 	private static final String TAG = LogUtils
 			.makeLogTag(BookDetailFragment.class);
 

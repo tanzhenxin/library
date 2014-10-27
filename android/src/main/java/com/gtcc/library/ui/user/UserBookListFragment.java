@@ -1,17 +1,9 @@
 package com.gtcc.library.ui.user;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,16 +13,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.ui.AbstractBookListFragment;
 import com.gtcc.library.ui.HomeActivity;
-import com.gtcc.library.ui.customcontrol.RefreshableListView;
-import com.gtcc.library.ui.library.LibraryFragment;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class UserBookListFragment extends AbstractBookListFragment {
 

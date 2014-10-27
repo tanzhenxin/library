@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract.Books;
 import com.gtcc.library.ui.library.LibraryBookListFragment;
@@ -34,7 +34,7 @@ public class ScanBookListActivity extends BaseActivity implements
 		args.putString(HomeActivity.BOOK_ISBN, getIntent().getStringExtra(HomeActivity.BOOK_ISBN));
 		mBooksFragment.setArguments(args);
 		
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	@Override

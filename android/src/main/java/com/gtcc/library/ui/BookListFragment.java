@@ -2,22 +2,21 @@ package com.gtcc.library.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.gtcc.library.R;
 import com.gtcc.library.ui.customcontrol.RefreshableListView;
-import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.ImageCache.ImageCacheParams;
+import com.gtcc.library.util.ImageFetcher;
 
-public abstract class BookListFragment extends SherlockListFragment {
+public abstract class BookListFragment extends ListFragment {
 	private static final String IMAGE_CACHE_DIR = "images";
 
 	protected ImageFetcher mImageFetcher;

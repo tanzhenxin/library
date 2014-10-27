@@ -1,10 +1,5 @@
 package com.gtcc.library.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -21,11 +16,14 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,8 +34,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
@@ -54,6 +50,11 @@ import com.gtcc.library.util.CommonAsyncTask;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 public class HomeActivity extends BaseActivity implements
 		UserBookListFragment.Callbacks {
@@ -78,6 +79,7 @@ public class HomeActivity extends BaseActivity implements
 	private final int GET_RETURN_DATE = 1;
 
     private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
     private ListView mDrawerList;
 
 	private class AsyncLoader extends CommonAsyncTask<Integer, Boolean> {
@@ -135,7 +137,11 @@ public class HomeActivity extends BaseActivity implements
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.left_drawer);
-        setDrawerListAdapter(mDrawerList);
+        setDrawerListener();
+        setDrawerListAdapter();
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
 		if (savedInstanceState != null) {
 			mCurrentPage = savedInstanceState.getInt(CURRENT_INDEX);
@@ -179,9 +185,18 @@ public class HomeActivity extends BaseActivity implements
 		editor.commit();
 	}
 
-	@Override
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        menu.findItem(R.id.menu_search).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_scan).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_refresh).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.books_list_menu, menu);
+		getMenuInflater().inflate(R.menu.books_list_menu, menu);
 		setupSearchMenuItem(menu);
 		setupScanMenuItem(menu);
 		return super.onCreateOptionsMenu(menu);
@@ -190,6 +205,8 @@ public class HomeActivity extends BaseActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+        case android.R.id.home:
+                return true;
 		case R.id.menu_search:
 			if (!Utils.hasHoneycomb()) {
 				startSearch(null, false, Bundle.EMPTY, false);
@@ -418,14 +435,37 @@ public class HomeActivity extends BaseActivity implements
 		return true;
 	}
 
-    private void setDrawerListAdapter(ListView drawerList) {
+    private void setDrawerListener() {
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close
+        ) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    private void setDrawerListAdapter() {
         DrawerListAdapter adapter = new DrawerListAdapter(this);
         adapter.add(new DrawerItem(getString(R.string.user_center), R.drawable.ic_user_center));
         adapter.add(new DrawerItem(getString(R.string.book_library), R.drawable.ic_collections));
         adapter.add(new DrawerItem(getString(R.string.isbn_scanner), R.drawable.ic_scan));
         adapter.add(new DrawerItem(getString(R.string.settings), R.drawable.ic_settings));
-        drawerList.setAdapter(adapter);
-        drawerList.setOnItemClickListener(
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

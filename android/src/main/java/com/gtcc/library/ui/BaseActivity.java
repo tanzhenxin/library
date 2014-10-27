@@ -7,16 +7,16 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.provider.LibraryContract.Users;
 
-public class BaseActivity extends SherlockFragmentActivity {
+public class BaseActivity extends FragmentActivity {
 	
 	protected CharSequence mTitle;
 	
@@ -33,13 +33,13 @@ public class BaseActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		
 		loadUserInfo();
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        getActionBar().setTitle(mTitle);
     }
 
 	@Override

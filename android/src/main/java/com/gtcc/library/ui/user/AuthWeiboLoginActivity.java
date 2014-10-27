@@ -2,7 +2,6 @@ package com.gtcc.library.ui.user;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.gtcc.library.oauth2.AuthException;
 import com.gtcc.library.oauth2.AuthListener;

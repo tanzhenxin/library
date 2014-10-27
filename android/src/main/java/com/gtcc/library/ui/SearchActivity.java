@@ -11,11 +11,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SearchView;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
@@ -42,7 +41,7 @@ public class SearchActivity extends BaseActivity
 				.commit();
 		}
 		
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public class SearchActivity extends BaseActivity
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.search, menu);
         setupSearchMenuItem(menu);
 		return super.onCreateOptionsMenu(menu);
 	}

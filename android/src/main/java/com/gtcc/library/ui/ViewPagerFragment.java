@@ -1,20 +1,18 @@
 package com.gtcc.library.ui;
 
+import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.gtcc.library.R;
 
-public abstract class ViewPagerFragment extends SherlockFragment {
+public abstract class ViewPagerFragment extends Fragment {
 	private ViewPager mViewPager;
 
 	@Override
@@ -46,7 +44,7 @@ public abstract class ViewPagerFragment extends SherlockFragment {
 
 	private void buildActionBarAndViewPagerTitles() {
 		final HomeActivity activity = (HomeActivity) getActivity();
-		final ActionBar actionBar = activity.getSupportActionBar();
+		final ActionBar actionBar = activity.getActionBar();
 
 		PagerAdapter pagerAdapter = getPagerAdapter(activity);
 		mViewPager.setAdapter(pagerAdapter);
@@ -67,7 +65,7 @@ public abstract class ViewPagerFragment extends SherlockFragment {
 	private ViewPager.SimpleOnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
 		@Override
 		public void onPageSelected(int position) {
-			((HomeActivity) getActivity()).getSupportActionBar()
+			((HomeActivity) getActivity()).getActionBar()
 					.setSelectedNavigationItem(position);
 		}
 	};
@@ -80,19 +78,21 @@ public abstract class ViewPagerFragment extends SherlockFragment {
 			this.viewPager = viewPager;
 		}
 
-		@Override
-		public void onTabSelected(Tab tab, FragmentTransaction ft) {
-			if (viewPager != null
-					&& viewPager.getCurrentItem() != tab.getPosition())
-				viewPager.setCurrentItem(tab.getPosition());
-		}
+        @Override
+        public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+            if (viewPager != null
+                    && viewPager.getCurrentItem() != tab.getPosition())
+                viewPager.setCurrentItem(tab.getPosition());
+        }
 
-		@Override
-		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		}
+        @Override
+        public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
 
-		@Override
-		public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		}
+        }
+
+        @Override
+        public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
+
+        }
 	}
 }

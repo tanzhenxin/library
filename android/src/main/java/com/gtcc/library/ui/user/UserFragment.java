@@ -1,7 +1,5 @@
 package com.gtcc.library.ui.user;
 
-import java.util.Locale;
-
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +11,8 @@ import com.gtcc.library.R;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.ui.ViewPagerFragment;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
+
+import java.util.Locale;
 
 public class UserFragment extends ViewPagerFragment {
 	

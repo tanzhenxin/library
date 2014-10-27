@@ -1,22 +1,18 @@
 package com.gtcc.library.ui.user;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.gtcc.library.R;
 import com.gtcc.library.oauth2.AuthException;
 import com.gtcc.library.oauth2.ErrorHandler;
@@ -26,7 +22,10 @@ import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
 
-public abstract class AuthLoginActivity extends SherlockActivity {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public abstract class AuthLoginActivity extends Activity {
 
 	private static final String TAG = LogUtils
 			.makeLogTag(AuthLoginActivity.class);
@@ -84,7 +83,7 @@ public abstract class AuthLoginActivity extends SherlockActivity {
 		});
 		mWebView.getSettings().setJavaScriptEnabled(true);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
