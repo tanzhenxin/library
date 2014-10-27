@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -169,7 +170,19 @@ public class HomeActivity extends BaseActivity implements
 //		}
 	}
 
-	@Override
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt(CURRENT_INDEX, mCurrentPage);
@@ -204,9 +217,11 @@ public class HomeActivity extends BaseActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
 		switch (item.getItemId()) {
-        case android.R.id.home:
-                return true;
 		case R.id.menu_search:
 			if (!Utils.hasHoneycomb()) {
 				startSearch(null, false, Bundle.EMPTY, false);
@@ -367,6 +382,7 @@ public class HomeActivity extends BaseActivity implements
 			break;
 		}
 
+        resetTitle();
         mDrawerList.setItemChecked(position, true);
         mDrawerLayout.closeDrawer(mDrawerList);
 	}
@@ -386,6 +402,20 @@ public class HomeActivity extends BaseActivity implements
 		startActivityForResult(intent, REQUEST_LOGIN);
 	}
 
+    private void resetTitle() {
+        switch (mCurrentPage) {
+            case PAGE_USER:
+                setTitle(R.string.user_center);
+                break;
+            case PAGE_LIBRARY:
+                setTitle(R.string.book_library);
+                break;
+            default:
+                setTitle(R.string.app_name);
+                break;
+        }
+    }
+
 	private void showUserHome() {
 		Fragment fragment = this.getSupportFragmentManager().findFragmentById(
 				R.id.content_frame);
@@ -396,8 +426,6 @@ public class HomeActivity extends BaseActivity implements
 			transaction.replace(R.id.content_frame, fragment);
 			transaction.commit();
 		}
-
-		setTitle(R.string.user_center);
 	}
 
 	private void showLibrary() {
@@ -410,8 +438,6 @@ public class HomeActivity extends BaseActivity implements
 			transaction.replace(R.id.content_frame, fragment);
 			transaction.commit();
 		}
-
-		setTitle(R.string.book_library);
 	}
 
 	private void showScanner() {
@@ -446,12 +472,14 @@ public class HomeActivity extends BaseActivity implements
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                resetTitle();
                 invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                setTitle(R.string.app_name);
                 invalidateOptionsMenu();
             }
         };

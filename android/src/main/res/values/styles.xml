@@ -3,7 +3,9 @@
     <style name="FrameworkRoot.Theme" parent="android:Theme.Holo.Light" />
     <style name="FrameworkRoot.ActionBar" parent="android:Widget.Holo.ActionBar" />
     <style name="FrameworkRoot.ActionBar.TitleText" parent="android:TextAppearance.Holo.Widget.ActionBar.Title" />
+    <style name="FrameworkRoot.ActionBar.Tab" parent="android:Widget.Holo.ActionBar.TabView" />
     <style name="FrameworkRoot.ActionBar.TabBar" parent="android:Widget.Holo.ActionBar.TabBar" />
+    <style name="FrameworkRoot.ActionBar.TabText" parent="android:Widget.Holo.ActionBar.TabText" />
     <style name="FrameworkRoot.EditText" parent="android:Widget.Holo.Light.EditText" />
     <style name="FrameworkRoot.Widget" parent="android:Theme.Holo" />
     <style name="FrameworkRoot.Widget.ActionButton.Overflow" parent="android:Widget.Holo.ActionButton.Overflow" />
@@ -48,7 +50,7 @@
         <item name="android:listSelector">@drawable/selectable_background_library</item>
     </style>
 
-    <style name="ActionBarTabStyle.Library" parent="FrameworkRoot.ActionBar.TabBar">
+    <style name="ActionBarTabStyle.Library" parent="FrameworkRoot.ActionBar.Tab">
         <item name="android:background">@drawable/tab_indicator_ab_library</item>
     </style>
 
@@ -83,6 +85,8 @@
     <style name="ComplexListItem" parent="ListItemContainerBase" />
 
     <style name="ComplexListItemContent">
+        <item name="android:paddingLeft">?android:listPreferredItemPaddingLeft</item>
+        <item name="android:paddingRight">?android:listPreferredItemPaddingRight</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
     </style>

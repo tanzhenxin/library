@@ -6,8 +6,8 @@
         <attr name="activatableItemBackground" format="reference" />
 
         <!-- backward-compatibility -->
-        <attr name="buttonBarStyle" format="reference" />
-        <attr name="buttonBarButtonStyle" format="reference" />
+        <!--<attr name="buttonBarStyle" format="reference" />-->
+        <!--<attr name="buttonBarButtonStyle" format="reference" />-->
         <!-- provided by ActionBarSherlock -->
         <!--<attr name="indeterminateProgressStyle" format="reference" />-->
         <!--<attr name="listPreferredItemPaddingLeft" format="reference" />-->
