@@ -1,6 +1,5 @@
 package com.gtcc.library.ui;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,88 +10,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gtcc.library.R;
+import com.gtcc.library.ui.customcontrol.SlidingTabLayout;
 
 public abstract class ViewPagerFragment extends Fragment {
 	private ViewPager mViewPager;
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		if (((HomeActivity) getActivity()).getCurrentPage() == getPage()) {
-			buildActionBarAndViewPagerTitles();
-		}
-	}
+    private SlidingTabLayout mSlidingTabLayout;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.viewpager_layout, null);
-		mViewPager = (ViewPager) view;
-		return view;
+        return inflater.inflate(R.layout.viewpager_layout, null);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		mViewPager.setOnPageChangeListener(onPageChangeListener);
+        mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        mViewPager.setAdapter(getPagerAdapter(getActivity()));
+
+        mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
+        mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tab_selected_strip)) ;
+        mSlidingTabLayout.setDistributeEvenly(true);
+        mSlidingTabLayout.setViewPager(mViewPager);
 	}
 	
 	protected abstract int getPage();
 	protected abstract PagerAdapter getPagerAdapter(FragmentActivity activity);
-
-	private void buildActionBarAndViewPagerTitles() {
-		final HomeActivity activity = (HomeActivity) getActivity();
-		final ActionBar actionBar = activity.getActionBar();
-
-		PagerAdapter pagerAdapter = getPagerAdapter(activity);
-		mViewPager.setAdapter(pagerAdapter);
-
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.removeAllTabs();
-
-		SimpleTabListener tabListener = new SimpleTabListener(mViewPager);
-		for (int i = 0; i < pagerAdapter.getCount(); i++) {
-			actionBar.addTab(actionBar.newTab()
-					.setText(pagerAdapter.getPageTitle(i))
-					.setTabListener(tabListener));
-		}
-
-		mViewPager.setCurrentItem(0);
-	}
-
-	private ViewPager.SimpleOnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-		@Override
-		public void onPageSelected(int position) {
-			((HomeActivity) getActivity()).getActionBar()
-					.setSelectedNavigationItem(position);
-		}
-	};
-
-	private class SimpleTabListener implements ActionBar.TabListener {
-
-		private ViewPager viewPager;
-
-		public SimpleTabListener(ViewPager viewPager) {
-			this.viewPager = viewPager;
-		}
-
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            if (viewPager != null
-                    && viewPager.getCurrentItem() != tab.getPosition())
-                viewPager.setCurrentItem(tab.getPosition());
-        }
-
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-
-        }
-
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-
-        }
-	}
 }

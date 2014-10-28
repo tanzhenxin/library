@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.Loader;
 import android.support.v4.view.PagerAdapter;
 
@@ -67,7 +67,7 @@ public class LibraryFragment extends ViewPagerFragment {
         }
     };
 
-	private class LibraryPagerAdapter extends FragmentStatePagerAdapter {
+	private class LibraryPagerAdapter extends FragmentPagerAdapter {
 		
 		private final Resources resources;
 		private final String[] categories = { "E", "F", "M", "S", "T", "Z" };
@@ -85,7 +85,7 @@ public class LibraryFragment extends ViewPagerFragment {
 			Intent intent = new Intent();
 			intent.setData(LibraryContract.Books.buildCategoryUri(categories[position]));
 			fragment.setArguments(BaseActivity.intentToFragmentArguments(intent));
-			
+
 			return fragment;
 		}
 

@@ -3,9 +3,6 @@
     <style name="FrameworkRoot.Theme" parent="android:Theme.Holo.Light" />
     <style name="FrameworkRoot.ActionBar" parent="android:Widget.Holo.ActionBar" />
     <style name="FrameworkRoot.ActionBar.TitleText" parent="android:TextAppearance.Holo.Widget.ActionBar.Title" />
-    <style name="FrameworkRoot.ActionBar.Tab" parent="android:Widget.Holo.ActionBar.TabView" />
-    <style name="FrameworkRoot.ActionBar.TabBar" parent="android:Widget.Holo.ActionBar.TabBar" />
-    <style name="FrameworkRoot.ActionBar.TabText" parent="android:Widget.Holo.ActionBar.TabText" />
     <style name="FrameworkRoot.EditText" parent="android:Widget.Holo.Light.EditText" />
     <style name="FrameworkRoot.Widget" parent="android:Theme.Holo" />
     <style name="FrameworkRoot.Widget.ActionButton.Overflow" parent="android:Widget.Holo.ActionButton.Overflow" />
@@ -14,32 +11,14 @@
     <style name="FrameworkRoot.Widget.PopupMenu" parent="android:Widget.Holo.Light.PopupMenu" />
     <style name="FrameworkRoot.TextAppearance.Widget.PopupMenu.Large" parent="android:TextAppearance.Holo.Widget.PopupMenu.Large" />
 
-    <style name="navigation_menu_style">
-        <item name="android:alwaysDrawnWithCache">true</item>
-        <item name="android:drawSelectorOnTop">false</item>
-        <item name="android:cacheColorHint">@null</item>
-        <item name="android:divider">@drawable/main_tab_divider</item>
-    </style>
-
     <style name="Theme.Library" parent="FrameworkRoot.Theme">
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_library</item>
+        <item name="android:windowBackground">@android:color/white</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Library</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Library</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Library</item>
         <item name="android:actionDropDownStyle">@style/DropDownNav.Library</item>
         <item name="android:actionBarStyle">@style/ActionBar.Library</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_library</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_library</item>
-    </style>
-
-    <style name="Theme.library.White" parent="@style/Theme.Library">
-        <item name="android:windowBackground">@android:color/white</item>
-    </style>
-
-    <style name="ActionBar.Library" parent="FrameworkRoot.ActionBar">
-        <item name="android:background">@drawable/actionbar_background</item>
-        <item name="android:backgroundStacked">@drawable/actionbar_stacked_background</item>
-        <item name="android:backgroundSplit">@drawable/actionbar_split_background</item>
     </style>
 
     <style name="PopupMenu.Library" parent="FrameworkRoot.Widget.PopupMenu">
@@ -50,14 +29,31 @@
         <item name="android:listSelector">@drawable/selectable_background_library</item>
     </style>
 
-    <style name="ActionBarTabStyle.Library" parent="FrameworkRoot.ActionBar.Tab">
-        <item name="android:background">@drawable/tab_indicator_ab_library</item>
-    </style>
-
     <style name="DropDownNav.Library" parent="FrameworkRoot.Widget.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_library</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_library</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_library</item>
+    </style>
+
+    <!-- Action bar -->
+    <style name="ActionBar.Base" parent="FrameworkRoot.ActionBar">
+        <item name="android:background">@drawable/actionbar_background</item>
+        <item name="android:displayOptions">showHome|showTitle</item>
+        <item name="android:titleTextStyle">@style/ActionBar.TitleText</item>
+    </style>
+
+    <style name="ActionBar.Library" parent="ActionBar.Base" />
+
+    <style name="ActionBar.TitleText" parent="FrameworkRoot.ActionBar.TitleText">
+        <item name="android:textColor">#fff</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TabIndicator" />
+
+    <!-- HomeActivity -->
+    <style name="Theme.Library.HomeActivity" parent="Theme.Library">
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <!-- List views and list items -->
