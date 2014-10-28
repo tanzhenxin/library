@@ -12,9 +12,11 @@ import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.UserInfo;
 import com.gtcc.library.provider.LibraryContract.Users;
+import com.gtcc.library.util.Constants;
 
 public class BaseActivity extends FragmentActivity {
 	
@@ -33,7 +35,10 @@ public class BaseActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		
 		loadUserInfo();
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+        AVOSCloud.initialize(this, Constants.AVOS_API_ID, Constants.AVOS_API_KEY);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 	}
 	
     @Override

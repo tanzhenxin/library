@@ -141,9 +141,6 @@ public class HomeActivity extends BaseActivity implements
         setDrawerListener();
         setDrawerListAdapter();
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
 		if (savedInstanceState != null) {
 			mCurrentPage = savedInstanceState.getInt(CURRENT_INDEX);
 		}
@@ -160,9 +157,9 @@ public class HomeActivity extends BaseActivity implements
 
 		showPage(mCurrentPage);
 		
-//		if (savedInstanceState == null) {
-//			triggerRefresh();
-//		}
+		if (savedInstanceState == null) {
+			triggerRefresh();
+		}
 
 //		if (isFirstLoad == true && hasLogin()) {
 //			new AsyncLoader().execute(GET_RETURN_DATE);

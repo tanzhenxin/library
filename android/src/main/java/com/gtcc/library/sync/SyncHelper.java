@@ -10,6 +10,8 @@ import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.os.RemoteException;
 
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
@@ -38,22 +40,23 @@ public class SyncHelper {
 	public ArrayList<ContentProviderOperation> loadBooks() {
 		final ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
 		try {
-			List<Book> books = HttpManager.webServiceBookProxy.getAllBooks(0, 0);
-			for (int i = 0; i < books.size(); ++i) {
-				Book book = books.get(i);
+            AVQuery<AVObject> query = new AVQuery<AVObject>("Book");
+            List<AVObject> avObjects = query.find();
+			for (int i = 0; i < avObjects.size(); ++i) {
+				AVObject book = avObjects.get(i);
 				
 				ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(Books.CONTENT_URI);
-				builder.withValue(Books.BOOK_ID, book.getId());
-				builder.withValue(Books.BOOK_TITLE, book.getTitle());
-				builder.withValue(Books.BOOK_AUTHOR, book.getAuthor());
-				builder.withValue(Books.BOOK_DESCRIPTION, book.getDescription());
-				builder.withValue(Books.BOOK_LANGUAGE, book.getLanguage());
-				builder.withValue(Books.BOOK_PUBLISHER, book.getPublisher());
-				builder.withValue(Books.BOOK_PUBLISH_DATE, book.getPublishDate());
-				builder.withValue(Books.BOOK_PRICE, book.getPrice());
-				builder.withValue(Books.BOOK_ISBN, book.getISBN());
-				builder.withValue(Books.BOOK_IMAGE_URL, book.getImgUrl());
-				builder.withValue(Books.BOOK_CATEGORY, book.getCategory());
+				builder.withValue(Books.BOOK_ID, book.getString("tag"));
+				builder.withValue(Books.BOOK_TITLE, book.getString("title"));
+				builder.withValue(Books.BOOK_AUTHOR, book.getString("author"));
+				builder.withValue(Books.BOOK_DESCRIPTION, book.getString("description"));
+				builder.withValue(Books.BOOK_LANGUAGE, book.getString("language"));
+				builder.withValue(Books.BOOK_PUBLISHER, book.getString("publisher"));
+				builder.withValue(Books.BOOK_PUBLISH_DATE, book.getString("publishDate"));
+				builder.withValue(Books.BOOK_PRICE, book.getString("price"));
+				builder.withValue(Books.BOOK_ISBN, book.getString("ISBN"));
+				builder.withValue(Books.BOOK_IMAGE_URL, book.getString("imageUrl"));
+				builder.withValue(Books.BOOK_CATEGORY, book.getString("tag").substring(0, 1));
 				
 				batch.add(builder.build());
 			}
