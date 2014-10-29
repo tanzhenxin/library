@@ -8,6 +8,8 @@ public class Book implements Serializable {
 	public static final String BOOK = "book";
 	
 	private String id;
+    private String objectId;
+    private String tag;
 	private String title;
 	private String author;
 	private String authorIntro;
@@ -27,6 +29,14 @@ public class Book implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+    public String getObjectId() { return objectId; }
+
+    public void setObjectId(String objectId) { this.objectId = objectId; }
+
+    public String getTag() { return tag; }
+
+    public void setTag(String tag) { this.tag = tag; }
 
 	public String getTitle() {
 		return title;

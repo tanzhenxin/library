@@ -157,9 +157,9 @@ public class HomeActivity extends BaseActivity implements
 
 		showPage(mCurrentPage);
 		
-		if (savedInstanceState == null) {
-			triggerRefresh();
-		}
+//		if (savedInstanceState == null) {
+//			triggerRefresh();
+//		}
 
 //		if (isFirstLoad == true && hasLogin()) {
 //			new AsyncLoader().execute(GET_RETURN_DATE);

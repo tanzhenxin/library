@@ -14,40 +14,79 @@ import android.view.MenuItem;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.gtcc.library.R;
+import com.gtcc.library.entity.JSONHandler;
 import com.gtcc.library.entity.UserInfo;
+import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Users;
-import com.gtcc.library.util.Constants;
+import com.gtcc.library.sync.BookDataHandler;
+import com.gtcc.library.util.Configs;
+import com.gtcc.library.util.LogUtils;
+import com.gtcc.library.util.PrefUtils;
+
+import java.io.IOException;
 
 public class BaseActivity extends FragmentActivity {
-	
-	protected CharSequence mTitle;
+
+    private static final String TAG = LogUtils.makeLogTag(BaseActivity.class);
 	
 	public static final String SHARED_PREFERENCE_FILE = "com.gtcc.libary.preference";
-	
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String USER_ID = "user_id";
 	public static final String USER_NAME = "user_name";
 	public static final String USER_PASSWORD = "user_password";
 	public static final String USER_IMAGE_URL = "user_image_url";
+
+    private Thread mDataBootstrapThread = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		loadUserInfo();
-        AVOSCloud.initialize(this, Constants.AVOS_API_ID, Constants.AVOS_API_KEY);
+        AVOSCloud.initialize(this, Configs.AVOS_API_ID, Configs.AVOS_API_KEY);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 	}
-	
+
     @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getActionBar().setTitle(mTitle);
+    protected void onStart() {
+        super.onStart();
+
+        if (!PrefUtils.isDataBootstrapDone(this) && mDataBootstrapThread == null) {
+            LogUtils.LOGD(TAG, "One-time data bootstrap is not done yet. Doing now.");
+            performDataBootstrap();
+        }
     }
 
-	@Override
+    private void performDataBootstrap() {
+        final Context context = getApplicationContext();
+        LogUtils.LOGD(TAG, "Staring data bootstrap background thread.");
+        mDataBootstrapThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LogUtils.LOGD(TAG, "Starting data bootstrap process.");
+                try {
+                    String bootstrapJson = JSONHandler.parseResource(context, R.raw.bootstrap_data);
+
+                    BookDataHandler dataHandler = new BookDataHandler(context);
+                    dataHandler.applyBookData(bootstrapJson, Configs.BOOTSTRAP_DATA_TIMESTAMP);
+                    LogUtils.LOGD(TAG, "End of bootstrap -- successful. Marking bootstrap as done.");
+                    PrefUtils.markDataBootstrapDone(context);
+                    getContentResolver().notifyChange(Uri.parse(LibraryContract.CONTENT_AUTHORITY), null);
+                }
+                catch (IOException ex) {
+                    LogUtils.LOGE(TAG, "*** ERROR DURING BOOTSTRAP! Problem in bootstrap data?");
+                    PrefUtils.markDataBootstrapDone(context);
+                }
+
+                mDataBootstrapThread = null;
+            }
+        });
+        mDataBootstrapThread.start();
+    }
+
+    @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
