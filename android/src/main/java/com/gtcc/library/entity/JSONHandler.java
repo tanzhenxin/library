@@ -3,7 +3,7 @@ package com.gtcc.library.entity;
 import android.content.ContentProviderOperation;
 import android.content.Context;
 
-import com.alibaba.fastjson.JSONReader;
+import com.alibaba.fastjson.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public abstract class JSONHandler {
 
     public abstract void makeContentProviderOperations(ArrayList<ContentProviderOperation> list);
 
-    public abstract void process(JSONReader reader);
+    public abstract void process(JSONArray jsonArray);
 
     public static String parseResource(Context context, int resource) throws IOException {
         InputStream is = context.getResources().openRawResource(resource);

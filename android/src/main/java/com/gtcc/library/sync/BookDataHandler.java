@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.os.RemoteException;
 
-import com.alibaba.fastjson.JSONReader;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.gtcc.library.entity.BookHandler;
 import com.gtcc.library.entity.JSONHandler;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.util.LogUtils;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,15 +72,8 @@ public class BookDataHandler {
     }
 
     private void processDataBody(String dataBody) {
-        JSONReader reader = new JSONReader(new StringReader(dataBody));
-        reader.startObject();
-        while (reader.hasNext()) {
-            String key = reader.readString();
-            if (mHandlerForKey.containsKey(key)) {
-                mHandlerForKey.get(key).process(reader);
-            }
-        }
-        reader.endObject();
-        reader.close();
+        JSONObject jobj = JSON.parseObject(dataBody);
+        JSONArray array = jobj.getJSONArray("books");
+        mHandlerForKey.get("books").process(array);
     }
 }

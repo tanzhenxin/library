@@ -3,7 +3,7 @@ package com.gtcc.library.entity;
 import android.content.ContentProviderOperation;
 import android.content.Context;
 
-import com.alibaba.fastjson.JSONReader;
+import com.alibaba.fastjson.JSONArray;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.util.LogUtils;
 
@@ -41,13 +41,11 @@ public class BookHandler extends JSONHandler {
     }
 
     @Override
-    public void process(JSONReader reader) {
-        reader.startArray();
-        while (reader.hasNext()) {
-            Book book = reader.readObject(Book.class);
+    public void process(JSONArray jsonArray) {
+        for (int i = 0; i < jsonArray.size(); ++i) {
+            Book book = jsonArray.getObject(i, Book.class);
             book.setCategory(book.getTag().substring(0, 1));
             mBooks.put(book.getObjectId(), book);
         }
-        reader.endArray();
     }
 }
