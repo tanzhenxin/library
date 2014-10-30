@@ -324,7 +324,7 @@ public class HomeActivity extends BaseActivity implements
 							if (result != null && !result.isEmpty()) {
 								if (result.size() == 1) {
 									HomeActivity.this.OnBookSelected(
-											result.get(0).getId(),
+											result.get(0).getObjectId(),
 											HomeActivity.this.mCurrentPage);
 								} else {
 									Intent intent = new Intent(

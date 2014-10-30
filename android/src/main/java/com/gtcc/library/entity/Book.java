@@ -5,30 +5,19 @@ import java.io.Serializable;
 
 public class Book implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final String BOOK = "book";
-	
-	private String id;
+
     private String objectId;
     private String tag;
 	private String title;
 	private String author;
-	private String authorIntro;
-	private String description; 
-	private String imgUrl; 
+	private String description;
+	private String imageUrl;
 	private String price;
 	private String ISBN;
-	private String language;
 	private String publisher;
-	private String publishDate;
+	private String publishedDate;
+    private int printLength;
 	private String category;
-
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
 
     public String getObjectId() { return objectId; }
 
@@ -65,20 +54,12 @@ public class Book implements Serializable {
 		this.description = description;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
+	public String getImageUrl() {
+		return imageUrl;
 	}
 
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
-	}
-
-	public String getAuthorIntro() {
-		return authorIntro;
-	}
-
-	public void setAuthorIntro(String authorIntro) {
-		this.authorIntro = authorIntro;
+	public void setImageUrl(String imgUrl) {
+		this.imageUrl = imgUrl;
 	}
 
 	public String getPrice() {
@@ -97,14 +78,6 @@ public class Book implements Serializable {
 		ISBN = iSBN;
 	}
 
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	
 	public String getPublisher() {
 		return publisher;
 	}
@@ -113,13 +86,17 @@ public class Book implements Serializable {
 		this.publisher = publisher;
 	}
 
-	public String getPublishDate() {
-		return publishDate;
+	public String getPublishedDate() {
+		return publishedDate;
 	}
 
-	public void setPublishDate(String publishDate) {
-		this.publishDate = publishDate;
+	public void setPublishedDate(String publishDate) {
+		this.publishedDate = publishDate;
 	}
+
+    public int getPrintLength() { return printLength; }
+
+    public void setPrintLength(int printLength) { this.printLength = printLength; }
 	
 	public String getCategory() {
 		return category;
@@ -135,7 +112,7 @@ public class Book implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((imgUrl == null) ? 0 : imgUrl.hashCode());
+		result = prime * result + ((imageUrl == null) ? 0 : imageUrl.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -149,6 +126,6 @@ public class Book implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Book other = (Book) obj;
-		return getId().equals(other.getId());
+		return getObjectId().equals(other.getObjectId());
 	}
 }

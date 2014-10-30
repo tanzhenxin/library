@@ -140,17 +140,16 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 	private Book parseJSONBook(JSONObject jsonBook) throws JSONException {
 		Book book = new Book();
 
-		book.setId(jsonBook.getString("bianhao"));
+		book.setObjectId(jsonBook.getString("bianhao"));
 		book.setTitle(jsonBook.getString("title"));
 		book.setAuthor(jsonBook.getString("author"));
 		book.setDescription(jsonBook.getString("bookDescription"));
 		book.setPrice(jsonBook.getString("price"));
 		book.setISBN(jsonBook.getString("ISBN"));
-		book.setLanguage(jsonBook.getString("language"));
 		book.setPublisher(jsonBook.getString("publisher"));
-		book.setPublishDate(jsonBook.getString("publishedDate"));
-		book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
-		book.setCategory(book.getId().substring(0, 1));
+		book.setPublishedDate(jsonBook.getString("publishedDate"));
+		book.setImageUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
+		book.setCategory(book.getObjectId().substring(0, 1));
 
 		return book;
 	}

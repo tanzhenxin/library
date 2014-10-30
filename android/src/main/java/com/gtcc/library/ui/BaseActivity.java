@@ -80,6 +80,8 @@ public class BaseActivity extends FragmentActivity {
                     PrefUtils.markDataBootstrapDone(context);
                 }
 
+
+
                 mDataBootstrapThread = null;
             }
         });

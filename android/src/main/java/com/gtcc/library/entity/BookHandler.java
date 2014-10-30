@@ -24,16 +24,17 @@ public class BookHandler extends JSONHandler {
     public void makeContentProviderOperations(ArrayList<ContentProviderOperation> list) {
         for (Book book : mBooks.values()) {
             ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(LibraryContract.Books.CONTENT_URI);
-            builder.withValue(LibraryContract.Books.BOOK_ID, book.getTag());
+            builder.withValue(LibraryContract.Books.BOOK_ID, book.getObjectId());
+            builder.withValue(LibraryContract.Books.BOOK_TAG, book.getTag());
             builder.withValue(LibraryContract.Books.BOOK_TITLE, book.getTitle());
             builder.withValue(LibraryContract.Books.BOOK_AUTHOR, book.getAuthor());
             builder.withValue(LibraryContract.Books.BOOK_DESCRIPTION, book.getDescription());
-            builder.withValue(LibraryContract.Books.BOOK_LANGUAGE, book.getLanguage());
             builder.withValue(LibraryContract.Books.BOOK_PUBLISHER, book.getPublisher());
-            builder.withValue(LibraryContract.Books.BOOK_PUBLISH_DATE, book.getPublishDate());
+            builder.withValue(LibraryContract.Books.BOOK_PUBLISH_DATE, book.getPublishedDate());
             builder.withValue(LibraryContract.Books.BOOK_PRICE, book.getPrice());
             builder.withValue(LibraryContract.Books.BOOK_ISBN, book.getISBN());
-            builder.withValue(LibraryContract.Books.BOOK_IMAGE_URL, book.getImgUrl());
+            builder.withValue(LibraryContract.Books.BOOK_PRINT_LENGTH, book.getPrintLength());
+            builder.withValue(LibraryContract.Books.BOOK_IMAGE_URL, book.getImageUrl());
             builder.withValue(LibraryContract.Books.BOOK_CATEGORY, book.getCategory());
 
             list.add(builder.build());

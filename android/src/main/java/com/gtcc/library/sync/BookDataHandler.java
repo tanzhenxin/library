@@ -22,18 +22,10 @@ import java.util.HashMap;
  */
 public class BookDataHandler {
     private static final String TAG = LogUtils.makeLogTag(BookDataHandler.class);
-
-    private Context mContext = null;
-
     private static final String DATA_KEY_BOOKS = "books";
 
-    private static final String[] DATA_KEYS_IN_ORDER = {
-            DATA_KEY_BOOKS,
-    };
-
-    BookHandler mBookHandler = null;
-
-    HashMap<String, JSONHandler> mHandlerForKey = new HashMap<String, JSONHandler>();
+    private Context mContext = null;
+    private BookHandler mBookHandler = null;
 
     public BookDataHandler(Context context) {
         mContext = context;
@@ -41,17 +33,14 @@ public class BookDataHandler {
 
     public void applyBookData(String dataBody, String dataTimestamp) throws IOException {
         LogUtils.LOGD(TAG, "Applying data from bootstrap file, timestamp " + dataTimestamp);
-        mHandlerForKey.put(DATA_KEY_BOOKS, mBookHandler = new BookHandler(mContext));
+        mBookHandler = new BookHandler(mContext);
 
         processDataBody(dataBody);
 
         // produce the necessary content provider operations
         ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
-        for (String key : DATA_KEYS_IN_ORDER) {
-            LogUtils.LOGD(TAG, "Building content provider operations for: " + key);
-            mHandlerForKey.get(key).makeContentProviderOperations(batch);
-            LogUtils.LOGD(TAG, "Content provider operations so far: " + batch.size());
-        }
+        LogUtils.LOGD(TAG, "Building content provider operations for books");
+        mBookHandler.makeContentProviderOperations(batch);
         LogUtils.LOGD(TAG, "Total content provider operations: " + batch.size());
 
         // finally, push the changes into the Content Provider
@@ -72,8 +61,8 @@ public class BookDataHandler {
     }
 
     private void processDataBody(String dataBody) {
-        JSONObject jobj = JSON.parseObject(dataBody);
-        JSONArray array = jobj.getJSONArray("books");
-        mHandlerForKey.get("books").process(array);
+        JSONObject isonObject = JSON.parseObject(dataBody);
+        JSONArray array = isonObject.getJSONArray(DATA_KEY_BOOKS);
+        mBookHandler.process(array);
     }
 }

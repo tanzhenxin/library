@@ -95,7 +95,7 @@ public class UserBookListFragment extends AbstractBookListFragment {
 	@Override
 	public String getSelectedBookId(ListView l, View v, int position, long id) {
 		Borrow borrowHistory = borrowBooks.get(position);
-		return borrowHistory.getBook().getId();
+		return borrowHistory.getBook().getObjectId();
 	}
 
 	private interface BorrowLoader {
@@ -229,7 +229,7 @@ public class UserBookListFragment extends AbstractBookListFragment {
 			Book book = borrow.getBook();
 			viewHolder.title.setText(book.getTitle());
 
-			String imgUrl = book.getImgUrl();
+			String imgUrl = book.getImageUrl();
 			if (imgUrl != null)
 				mImageFetcher.loadImage(imgUrl, viewHolder.image);
 
@@ -240,7 +240,7 @@ public class UserBookListFragment extends AbstractBookListFragment {
 					author += " / " + publisher;
 				}
 
-				String publishDate = book.getPublishDate();
+				String publishDate = book.getPublishedDate();
 				if (publishDate != null && !TextUtils.isEmpty(publishDate)) {
 					author += " / " + publishDate;
 				}
@@ -252,7 +252,7 @@ public class UserBookListFragment extends AbstractBookListFragment {
 			}
 			viewHolder.author.setText(author);
 
-			String tag = book.getId();
+			String tag = book.getObjectId();
 			viewHolder.tag.setText(tag);
 
 			if (borrow.getRealReturnDate().equals("-1")) {

@@ -113,17 +113,16 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
         JSONObject jsonBook = jsonBorrow.getJSONObject("book");
 		Book book = new Book();
 		
-		book.setId(jsonBook.getString("bianhao"));
+		book.setObjectId(jsonBook.getString("bianhao"));
 		book.setAuthor(jsonBook.getString("author"));
 		book.setDescription(jsonBook.getString("bookDescription"));
 		book.setTitle(jsonBook.getString("title"));
 		book.setPrice(jsonBook.getString("price"));
 		book.setISBN(jsonBook.getString("ISBN"));
-		book.setLanguage(jsonBook.getString("language"));
 		book.setPublisher(jsonBook.getString("publisher"));
-		book.setPublishDate(jsonBook.getString("publishedDate"));;
-		book.setImgUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
-		book.setCategory(book.getId().substring(0, 1));
+		book.setPublishedDate(jsonBook.getString("publishedDate"));;
+		book.setImageUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
+		book.setCategory(book.getObjectId().substring(0, 1));
 		
 		borrow.setBook(book);
 		return borrow;

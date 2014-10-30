@@ -2,6 +2,7 @@ package com.gtcc.library.ui.library;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;

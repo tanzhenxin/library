@@ -105,7 +105,7 @@ public class BookDetailFragment extends Fragment {
 		if (item.getItemId() == R.id.add_review) {
 			Intent intent = new Intent(getActivity(), BookCommentActivity.class);
 			intent.putExtra(BookCommentActivity.USER_ID, mUserId);
-			intent.putExtra(BookCommentActivity.BOOK_ID, book.getId());
+			intent.putExtra(BookCommentActivity.BOOK_ID, book.getObjectId());
 			intent.putExtra(BookCommentActivity.BOOK_TITLE, book.getTitle());
 			getActivity().startActivityForResult(intent, ADD_REVIEW);
 		}
@@ -167,7 +167,7 @@ public class BookDetailFragment extends Fragment {
 		String publisher = book.getPublisher();
 		mPublisherView.setText(publisher);
 
-		String publishDate = book.getPublishDate();
+		String publishDate = book.getPublishedDate();
 		mPublishDateView.setText(publishDate);
 
 		String isbn = book.getISBN();
@@ -179,11 +179,11 @@ public class BookDetailFragment extends Fragment {
 		else
 			mDescriptionBlock.setVisibility(View.GONE);
 
-		String imgUrl = book.getImgUrl();
+		String imgUrl = book.getImageUrl();
 		if (imgUrl != null)
 			mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
 
-		mTagView.setText(book.getId());
+		mTagView.setText(book.getTag());
 	}
 
 	private void setBorrowReturnState() {
@@ -253,7 +253,7 @@ public class BookDetailFragment extends Fragment {
 				switch (type) {
 				case LOAD_BORROW_RETURN:
 					bookBorrowInfo = HttpManager.webServiceBorrowProxy
-							.checkWhetherBookInBorrow(book.getId());
+							.checkWhetherBookInBorrow(book.getObjectId());
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -271,7 +271,7 @@ public class BookDetailFragment extends Fragment {
 					break;
 				case BORROW_BOOK:
 					borrowResult = HttpManager.webServiceBorrowProxy.borrow(
-							mUserId, book.getId());
+							mUserId, book.getObjectId());
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -295,7 +295,7 @@ public class BookDetailFragment extends Fragment {
 					break;
 				case RETURN_BOOK:
 					borrowResult = HttpManager.webServiceBorrowProxy
-							.returnBook(mUserId, book.getId());
+							.returnBook(mUserId, book.getObjectId());
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
 						public void run() {

@@ -18,16 +18,16 @@ public class LibraryContract {
 	
 	public interface BookColumns {
 		String BOOK_ID = "book_id";
+        String BOOK_TAG = "book_tag";
 		String BOOK_TITLE = "book_title";
 		String BOOK_AUTHOR = "book_author";
-		String BOOK_AUTHRO_INTRO = "author_intro";
 		String BOOK_DESCRIPTION = "book_description";
-		String BOOK_LANGUAGE = "book_language";
 		String BOOK_PUBLISHER = "book_publisher";
 		String BOOK_PUBLISH_DATE = "book_publish_date";
 		String BOOK_PRICE = "book_price";
 		String BOOK_ISBN = "book_isbn";
 		String BOOK_IMAGE_URL = "book_image_url";
+        String BOOK_PRINT_LENGTH = "book_print_length";
 		String BOOK_CATEGORY = "book_category";
 	}
 	

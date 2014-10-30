@@ -39,30 +39,6 @@ public class SyncHelper {
 
 	public ArrayList<ContentProviderOperation> loadBooks() {
 		final ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
-		try {
-            AVQuery<AVObject> query = new AVQuery<AVObject>("Book");
-            List<AVObject> avObjects = query.find();
-			for (int i = 0; i < avObjects.size(); ++i) {
-				AVObject book = avObjects.get(i);
-				
-				ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(Books.CONTENT_URI);
-				builder.withValue(Books.BOOK_ID, book.getString("tag"));
-				builder.withValue(Books.BOOK_TITLE, book.getString("title"));
-				builder.withValue(Books.BOOK_AUTHOR, book.getString("author"));
-				builder.withValue(Books.BOOK_DESCRIPTION, book.getString("description"));
-				builder.withValue(Books.BOOK_LANGUAGE, book.getString("language"));
-				builder.withValue(Books.BOOK_PUBLISHER, book.getString("publisher"));
-				builder.withValue(Books.BOOK_PUBLISH_DATE, book.getString("publishDate"));
-				builder.withValue(Books.BOOK_PRICE, book.getString("price"));
-				builder.withValue(Books.BOOK_ISBN, book.getString("ISBN"));
-				builder.withValue(Books.BOOK_IMAGE_URL, book.getString("imageUrl"));
-				builder.withValue(Books.BOOK_CATEGORY, book.getString("tag").substring(0, 1));
-				
-				batch.add(builder.build());
-			}
-		} catch (Exception e) {
-			LogUtils.LOGE(TAG, e.toString());
-		}
 		
 		return batch;
 	}
