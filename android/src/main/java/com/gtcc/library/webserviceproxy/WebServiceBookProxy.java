@@ -1,15 +1,13 @@
 package com.gtcc.library.webserviceproxy;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.gtcc.library.entity.Book;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.text.TextUtils;
-
-import com.gtcc.library.entity.Book;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WebServiceBookProxy extends WebServiceProxyBase {
 
@@ -145,10 +143,10 @@ public class WebServiceBookProxy extends WebServiceProxyBase {
 		book.setAuthor(jsonBook.getString("author"));
 		book.setDescription(jsonBook.getString("bookDescription"));
 		book.setPrice(jsonBook.getString("price"));
-		book.setISBN(jsonBook.getString("ISBN"));
+		book.setIsbn(jsonBook.getString("ISBN"));
 		book.setPublisher(jsonBook.getString("publisher"));
 		book.setPublishedDate(jsonBook.getString("publishedDate"));
-		book.setImageUrl(WebServiceInfo.SERVER_IMG + book.getISBN() + ".jpg");
+		book.setImageUrl(WebServiceInfo.SERVER_IMG + book.getIsbn() + ".jpg");
 		book.setCategory(book.getObjectId().substring(0, 1));
 
 		return book;

@@ -1,11 +1,13 @@
 package com.gtcc.library.ui.library;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.BaseColumns;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -35,8 +37,11 @@ public class LibraryBookListFragment extends AbstractBookListFragment implements
 	private ListView listView;
 	private TextView mTextView;
 
+    private Bundle mArguments;
 	private CursorAdapter mAdapter;
 	private int mBookQueryToken;
+
+    private ContentObserver mBooksObserver;
 
 	public LibraryBookListFragment() {
 	}
@@ -65,12 +70,32 @@ public class LibraryBookListFragment extends AbstractBookListFragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+        mAdapter = new BooksAdapter(getActivity());
+        setListAdapter(mAdapter);
+
 		reloadFromArguments(getArguments());
 	}
 
-	public void reloadFromArguments(Bundle arguments) {
-		setListAdapter(null);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mBooksObserver = new ContentObserver(new Handler()) {
 
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                onBooksDataChanged();
+            }
+        };
+        activity.getContentResolver().registerContentObserver(LibraryContract.Books.CONTENT_URI, true, mBooksObserver);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        getActivity().getContentResolver().unregisterContentObserver(mBooksObserver);
+    }
+
+    public void reloadFromArguments(Bundle arguments) {
 		final Intent intent = BaseActivity
 				.fragmentArgumentsToIntent(arguments);
 		final Uri uri = intent.getData();
@@ -78,12 +103,24 @@ public class LibraryBookListFragment extends AbstractBookListFragment implements
 		if (uri == null) {
 			return;
 		}
-		
-		mAdapter = new BooksAdapter(getActivity());
-		setListAdapter(mAdapter);
-
-		getLoaderManager().restartLoader(BooksQuery._TOKEN, arguments, this);
+        mArguments = arguments;
+        reloadBooksData();
 	}
+
+    private void onBooksDataChanged() {
+        LogUtils.LOGD(TAG, "ContentObserver fired (books). Content changed.");
+        if (!isAdded()) {
+            LogUtils.LOGD(TAG, "Ignoring ContentObserver event (Fragment not added).");
+            return;
+        }
+
+        LogUtils.LOGD(TAG, "Requesting sessions cursor reload as a result of ContentObserver firing.");
+        reloadBooksData();
+    }
+
+    private void reloadBooksData() {
+        getLoaderManager().restartLoader(BooksQuery._TOKEN, mArguments, this);
+    }
 
 	@Override
 	protected String getSelectedBookId(ListView l, View v, int position, long id) {

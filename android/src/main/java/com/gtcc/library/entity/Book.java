@@ -13,7 +13,7 @@ public class Book implements Serializable {
 	private String description;
 	private String imageUrl;
 	private String price;
-	private String ISBN;
+	private String isbn;
 	private String publisher;
 	private String publishedDate;
     private int printLength;
@@ -70,12 +70,12 @@ public class Book implements Serializable {
 		this.price = price;
 	}
 
-	public String getISBN() {
-		return ISBN;
+	public String getIsbn() {
+		return isbn;
 	}
 
-	public void setISBN(String iSBN) {
-		ISBN = iSBN;
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
 	}
 
 	public String getPublisher() {

@@ -170,7 +170,7 @@ public class BookDetailFragment extends Fragment {
 		String publishDate = book.getPublishedDate();
 		mPublishDateView.setText(publishDate);
 
-		String isbn = book.getISBN();
+		String isbn = book.getIsbn();
 		mIsbnView.setText(isbn);
 
 		String bookDesc = book.getDescription();

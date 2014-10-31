@@ -32,7 +32,7 @@ public class BookHandler extends JSONHandler {
             builder.withValue(LibraryContract.Books.BOOK_PUBLISHER, book.getPublisher());
             builder.withValue(LibraryContract.Books.BOOK_PUBLISH_DATE, book.getPublishedDate());
             builder.withValue(LibraryContract.Books.BOOK_PRICE, book.getPrice());
-            builder.withValue(LibraryContract.Books.BOOK_ISBN, book.getISBN());
+            builder.withValue(LibraryContract.Books.BOOK_ISBN, book.getIsbn());
             builder.withValue(LibraryContract.Books.BOOK_PRINT_LENGTH, book.getPrintLength());
             builder.withValue(LibraryContract.Books.BOOK_IMAGE_URL, book.getImageUrl());
             builder.withValue(LibraryContract.Books.BOOK_CATEGORY, book.getCategory());
