@@ -1,10 +1,8 @@
 package com.gtcc.library.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
@@ -13,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,24 +22,28 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
-import com.gtcc.library.ui.library.LibraryBookListFragment;
-import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.util.Utils;
-import com.gtcc.library.webserviceproxy.WebServiceInfo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class BookDetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -48,17 +51,9 @@ public class BookDetailFragment extends Fragment implements
 			.makeLogTag(BookDetailFragment.class);
 
 	private final int ADD_REVIEW = 0;
-	private final int LOAD_BORROW_RETURN = 1;
-	private final int BORROW_BOOK = 2;
-	private final int RETURN_BOOK = 3;
-	private final int CANNOT_OPERATE = 4;
-	private final int LOAD_BOOK_INFO = 5;
-
-	private int mCurrentBookState;
 
 	private ViewGroup mRootView;
 	private ViewGroup mDescriptionBlock;
-	private ViewGroup mLoadingIndicator;
 
 	private TextView mTitleView;
 	private TextView mAuthorView;
@@ -69,12 +64,11 @@ public class BookDetailFragment extends Fragment implements
 	private ImageView mImageView;
 	private TextView mTagView;
 	private TextView mStatusView;
-	private Button mBorrowReturn;
+	private Button mBorrowReturnButton;
 
 	private Bundle mArguments;
-	private String mUserId;
-	private Book book;
-	private Borrow bookBorrowInfo;
+	private Book mBook;
+	private Borrow mBookBorrowInfo;
 
 	private ImageFetcher mImageFetcher;
 
@@ -106,16 +100,9 @@ public class BookDetailFragment extends Fragment implements
 				.findViewById(R.id.book_summary_block);
 		mTagView = (TextView) mRootView.findViewById(R.id.book_tag);
 		mStatusView = (TextView) mRootView.findViewById(R.id.book_status);
-		mLoadingIndicator = (ViewGroup) mRootView
-				.findViewById(R.id.loading_progress);
-		mBorrowReturn = (Button) mRootView
+		mBorrowReturnButton = (Button) mRootView
 				.findViewById(R.id.action_borrow_return);
-		mBorrowReturn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				new AsyncLoader().execute(mCurrentBookState);
-			}
-		});
+		mBorrowReturnButton.setEnabled(false);
 
 		return mRootView;
 	}
@@ -136,9 +123,9 @@ public class BookDetailFragment extends Fragment implements
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.add_review) {
             Intent intent = new Intent(getActivity(), BookCommentActivity.class);
-            intent.putExtra(BookCommentActivity.USER_ID, mUserId);
-            intent.putExtra(BookCommentActivity.BOOK_ID, book.getObjectId());
-            intent.putExtra(BookCommentActivity.BOOK_TITLE, book.getTitle());
+            intent.putExtra(BookCommentActivity.USER_ID, ((BaseActivity) getActivity()).getUserId());
+            intent.putExtra(BookCommentActivity.BOOK_ID, mBook.getObjectId());
+            intent.putExtra(BookCommentActivity.BOOK_TITLE, mBook.getTitle());
             getActivity().startActivityForResult(intent, ADD_REVIEW);
         }
         return super.onOptionsItemSelected(item);
@@ -185,21 +172,21 @@ public class BookDetailFragment extends Fragment implements
             return;
 
         if (data != null && data.moveToNext()) {
-            book = new Book();
-            book.setObjectId(data.getString(BookDetailQuery.BOOK_ID));
-            book.setTag(data.getString(BookDetailQuery.BOOK_TAG));
-            book.setTitle(data.getString(BookDetailQuery.BOOK_TITLE));
-            book.setAuthor(data.getString(BookDetailQuery.BOOK_AUTHOR));
-            book.setDescription(data.getString(BookDetailQuery.BOOK_DESCRIPTION));
-            book.setImageUrl(data.getString(BookDetailQuery.BOOK_IMAGE_URL));
-            book.setPrice(data.getString(BookDetailQuery.BOOK_PRICE));
-            book.setIsbn(data.getString(BookDetailQuery.BOOK_ISBN));
-            book.setPublisher(data.getString(BookDetailQuery.BOOK_PUBLISHER));
-            book.setPublishedDate(data.getString(BookDetailQuery.BOOK_PUBLISH_DATE));
-            book.setPrintLength(data.getInt(BookDetailQuery.BOOK_PRINT_LENGTH));
-            book.setCategory(data.getString(BookDetailQuery.BOOK_CATEGORY));
+            mBook = new Book();
+            mBook.setObjectId(data.getString(BookDetailQuery.BOOK_ID));
+            mBook.setTag(data.getString(BookDetailQuery.BOOK_TAG));
+            mBook.setTitle(data.getString(BookDetailQuery.BOOK_TITLE));
+            mBook.setAuthor(data.getString(BookDetailQuery.BOOK_AUTHOR));
+            mBook.setDescription(data.getString(BookDetailQuery.BOOK_DESCRIPTION));
+            mBook.setImageUrl(data.getString(BookDetailQuery.BOOK_IMAGE_URL));
+            mBook.setPrice(data.getString(BookDetailQuery.BOOK_PRICE));
+            mBook.setIsbn(data.getString(BookDetailQuery.BOOK_ISBN));
+            mBook.setPublisher(data.getString(BookDetailQuery.BOOK_PUBLISHER));
+            mBook.setPublishedDate(data.getString(BookDetailQuery.BOOK_PUBLISH_DATE));
+            mBook.setPrintLength(data.getInt(BookDetailQuery.BOOK_PRINT_LENGTH));
+            mBook.setCategory(data.getString(BookDetailQuery.BOOK_CATEGORY));
 
-            setContentView(book);
+            setContentView(mBook);
         }
     }
 
@@ -234,161 +221,166 @@ public class BookDetailFragment extends Fragment implements
 			mImageFetcher.loadImage(imgUrl, mImageView, R.drawable.book);
 
 		mTagView.setText(book.getTag());
+
+        getBorrowReturnState();
 	}
+
+    private void getBorrowReturnState() {
+        AVQuery<AVObject> query = new AVQuery<>("BorrowHistory");
+        query.whereEqualTo("bookTag", mBook.getTag());
+        query.whereEqualTo("realReturnDate", "-1");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if (e != null) {
+                    Log.e(TAG, "Failed to get book borrow info.", e);
+                } else {
+                    if (avObjects.size() == 1) {
+                        AVObject obj = avObjects.get(0);
+                        newBorrowInfo(obj);
+                    }
+
+                    setBorrowReturnState();
+                }
+            }
+        });
+    }
+
+    private void newBorrowInfo(AVObject obj) {
+        mBookBorrowInfo = new Borrow();
+        mBookBorrowInfo.setBook(mBook);
+        mBookBorrowInfo.setObjectId(obj.getObjectId());
+        mBookBorrowInfo.setStartBorrowDate(obj.getString("startBorrowDate"));
+        mBookBorrowInfo.setPlanReturnDate(obj.getString("planReturnDate"));
+        mBookBorrowInfo.setRealReturnDate(obj.getString("realReturnDate"));
+        mBookBorrowInfo.setUsername((obj.getString("username")));
+    }
 
 	private void setBorrowReturnState() {
-		if (mCurrentBookState == BORROW_BOOK) {
-			mBorrowReturn.setText(R.string.borrow_this_book);
+        if (mBookBorrowInfo == null) {
+			mBorrowReturnButton.setText(R.string.borrow_this_book);
+            mBorrowReturnButton.setEnabled(true);
+            mBorrowReturnButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    borrowBook();
+                }
+            });
 			mStatusView.setVisibility(View.GONE);
-		} else if (mCurrentBookState == CANNOT_OPERATE) {
-			mBorrowReturn.setVisibility(View.GONE);
-			mStatusView.setVisibility(View.VISIBLE);
-			mStatusView.setTextColor(getResources().getColor(
-					R.color.body_text_disabled));
-			mStatusView.setText(String.format(
-					getResources().getString(R.string.lent_to_others),
-					bookBorrowInfo.getUserName()));
-		} else if (mCurrentBookState == RETURN_BOOK) {
-			mBorrowReturn.setText(R.string.return_this_book);
-			if (bookBorrowInfo != null) {
-				mStatusView.setVisibility(View.VISIBLE);
-			
-				String statusText = String.format(
-						getResources().getString(R.string.book_due_date),
-						bookBorrowInfo.getPlanReturnDate());
-				int statusColor = getResources().getColor(
-						R.color.body_text_1_positive);
+		} else if (mBookBorrowInfo.getUsername().equalsIgnoreCase(
+                ((BaseActivity)getActivity()).getUserId())) {
+            mBorrowReturnButton.setText(R.string.return_this_book);
+            mBorrowReturnButton.setEnabled(true);
+            mBorrowReturnButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    returnBook();
+                }
+            });
+            mStatusView.setVisibility(View.VISIBLE);
 
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-				Date date = null;
-				try {
-					date = df.parse(bookBorrowInfo.getPlanReturnDate());
+            String statusText = String.format(
+                    getResources().getString(R.string.book_due_date),
+                    mBookBorrowInfo.getPlanReturnDate());
+            int statusColor = getResources().getColor(
+                    R.color.body_text_1_positive);
 
-					Date currentDate = new Date();
-					long diffDays = (date.getTime() - currentDate.getTime())
-							/ (24 * 60 * 60 * 1000);
-					if (diffDays < 0) {
-						statusText = String.format(
-								getResources().getString(
-										R.string.book_expired_date), -diffDays);
-						statusColor = getResources().getColor(
-								R.color.body_text_1_negative);
-					} else if (diffDays <= 5) {
-						statusText = String
-								.format(getResources().getString(
-										R.string.book_remaining_date), diffDays);
-						statusColor = getResources().getColor(
-								R.color.body_text_1_middle);
-					}
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = null;
+            try {
+                date = df.parse(mBookBorrowInfo.getPlanReturnDate());
 
-				mStatusView.setText(statusText);
-				mStatusView.setTextColor(statusColor);
-			}
+                Date currentDate = new Date();
+                long diffDays = (date.getTime() - currentDate.getTime())
+                        / (24 * 60 * 60 * 1000);
+                if (diffDays < 0) {
+                    statusText = String.format(
+                            getResources().getString(
+                                    R.string.book_expired_date), -diffDays);
+                    statusColor = getResources().getColor(
+                            R.color.body_text_1_negative);
+                } else if (diffDays <= 5) {
+                    statusText = String
+                            .format(getResources().getString(
+                                    R.string.book_remaining_date), diffDays);
+                    statusColor = getResources().getColor(
+                            R.color.body_text_1_middle);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            mStatusView.setText(statusText);
+            mStatusView.setTextColor(statusColor);
+		} else {
+            mBorrowReturnButton.setVisibility(View.GONE);
+            mStatusView.setVisibility(View.VISIBLE);
+            mStatusView.setTextColor(getResources().getColor(
+                    R.color.body_text_disabled));
+            mStatusView.setText(String.format(
+                    getResources().getString(R.string.lent_to_others),
+                    mBookBorrowInfo.getUsername()));
 		}
 	}
 
-	private class AsyncLoader extends AsyncTask<Integer, Void, Boolean> {
-		private int borrowResult;
+    private void borrowBook() {
+        if (mBookBorrowInfo != null)
+            return;
 
-		@Override
-		protected Boolean doInBackground(Integer... params) {
-			int type = params[0];
-			try {
-				switch (type) {
-				case LOAD_BORROW_RETURN:
-					bookBorrowInfo = HttpManager.webServiceBorrowProxy
-							.checkWhetherBookInBorrow(book.getObjectId());
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (bookBorrowInfo == null) {
-								mCurrentBookState = BORROW_BOOK;
-							} else if (bookBorrowInfo.getUserName().equalsIgnoreCase(
-									mUserId)) {
-								mCurrentBookState = RETURN_BOOK;
-							} else {
-								mCurrentBookState = CANNOT_OPERATE;
-							}
-							setBorrowReturnState();
-						}
-					});
-					break;
-				case BORROW_BOOK:
-					borrowResult = HttpManager.webServiceBorrowProxy.borrow(
-							mUserId, book.getObjectId());
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
-								mCurrentBookState = RETURN_BOOK;
-								setBorrowReturnState();
-								Toast.makeText(
-										getActivity(),
-										getActivity().getString(
-												R.string.operation_succeed),
-										Toast.LENGTH_SHORT).show();
-							} else if (borrowResult == WebServiceInfo.BORROWED_BOOK_EXCCEED_3) {
-								Toast.makeText(
-										getActivity(),
-										getActivity().getString(
-												R.string.borrowed_book_excceed_3),
-										Toast.LENGTH_LONG).show();
-							}
-						}
-					});
-					break;
-				case RETURN_BOOK:
-					borrowResult = HttpManager.webServiceBorrowProxy
-							.returnBook(mUserId, book.getObjectId());
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (borrowResult == WebServiceInfo.OPERATION_SUCCEED) {
-								mCurrentBookState = BORROW_BOOK;
-								setBorrowReturnState();
-								Toast.makeText(
-										getActivity(),
-										getActivity().getString(
-												R.string.operation_succeed),
-										Toast.LENGTH_SHORT).show();
-							}
-						}
-					});
-					break;
-				case LOAD_BOOK_INFO:
-					break;
-				}
+        final AVObject obj = new AVObject("BorrowHistory");
 
-				return true;
-			} catch (Exception e) {
-				return false;
-			}
-		}
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar startBorrowDate = Calendar.getInstance();
+        Calendar planReturnDate = startBorrowDate;
+        planReturnDate.add(Calendar.MONTH, 1);
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mBorrowReturn.setEnabled(false);
-			mLoadingIndicator.setVisibility(View.VISIBLE);
-		}
+        obj.put("username", ((BaseActivity)getActivity()).getUserId());
+        obj.put("startBorrowDate", dateFormat.format(startBorrowDate.getTime()));
+        obj.put("planReturnDate", dateFormat.format(planReturnDate.getTime()));
+        obj.put("realReturnDate", "-1");
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			if (result) {
+        obj.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e != null) {
+                    Log.e(TAG, "Failed to borrow book.", e);
+                } else {
+                    newBorrowInfo(obj);
+                    setBorrowReturnState();
+                }
+            }
+        });
+    }
 
-			} else {
-				Toast.makeText(getActivity(),
-						getActivity().getString(R.string.load_failed),
-						Toast.LENGTH_SHORT).show();
-			}
-			mBorrowReturn.setEnabled(true);
-			mLoadingIndicator.setVisibility(View.GONE);
-		}
-	}
+    private void returnBook() {
+        if (mBookBorrowInfo == null)
+            return;
+
+        AVQuery<AVObject> query = new AVQuery<>("BorrowHistory");
+        query.getInBackground(mBookBorrowInfo.getObjectId(), new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if (e != null) {
+                    Log.e(TAG, "Failed to get borrow info.", e);
+                } else {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Calendar realReturnDate = Calendar.getInstance();
+                    avObject.put("realReturnDate", dateFormat.format(realReturnDate.getTime()));
+                    avObject.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e != null) {
+                                Log.e(TAG, "Failed to return book.", e);
+                            } else {
+                                mBookBorrowInfo = null;
+                                setBorrowReturnState();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 
     public interface BookDetailQuery {
         int _TOKEN = 1;

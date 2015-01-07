@@ -105,8 +105,8 @@ public class WebServiceBorrowProxy extends WebServiceProxyBase {
 	private Borrow parseJSONObject(JSONObject jsonBorrow) throws JSONException {
         
         Borrow borrow = new Borrow();
-        borrow.setUserName(jsonBorrow.getString("username"));
-        borrow.setBorrowDate(jsonBorrow.getString("borrowDate"));
+        borrow.setUsername(jsonBorrow.getString("username"));
+        borrow.setStartBorrowDate(jsonBorrow.getString("borrowDate"));
         borrow.setPlanReturnDate(jsonBorrow.getString("planReturnDate"));
         borrow.setRealReturnDate(jsonBorrow.getString("realReturnDate"));
         

@@ -4,26 +4,34 @@ package com.gtcc.library.entity;
  * Created by LiuZ1 on 8/29/13.
  */
 public class Borrow {
-    private String userName;
-    private String borrowDate;
+    private String objectId;
+    private String username;
+    private String startBorrowDate;
     private String planReturnDate;
     private String realReturnDate;
+    private String bookTag;
     private Book book;
 
-    public String getUserName() {
-        return userName;
+    public String getObjectId() { return objectId; }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
     }
 
-    public String getBorrowDate() {
-        return borrowDate;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setBorrowDate(String borrowDate) {
-        this.borrowDate = borrowDate;
+    public String getStartBorrowDate() {
+        return startBorrowDate;
+    }
+
+    public void setStartBorrowDate(String startBorrowDate) {
+        this.startBorrowDate = startBorrowDate;
     }
 
     public String getPlanReturnDate() {
@@ -40,6 +48,12 @@ public class Borrow {
 
     public void setRealReturnDate(String realReturnDate) {
         this.realReturnDate = realReturnDate;
+    }
+
+    public String getBookTag() { return bookTag; }
+
+    public void setBookTag(String bookTag) {
+        this.bookTag = bookTag;
     }
 
     public Book getBook() {

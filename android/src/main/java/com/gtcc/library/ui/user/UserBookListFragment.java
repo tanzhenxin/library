@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,28 +14,38 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
 import com.gtcc.library.ui.AbstractBookListFragment;
+import com.gtcc.library.ui.BaseActivity;
 import com.gtcc.library.ui.HomeActivity;
 import com.gtcc.library.util.HttpManager;
+import com.gtcc.library.util.LogUtils;
 import com.gtcc.library.webserviceproxy.WebServiceInfo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class UserBookListFragment extends AbstractBookListFragment {
+    private static final String TAG =
+            LogUtils.makeLogTag(UserBookListFragment.class);
 
 	private List<Borrow> borrowBooks;
-	private AsyncLoader mLoader;
 
 	private ListView mListView;
 	private TextView mEmptyView;
 	private ViewGroup mLoadingIndicator;
+
+    private UserBorrowAdapter mAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +57,11 @@ public class UserBookListFragment extends AbstractBookListFragment {
 		mEmptyView = (TextView) rootView.findViewById(android.R.id.text1);
 		mLoadingIndicator = (ViewGroup) rootView
 				.findViewById(R.id.loading_progress);
+
+        mAdapter = new UserBorrowAdapter(getActivity());
+        setListAdapter(mAdapter);
+
+        reloadFromArguments(getArguments());
 
 		return rootView;
 	}
@@ -60,29 +76,20 @@ public class UserBookListFragment extends AbstractBookListFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-
-		if (mLoader != null && mLoader.getStatus() != Status.FINISHED) {
-			mLoader.cancel(true);
-		}
 	}
 
 	private void reloadFromArguments(Bundle arguments) {
-		if (mLoader != null) {
-			mLoader.cancel(true);
-		}
-		mLoader = new AsyncLoader();
-
 		if (arguments != null) {
 			final String category = arguments
 					.getString(UserFragment.ARG_USER_CATEOGRY);
 			if (category == WebServiceInfo.BORROW_METHOD_GET_BORROWED_INFO) {
 				mEmptyView.setText(getResources().getText(
-						R.string.no_book_borrowing));
-				mLoader.execute(mBorrowedLoader);
+                        R.string.no_book_borrowing));
+                getBorrowedBooks();
 			} else if (category == WebServiceInfo.BORROW_METHOD_GET_RETURNED_INFO) {
 				mEmptyView.setText(getResources().getText(
-						R.string.no_book_borrowed));
-				mLoader.execute(mReturnedLoader);
+                        R.string.no_book_borrowed));
+                getBorrowedBooks();
 			}
 		}
 	}
@@ -98,79 +105,93 @@ public class UserBookListFragment extends AbstractBookListFragment {
 		return borrowHistory.getBook().getObjectId();
 	}
 
-	private interface BorrowLoader {
-		List<Borrow> loadBooks() throws Exception;
-	}
+    private void getBorrowedBooks() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.GONE);
 
-	private BorrowLoader mBorrowedLoader = new BorrowLoader() {
+        mAdapter.clear();
+        mAdapter.notifyDataSetInvalidated();
 
-		@Override
-		public List<Borrow> loadBooks() throws Exception {
-			return HttpManager.webServiceBorrowProxy
-					.getBorrowedInfo(((HomeActivity) getActivity()).getUserId());
-		}
+        AVQuery<AVObject> query = new AVQuery<>("BorrowHistory");
+        query.whereEqualTo("username", ((BaseActivity) getActivity()).getUserId());
+        query.whereEqualTo("realReturnDate", "-1");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if (e != null) {
+                    Log.e(TAG, "Failed to get borrowed books.", e);
+                } else {
+                    if (avObjects.size() == 0) {
+                        mLoadingIndicator.setVisibility(View.GONE);
+                        mEmptyView.setVisibility(View.VISIBLE);
+                    } else {
+                        for (AVObject obj : avObjects) {
+                            newBorrowInfo(obj);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-	};
+    private void newBorrowInfo(AVObject obj) {
+        final Borrow borrow = new Borrow();
+        borrow.setObjectId(obj.getObjectId());
+        borrow.setStartBorrowDate(obj.getString("startBorrowDate"));
+        borrow.setPlanReturnDate(obj.getString("planReturnDate"));
+        borrow.setRealReturnDate(obj.getString("realReturnDate"));
+        borrow.setUsername((obj.getString("username")));
+        borrow.setBookTag(obj.getString("bookTag"));
 
-	private BorrowLoader mReturnedLoader = new BorrowLoader() {
+        AVQuery<AVObject> query = new AVQuery<>("Book");
+        query.whereEqualTo("tag", borrow.getBookTag());
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if (e != null) {
+                    Log.e(TAG, "Failed to get book by tag.", e);
+                } else {
+                    if (avObjects.size() == 1) {
+                        AVObject bookObj = avObjects.get(0);
+                        Book book = new Book();
+                        book.setObjectId(bookObj.getString("objectId"));
+                        book.setTag(bookObj.getString("tag"));
+                        book.setTitle(bookObj.getString("title"));
+                        book.setAuthor(bookObj.getString("author"));
+                        book.setDescription(bookObj.getString("description"));
+                        book.setImageUrl(bookObj.getString("imageUrl"));
+                        book.setPrice(bookObj.getString("price"));
+                        book.setIsbn(bookObj.getString("ISBN"));
+                        book.setPublisher(bookObj.getString("publisher"));
+                        book.setPublishedDate(bookObj.getString("publishDate"));
+                        book.setPrintLength(bookObj.getInt("printLength"));
+                        book.setCategory(bookObj.getString(book.getTag().substring(0, 1)));
+                        borrow.setBook(book);
 
-		@Override
-		public List<Borrow> loadBooks() throws Exception {
-			return HttpManager.webServiceBorrowProxy
-					.getReturnedInfo(((HomeActivity) getActivity()).getUserId());
-		}
+                        mAdapter.addBooks(borrow);
+                        mAdapter.notifyDataSetInvalidated();
 
-	};
-
-	private class AsyncLoader extends AsyncTask<BorrowLoader, Void, Boolean> {
-		protected Boolean doInBackground(BorrowLoader... params) {
-			BorrowLoader loader = params[0];
-			try {
-				borrowBooks = loader.loadBooks();
-				return true;
-			} catch (Exception e) {
-
-			}
-			return false;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-
-			mLoadingIndicator.setVisibility(View.VISIBLE);
-			mListView.setVisibility(View.GONE);
-			mEmptyView.setVisibility(View.GONE);
-		}
-
-		protected void onPostExecute(Boolean result) {
-			if (!isCancelled()) {
-				mLoadingIndicator.setVisibility(View.GONE);
-
-				if (result && borrowBooks.size() > 0) {
-					mListView.setVisibility(View.VISIBLE);
-					mEmptyView.setVisibility(View.GONE);
-
-					setListAdapter(new UserBorrowAdapter(getActivity(),
-							borrowBooks));
-				} else {
-					mListView.setVisibility(View.GONE);
-					mEmptyView.setVisibility(View.VISIBLE);
-				}
-			}
-		}
-	}
+                        mLoadingIndicator.setVisibility(View.GONE);
+                        mListView.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+    }
 
 	public class UserBorrowAdapter extends BaseAdapter {
 		private List<Borrow> books;
 		private LayoutInflater mInflater;
 
-		public UserBorrowAdapter(Context context, List<Borrow> books) {
-			if (this.books == null) {
-				this.books = books;
-				mInflater = LayoutInflater.from(context);
-			}
+		public UserBorrowAdapter(Context context) {
+			mInflater = LayoutInflater.from(context);
+            books = new ArrayList<>();
 		}
+
+        public void addBooks(Borrow borrow) {
+            this.books.add(borrow);
+        }
 
 		@Override
 		public int getCount() {

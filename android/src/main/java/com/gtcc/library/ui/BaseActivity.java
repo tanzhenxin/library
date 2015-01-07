@@ -43,7 +43,6 @@ public class BaseActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		
 		loadUserInfo();
-        AVOSCloud.initialize(this, Configs.AVOS_API_ID, Configs.AVOS_API_KEY);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
