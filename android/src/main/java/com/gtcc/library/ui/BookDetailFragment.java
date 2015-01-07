@@ -1,10 +1,17 @@
 package com.gtcc.library.ui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +28,9 @@ import android.widget.Toast;
 import com.gtcc.library.R;
 import com.gtcc.library.entity.Book;
 import com.gtcc.library.entity.Borrow;
+import com.gtcc.library.provider.LibraryContract;
 import com.gtcc.library.provider.LibraryContract.Books;
+import com.gtcc.library.ui.library.LibraryBookListFragment;
 import com.gtcc.library.util.HttpManager;
 import com.gtcc.library.util.ImageFetcher;
 import com.gtcc.library.util.LogUtils;
@@ -33,7 +42,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BookDetailFragment extends Fragment {
+public class BookDetailFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>{
 	private static final String TAG = LogUtils
 			.makeLogTag(BookDetailFragment.class);
 
@@ -61,8 +71,7 @@ public class BookDetailFragment extends Fragment {
 	private TextView mStatusView;
 	private Button mBorrowReturn;
 
-	private Uri mBookUri;
-	private int mPage;
+	private Bundle mArguments;
 	private String mUserId;
 	private Book book;
 	private Borrow bookBorrowInfo;
@@ -73,43 +82,10 @@ public class BookDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		BookDetailActivity activity = (BookDetailActivity) getActivity();
-		if (activity == null)
-			return;
-
-		final Intent intent = activity
-				.fragmentArgumentsToIntent(getArguments());
-		mBookUri = intent.getData();
-		Bundle bundle = intent.getExtras();
-
-		if (mBookUri == null || bundle == null)
-			return;
-
-		mPage = bundle.getInt(HomeActivity.ARG_PAGE_NUMBER);
-		mUserId = bundle.getString(HomeActivity.USER_ID);
-
 		mImageFetcher = Utils.getImageFetcher(getActivity());
 		mImageFetcher.setImageFadeIn(false);
 
 		setHasOptionsMenu(true);
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-		// inflater.inflate(R.menu.book_detail_menu, menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		if (item.getItemId() == R.id.add_review) {
-			Intent intent = new Intent(getActivity(), BookCommentActivity.class);
-			intent.putExtra(BookCommentActivity.USER_ID, mUserId);
-			intent.putExtra(BookCommentActivity.BOOK_ID, book.getObjectId());
-			intent.putExtra(BookCommentActivity.BOOK_TITLE, book.getTitle());
-			getActivity().startActivityForResult(intent, ADD_REVIEW);
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -141,10 +117,32 @@ public class BookDetailFragment extends Fragment {
 			}
 		});
 
-		new AsyncLoader().execute(LOAD_BOOK_INFO);
-
 		return mRootView;
 	}
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        reloadFromArguments(getArguments());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // inflater.inflate(R.menu.book_detail_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == R.id.add_review) {
+            Intent intent = new Intent(getActivity(), BookCommentActivity.class);
+            intent.putExtra(BookCommentActivity.USER_ID, mUserId);
+            intent.putExtra(BookCommentActivity.BOOK_ID, book.getObjectId());
+            intent.putExtra(BookCommentActivity.BOOK_TITLE, book.getTitle());
+            getActivity().startActivityForResult(intent, ADD_REVIEW);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 	@Override
 	public void onPause() {
@@ -158,7 +156,59 @@ public class BookDetailFragment extends Fragment {
 		mImageFetcher.closeCache();
 	}
 
-	private void setContentView(Book book) {
+    public void reloadFromArguments(Bundle arguments) {
+        final Intent intent = ((BaseActivity)getActivity())
+                .fragmentArgumentsToIntent(getArguments());
+        final Uri uri = intent.getData();
+        if (uri == null)
+            return;
+
+        mArguments = arguments;
+        reloadBooksData();
+    }
+
+    public void reloadBooksData() {
+        getLoaderManager().restartLoader(BookDetailQuery._TOKEN, mArguments, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        final Intent intent = BaseActivity.fragmentArgumentsToIntent(mArguments);
+        final Uri uri = intent.getData();
+        return new CursorLoader(getActivity(), uri, BookDetailQuery.PROJECTION,
+                null, null, Books.DEFAULT_SORT_ORDER);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (getActivity() == null)
+            return;
+
+        if (data != null && data.moveToNext()) {
+            book = new Book();
+            book.setObjectId(data.getString(BookDetailQuery.BOOK_ID));
+            book.setTag(data.getString(BookDetailQuery.BOOK_TAG));
+            book.setTitle(data.getString(BookDetailQuery.BOOK_TITLE));
+            book.setAuthor(data.getString(BookDetailQuery.BOOK_AUTHOR));
+            book.setDescription(data.getString(BookDetailQuery.BOOK_DESCRIPTION));
+            book.setImageUrl(data.getString(BookDetailQuery.BOOK_IMAGE_URL));
+            book.setPrice(data.getString(BookDetailQuery.BOOK_PRICE));
+            book.setIsbn(data.getString(BookDetailQuery.BOOK_ISBN));
+            book.setPublisher(data.getString(BookDetailQuery.BOOK_PUBLISHER));
+            book.setPublishedDate(data.getString(BookDetailQuery.BOOK_PUBLISH_DATE));
+            book.setPrintLength(data.getInt(BookDetailQuery.BOOK_PRINT_LENGTH));
+            book.setCategory(data.getString(BookDetailQuery.BOOK_CATEGORY));
+
+            setContentView(book);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    private void setContentView(Book book) {
 		mTitleView.setText(book.getTitle());
 
 		String author = book.getAuthor();
@@ -189,11 +239,9 @@ public class BookDetailFragment extends Fragment {
 	private void setBorrowReturnState() {
 		if (mCurrentBookState == BORROW_BOOK) {
 			mBorrowReturn.setText(R.string.borrow_this_book);
-
 			mStatusView.setVisibility(View.GONE);
 		} else if (mCurrentBookState == CANNOT_OPERATE) {
 			mBorrowReturn.setVisibility(View.GONE);
-
 			mStatusView.setVisibility(View.VISIBLE);
 			mStatusView.setTextColor(getResources().getColor(
 					R.color.body_text_disabled));
@@ -202,7 +250,6 @@ public class BookDetailFragment extends Fragment {
 					bookBorrowInfo.getUserName()));
 		} else if (mCurrentBookState == RETURN_BOOK) {
 			mBorrowReturn.setText(R.string.return_this_book);
-
 			if (bookBorrowInfo != null) {
 				mStatusView.setVisibility(View.VISIBLE);
 			
@@ -312,19 +359,6 @@ public class BookDetailFragment extends Fragment {
 					});
 					break;
 				case LOAD_BOOK_INFO:
-					book = HttpManager.webServiceBookProxy
-							.getBookByBianHao(Books.getBookId(mBookUri));
-					if (book == null)
-						return false;
-
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							setContentView(book);
-							new AsyncLoader().execute(LOAD_BORROW_RETURN);
-						}
-					});
-
 					break;
 				}
 
@@ -355,4 +389,38 @@ public class BookDetailFragment extends Fragment {
 			mLoadingIndicator.setVisibility(View.GONE);
 		}
 	}
+
+    public interface BookDetailQuery {
+        int _TOKEN = 1;
+
+        String[] PROJECTION = {
+                BaseColumns._ID,
+                LibraryContract.BookColumns.BOOK_ID,
+                LibraryContract.BookColumns.BOOK_TAG,
+                LibraryContract.BookColumns.BOOK_TITLE,
+                LibraryContract.BookColumns.BOOK_AUTHOR,
+                LibraryContract.BookColumns.BOOK_DESCRIPTION,
+                LibraryContract.BookColumns.BOOK_PUBLISHER,
+                LibraryContract.BookColumns.BOOK_PUBLISH_DATE,
+                LibraryContract.BookColumns.BOOK_PRICE,
+                LibraryContract.BookColumns.BOOK_ISBN,
+                LibraryContract.BookColumns.BOOK_IMAGE_URL,
+                LibraryContract.BookColumns.BOOK_PRINT_LENGTH,
+                LibraryContract.BookColumns.BOOK_CATEGORY,
+        };
+
+        int _ID = 0;
+        int BOOK_ID = 1;
+        int BOOK_TAG = 2;
+        int BOOK_TITLE = 3;
+        int BOOK_AUTHOR = 4;
+        int BOOK_DESCRIPTION = 5;
+        int BOOK_PUBLISHER = 6;
+        int BOOK_PUBLISH_DATE = 7;
+        int BOOK_PRICE = 8;
+        int BOOK_ISBN = 9;
+        int BOOK_IMAGE_URL = 10;
+        int BOOK_PRINT_LENGTH = 11;
+        int BOOK_CATEGORY = 12;
+    }
 }
